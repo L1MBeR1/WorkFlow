@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback,useEffect } from 'react';
 import ReactFlow, {
     MiniMap,
     Controls,
@@ -7,16 +7,19 @@ import ReactFlow, {
     useEdgesState,
     addEdge,
   } from 'reactflow';
- 
+
 import 'reactflow/dist/style.css';
- 
+
+
+
 const initialNodes = [
     { id: '1', position: { x: 0, y: 0 }, data: { label: '1' } },
     { id: '2', position: { x: 0, y: 100 }, data: { label: '2' } },
   ];
   const initialEdges = [];
-   
+ 
   export default function App() {
+
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
    
