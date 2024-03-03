@@ -54,7 +54,6 @@ app.listen(port, () => {
 //module.exports = pool;
 
 async function testReq(userData) {
-  
 
   const query = `SELECT c.id, c.name as "Название", c.description as "Описание"
                     FROM components.components c`;
@@ -70,5 +69,5 @@ async function testReq(userData) {
 
 module.exports = pool;
 module.exports = {
-  addUserToDatabase: testReq,
+  testReq,
 };
