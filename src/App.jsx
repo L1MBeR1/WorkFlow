@@ -1,3 +1,4 @@
+import React, { useCallback,useEffect } from 'react';
 import React, { useCallback, useEffect } from 'react'; // Обратите внимание на добавление useEffect
 import ReactFlow, {
 	MiniMap,
