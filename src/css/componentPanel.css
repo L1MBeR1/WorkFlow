@@ -1,0 +1,44 @@
+
+.panelDiv{
+ 
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  gap: 20px;
+  transition: transform 0.3s ease;
+  z-index: 100;
+}
+.panel{
+  width: 20vw;
+  background-color: #fff;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+.hidden {
+  transform: translateX(calc(-100% + 60px));
+}
+.visible{
+  transform: translateX(0px);
+}
+.toggle-button {
+  width: 50px;
+  height: 50px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  border: none;
+  cursor: pointer;
+}
+
+.svg {
+  
+  width: 100%;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+.hiddenButton {
+  transform: scaleX(-1);
+}
+.visibleButton{
+  transform: scaleX(1);
+}
