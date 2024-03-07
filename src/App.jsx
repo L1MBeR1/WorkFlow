@@ -1,5 +1,5 @@
 import React, { useCallback,useEffect } from 'react';
-import LeftPanel from './componentPanel';
+import ComponentPanel from './componentPanel';
 import ReactFlow, {
 	MiniMap,
 	Controls,
@@ -59,7 +59,7 @@ export default function App() {
 
 	return (
 		<div className="App">
-			<LeftPanel></LeftPanel>
+			<ComponentPanel></ComponentPanel>
 			<div className='mainCanvas'>
 				<ReactFlow
 					nodes={nodes}
