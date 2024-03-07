@@ -1,5 +1,5 @@
 import React, { useCallback,useEffect } from 'react';
-import ComponentPanel from './componentPanel';
+import ComponentPanel from './componentPanel/componentPanel';
 import ReactFlow, {
 	MiniMap,
 	Controls,
@@ -22,39 +22,6 @@ export default function App() {
 	const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
 	const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 	 
-	// const onConnect = useCallback(
-
-
-	// 	/* Для запроса к server.js на localhost:4000/test при загрузке страницы*/
-	// 	async (params) => {
-	// 		try {
-	// 			const dataToSend = { /* данные, которые нужно отправить */ };
-
-	// 			const response = await fetch('http://localhost:4000/test', {
-	// 				method: 'POST',
-	// 				headers: {
-	// 					'Content-Type': 'application/json',
-	// 				},
-	// 				body: JSON.stringify(dataToSend),
-	// 			});
-
-	// 			if (response.ok) {
-	// 				const responseData = await response.json();
-	// 				console.log('Server response:', responseData);
-	// 			} else {
-	// 				console.error('Error:', response.status, response.statusText);
-	// 			}
-	// 		} catch (error) {
-	// 			console.error('Error sending data to the server:', error);
-	// 		}
-	// 	},
-	// 	[],
-	// );
-
-	// useEffect(() => {
-	// 	onConnect(); 
-	// }, [onConnect]);
-	// /* Конец  */
 
 
 	return (

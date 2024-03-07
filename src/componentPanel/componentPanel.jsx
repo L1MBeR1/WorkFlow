@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { ReactComponent as Arrow } from './images/panel/arrow.svg';
-import './css/componentPanel.css';
+import { ReactComponent as Arrow } from '../images/panel/arrow.svg';
+import '../css/componentPanel.css';
+import ComponentFunc from './componentFunc';
 
-const LeftPanel = () => {
+const ComponentPanel = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [selectedComponent, setSelectedComponent] = useState(null);
 
@@ -48,9 +49,7 @@ const LeftPanel = () => {
                 {selectedComponent && selectedComponent.id === component.id && (
                   <div className="functions">
                       {component.функции.map(func => (
-                        <div key={func.id} className="function">
-                         <p>{func.название} </p>
-                        </div>
+                      <ComponentFunc name={func.название}></ComponentFunc>
                       ))}
                   </div>
                 )}
@@ -66,4 +65,4 @@ const LeftPanel = () => {
   );
 };
 
-export default LeftPanel;
+export default ComponentPanel;
