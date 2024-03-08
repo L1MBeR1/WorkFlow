@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import { ReactComponent as Arrow } from '../images/panel/arrow.svg';
 import '../css/componentPanel.css';
 import ComponentFunc from './componentFunc';
@@ -6,6 +6,9 @@ import ComponentFunc from './componentFunc';
 const ComponentPanel = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [selectedComponent, setSelectedComponent] = useState(null);
+  const [componentsData, setComponentsData] = useState([]);
+  const [componentsFuncData, setComponentsFuncData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggleVisibility = () => {
     setIsVisible(!isVisible);
@@ -13,28 +16,47 @@ const ComponentPanel = () => {
 
   const handleComponentClick = (component) => {
     setSelectedComponent(component === selectedComponent ? null : component);
-    console.log(selectedComponent)
-    console.log(component)
+    
+    fetchComponentsFuncData(component);
   };
 
-  const componentsData = [
-    {
-      id: "1",
-      название: "UserService",
-      функции: [
-        { id: "1", название: "getUser", описание: "Получить информацию о пользователе." },
-        { id: "2", название: "createUser", описание: "Создать нового пользователя." }
-      ]
-    },
-    {
-      id: "2",
-      название: "ProductService",
-      функции: [
-        { id: "1", название: "getProduct", описание: "Получить информацию о продукте." },
-        { id: "2", название: "createProduct", описание: "Создать новый продукт." }
-      ]
+  const fetchComponentsFuncData = async (component) => {
+    try {
+      const response = await fetch('http://localhost:4000/database/components/functions/by_component_id', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ "component_id" : component.id}),
+      });
+      const responseData = await response.json();
+      console.log(responseData)
+      setComponentsFuncData(responseData); 
+    } catch (error) {
+      console.error('Error fetching data:', error);
     }
-  ];
+  };
+
+  useEffect(() => {
+    const fetchComponentsData = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/database/components/all', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({}),
+        });
+        const responseData = await response.json();
+        console.log(responseData)
+        setComponentsData(responseData); 
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchComponentsData();
+  }, []); 
 
   return (
     <div className={`panelDiv ${isVisible ? 'visible' : 'hidden'}`}>
@@ -43,18 +65,22 @@ const ComponentPanel = () => {
           <p>Компоненты</p>
           <hr />
           <div className="components">
-            {componentsData.map(component => (
-              <div key={component.id} className="component" onClick={() => handleComponentClick(component)}>
-                <p>{component.название}</p>
-                {selectedComponent && selectedComponent.id === component.id && (
-                  <div className="functions">
-                      {component.функции.map(func => (
-                      <ComponentFunc name={func.название}></ComponentFunc>
+            {isLoading ? (
+              <div>Loading...</div>
+            ) : (
+              componentsData.map(component => (
+                <div key={component.id} className="component" onClick={() => handleComponentClick(component)}>
+                  <p>{component.Название}</p>
+                  {selectedComponent && selectedComponent.id === component.id && (
+                    <div className="functions">
+                      {componentsFuncData.map(func => (
+                        <ComponentFunc key={func.id} name={func.Название}></ComponentFunc>
                       ))}
-                  </div>
-                )}
-              </div>
-            ))}
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
