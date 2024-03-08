@@ -13,6 +13,7 @@
   width: 300px;
   background-color: #fff;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  overflow-y: scroll;
 }
 
 .content{
@@ -66,11 +67,11 @@
   gap: 15px;
 }
 .function{
-  font-size: 15px;
+  font-size: 14px;
   cursor:grabbing;
   border-radius: 10px;
   padding: 20px;
-  height: 40px;
+  height: fit-content;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
   margin-bottom: 10px;
 }

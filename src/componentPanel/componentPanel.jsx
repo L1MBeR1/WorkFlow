@@ -8,7 +8,7 @@ const ComponentPanel = () => {
   const [selectedComponent, setSelectedComponent] = useState(null);
   const [componentsData, setComponentsData] = useState([]);
   const [componentsFuncData, setComponentsFuncData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+
 
   const toggleVisibility = () => {
     setIsVisible(!isVisible);
@@ -16,7 +16,7 @@ const ComponentPanel = () => {
 
   const handleComponentClick = (component) => {
     setSelectedComponent(component === selectedComponent ? null : component);
-    
+
     fetchComponentsFuncData(component);
   };
 
@@ -65,12 +65,11 @@ const ComponentPanel = () => {
           <p>Компоненты</p>
           <hr />
           <div className="components">
-            {isLoading ? (
-              <div>Loading...</div>
-            ) : (
-              componentsData.map(component => (
-                <div key={component.id} className="component" onClick={() => handleComponentClick(component)}>
-                  <p>{component.Название}</p>
+              {componentsData.map(component => (
+                <div key={component.id} className="componentAndFuncs">
+                  <div className="component" onClick={() => handleComponentClick(component)}>
+                    <p>{component.Название}</p>
+                  </div>
                   {selectedComponent && selectedComponent.id === component.id && (
                     <div className="functions">
                       {componentsFuncData.map(func => (
@@ -80,7 +79,7 @@ const ComponentPanel = () => {
                   )}
                 </div>
               ))
-            )}
+            }
           </div>
         </div>
       </div>
