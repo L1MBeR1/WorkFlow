@@ -9,7 +9,7 @@ const ComponentPanel = () => {
   const [componentsData, setComponentsData] = useState([]);
   const [componentsFuncData, setComponentsFuncData] = useState([]);
 
-
+  
   const toggleVisibility = () => {
     setIsVisible(!isVisible);
   };
