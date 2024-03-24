@@ -2,6 +2,7 @@ import ComponentPanel from './componentPanel/componentPanel';
 import './css/app.css';
 // import ReactFlowSpace from './ReactFlow/ReactFlow'
 import CustomNode from './components/mycomponent/CustomNode';
+import { customElements } from './components/mycomponent/nodeSturcture'
 
 
 
@@ -108,8 +109,6 @@ export default function App() {
         event.preventDefault();
 
         const { type,function_name, function_id, component_id } = JSON.parse(event.dataTransfer.getData('application/reactflow'));
-
-        console.log(function_name, ' HHHH', function_id);
         /*if (typeof type === 'undefined' || !type) {
             return;
         }*/
@@ -119,17 +118,35 @@ export default function App() {
             y: event.clientY,
         });
 
-        const newNode = {
-            id: getId(),
-            type:`${type}`,
-            position,
-            data: { 
-                label: `${function_name}` ,
-                function_id: function_id,
-                is_return: false,
-                component_id: component_id
-            },
-        };
+       
+        if (!type) {
+            return;
+        }
+        let newNode
+        switch (type) {
+            case 'custom':
+                
+                console.log(function_name, ' HHHH', function_id);
+                newNode = { 
+                    id: getId(),
+                    type:`${type}`,
+                    position,
+                    data: { 
+                        label: `${function_name}` ,
+                        function_id: function_id,
+                        is_return: false,
+                        component_id: component_id
+                    },
+                };
+                break;
+            case 'StartBlock':
+                newNode = { label: 'Another Node', anotherProperty: 'Another Property Value' };
+                break;
+            default:
+                newNode = { label: `${type} node` };
+        }
+
+
 
         setNodes((nds) => nds.concat(newNode));
     },
