@@ -10,4 +10,8 @@ import ReactFlow, {
     Panel,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-
+export const customElements = [
+    {
+        data: { label: 'Custom Node' }
+    }
+];
