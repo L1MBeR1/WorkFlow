@@ -29,9 +29,33 @@ export default function App() {
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
 
     const onConnect = useCallback(
-        (params) => setEdges((eds) => addEdge(params, eds)),
-        [],
-      );
+      (params) => {
+          const { source, target } = params;
+  
+          const sourceNodeId = source.id;
+          const targetNodeId = target.id;
+  
+          // Проверяем, существуют ли ноды с такими идентификаторами в массиве nodes
+          const sourceNode = nodes.find(node => node.id === sourceNodeId);
+          const targetNode = nodes.find(node => node.id === targetNodeId);
+  
+          if (!sourceNode || !targetNode) {
+              console.error("Source or target node not found:", sourceNodeId, targetNodeId);
+              return;
+          }
+  
+          // Получаем данные начальной и конечной нод
+          const sourceNodeData = sourceNode.data;
+          const targetNodeData = targetNode.data;
+  
+          console.log("Source Node Data:", sourceNodeData);
+          console.log("Target Node Data:", targetNodeData);
+  
+          // Добавляем соединение в ваш массив рёбер
+          setEdges((prevEdges) => addEdge(params, prevEdges));
+      },
+      [nodes] // Указываем зависимость от состояния nodes
+  );
 
     const onDragOver = useCallback((event) => {
         event.preventDefault();
@@ -57,7 +81,9 @@ export default function App() {
             id: getId(),
             type,
             position,
-            data: { label: `${type} node` },
+            sourcePosition: 'right',
+            targetPosition: 'left',
+            data: { label: `${type}` },
           };
     
           setNodes((nds) => nds.concat(newNode));
