@@ -8,8 +8,10 @@
   gap: 20px;
   transition: transform 0.3s ease;
   z-index: 100;
+  pointer-events: none;
 }
 .panel{
+  pointer-events:all;
   width: 300px;
   background-color: #fff;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
@@ -28,6 +30,9 @@
   gap:20px;
   flex-direction: row;
 }
+.section{
+  cursor: pointer;
+}
 .section p{
   color: rgb(163, 163, 163);
 }
@@ -45,12 +50,13 @@
   transform: translateX(0px);
 }
 .toggle-button {
+  pointer-events: all;
   margin-top: 20px;
   width: 50px;
   height: 50px;
   background-color: #ffffff;
   border-radius: 50%;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 6px 8px 0px rgba(29, 28, 35, 0.1);
   border: none;
   cursor: pointer;
 }
@@ -87,6 +93,9 @@
   border-radius: 10px;
   padding: 20px;
   height: fit-content;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 6px 8px 0px rgba(29, 28, 35, 0.15);
   margin-bottom: 10px;
+}
+.function:hover{
+  box-shadow: 0px 6px 12px 0px rgba(29, 28, 35, 0.2);
 }
