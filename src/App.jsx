@@ -2,7 +2,7 @@ import ComponentPanel from './componentPanel/componentPanel';
 import './css/app.css';
 // import ReactFlowSpace from './ReactFlow/ReactFlow'
 import CustomNode from './components/mycomponent/CustomNode';
-import { customElements } from './components/mycomponent/nodeSturcture'
+
 
 
 
