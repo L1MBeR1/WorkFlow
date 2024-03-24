@@ -72,9 +72,16 @@ const ComponentPanel = () => {
 								</div>
 								{selectedComponent && selectedComponent.id === component.id && (
 									<div className="functions">
-										
+
 										{componentsFuncData.map(func => (
-											<ComponentFunc key={func.id} name={func.Название} function_id={func.id}></ComponentFunc>
+											<ComponentFunc
+												key={func.id}
+												name={func.Название}
+												function_id={func.id}
+												component_id={component.id}
+											>
+
+											</ComponentFunc>
 										))}
 									</div>
 								)}

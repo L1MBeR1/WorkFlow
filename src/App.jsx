@@ -82,7 +82,7 @@ export default function App() {
     const onDrop = useCallback((event) => {
         event.preventDefault();
 
-        const { function_name, function_id } = JSON.parse(event.dataTransfer.getData('application/reactflow'));
+        const { function_name, function_id, component_id } = JSON.parse(event.dataTransfer.getData('application/reactflow'));
 
         console.log(function_name, ' HHHH', function_id);
         /*if (typeof type === 'undefined' || !type) {
@@ -101,7 +101,8 @@ export default function App() {
             data: { 
                 label: `${function_name}` ,
                 function_id: function_id,
-                is_return: false
+                is_return: false,
+                component_id: component_id
             },
         };
 
