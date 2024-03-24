@@ -3,9 +3,15 @@ const pool = require("../database");
 async function select_all_components() {
 	const query = `
 					SELECT DISTINCT c.id, c.name as "Название", c.description as "Описание"
-					FROM components.components c
+					FROM services.service s
+					JOIN semantic_annotation.compon_by_service cbs
+					ON cbs.service_id = s.id
+					JOIN components.components c
+					ON cbs.component_function_parameter_id = c.id
 					JOIN components.component_function cf
 					ON c.id = cf.id_of_component
+					JOIN services.service_points sp
+					ON s.id = sp.service_id
 					WHERE (cf.name is not null) AND (cf.name <> '')
 	`;
 
