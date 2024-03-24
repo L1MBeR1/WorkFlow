@@ -52,30 +52,30 @@ export default memo(({ data, isConnectable }) => {
         fetchInputParameters();
     }, [data]);
 
-    console.log('sadawd', services_functions);
-    console.log('RRRRRRR ', services_functions[0].id);
     useEffect(() => {
-        const fetchInputParameters = async () => {
+        const fetchEntryPoints = async () => {
             try {
-                
-                const response = await fetch('http://localhost:4000/database/services/service_points/by_service_id', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        "service_id": services_functions.id
-                    }),
-                });
-                const responseData = await response.json();
-                setEntryPoints(responseData);
+                if (services_functions.length > 0) {
+                    const response = await fetch('http://localhost:4000/database/services/service_points/by_service_id', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            "service_id": services_functions[0].id // Assuming you want to use the first service function's id
+                        }),
+                    });
+                    const responseData = await response.json();
+                    setEntryPoints(responseData);
+                }
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
         };
 
-        fetchInputParameters();
-    }, [data]);
+        fetchEntryPoints(); // Call fetchEntryPoints once when services_functions changes
+    }, [services_functions]);
+
 
     console.log('InPar: ', input_parameters);
     console.log('SerFunc: ', services_functions);
