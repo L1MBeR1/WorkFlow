@@ -51,18 +51,18 @@ export default function App() {
         console.error("Source node not found:", sourceNodeId);
         return;
     }
-    console.log("Source Node ID:", sourceNodeId); // Логируем идентификатор начальной ноды
-    console.log("Source Node Data:", sourceNode.data); // Логируем данные начальной ноды
+    console.log("Source Node ID:", sourceNodeId); 
+    console.log("Source Node Data:", sourceNode.data); 
 
-    // Получаем информацию о конечной ноде
+ 
     const targetNodeId = params.target;
     const targetNode = nodes.find(node => node.id === targetNodeId);
     if (!targetNode) {
         console.error("Target node not found:", targetNodeId);
         return;
     }
-    console.log("Target Node ID:", targetNodeId); // Логируем идентификатор конечной ноды
-    console.log("Target Node Data:", targetNode.data); // Логируем данные конечной ноды
+    console.log("Target Node ID:", targetNodeId); 
+    console.log("Target Node Data:", targetNode.data); 
   
           
           setEdges((prevEdges) => addEdge(params, prevEdges));
