@@ -93,7 +93,13 @@ export default memo(({ data, isConnectable }) => {
                         <tbody>
                             <tr>
                                 <td>
-                                    +
+                                    <Handle
+                                        type="target"
+                                        position={Position.Left}
+                                        style={{ background: '#555' }}
+                                        onConnect={(params) => console.log('handle onConnect', params)}
+                                        isConnectable={isConnectable}
+                                    />
                                 </td>
                                 <td>
                                     <table className='table-Parameters'>
@@ -178,7 +184,7 @@ export default memo(({ data, isConnectable }) => {
                                         type="source"
                                         position={Position.Right}
                                         id="b"
-                                        style={{ bottom: 10, top: 'auto', background: '#555' }}
+                                        style={{ bottom: 20, top: 'auto', background: '#555' }}
                                         isConnectable={isConnectable}
                                     />
                                 </td>
