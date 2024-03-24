@@ -93,7 +93,13 @@ export default memo(({ data, isConnectable }) => {
                         <tbody>
                             <tr>
                                 <td>
-                                    +
+                                    <Handle
+                                        type="target"
+                                        position={Position.Left}
+                                        style={{ background: '#555' }}
+                                        onConnect={(params) => console.log('handle onConnect', params)}
+                                        isConnectable={isConnectable}
+                                    />
                                 </td>
                                 <td>
                                     <table className='table-Parameters'>
@@ -121,66 +127,73 @@ export default memo(({ data, isConnectable }) => {
                                         </tbody>
 
                                     </table>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    Название
+                                                </th>
+                                                <th>
+                                                    Ссылка
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {services_functions.map((item, index) => (
+                                                <tr key={index}>
+                                                    <td>
+                                                        <textarea name="" id="" cols="20" rows="10">
+                                                            {item.Название}
+                                                        </textarea>
+                                                    </td>
+                                                    <td>
+                                                        <textarea name="" id="" cols="20" rows="10">
+                                                            {item.Ссылка}
+                                                        </textarea>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+
+
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    URI
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {entry_points.map((item, index) => (
+                                                <tr key={index}>
+                                                    <td>
+                                                        <p>
+                                                            {item.uri}
+                                                        </p>
+                                                    </td>
+
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
                                 </td>
                                 <td>
-                                    +
+                                    <Handle
+                                        type="source"
+                                        position={Position.Right}
+                                        id="b"
+                                        style={{ bottom: 20, top: 'auto', background: '#555' }}
+                                        isConnectable={isConnectable}
+                                    />
                                 </td>
                             </tr>
                         </tbody>
 
                     </table>
 
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>
-                                    Название
-                                </th>
-                                <th>
-                                    Ссылка
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {services_functions.map((item, index) => (
-                                <tr key={index}>
-                                    <td>
-                                        <textarea name="" id="" cols="20" rows="10">
-                                            {item.Название}
-                                        </textarea>
-                                    </td>
-                                    <td>
-                                        <textarea name="" id="" cols="20" rows="10">
-                                            {item.Ссылка}
-                                        </textarea>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
 
-
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>
-                                    URI
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {entry_points.map((item, index) => (
-                                <tr key={index}>
-                                    <td>
-                                        <p>
-                                            {item.uri}
-                                        </p>
-                                    </td>
-
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
 
                 </div>
             </div>
