@@ -184,7 +184,7 @@ export default memo(({ data, isConnectable }) => {
                                         type="source"
                                         position={Position.Right}
                                         id="b"
-                                        style={{ bottom: 20, top: 'auto', background: '#555' }}
+                                        style={{ background: '#555' }}
                                         isConnectable={isConnectable}
                                     />
                                 </td>
