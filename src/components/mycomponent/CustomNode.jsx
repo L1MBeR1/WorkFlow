@@ -78,9 +78,17 @@ export default memo(({ data, isConnectable }) => {
         fetchEntryPoints();
     }, [services_functions]);
 
+    useEffect(() => {
+        const selectedServiceOption = selectRef.current.value;
+        data.selectedService = selectedServiceOption;
+        const selectedEntryOption = selectRef2.current.value;
+        data.selectedEntry = selectedEntryOption;
+        console.log(data);
+
+    }, [data, entry_points]);
 
     const handleServiceChange = (event) => {
-        const selectedOption = event.target.value; 
+        const selectedOption = event.target.value;
         // const selectedOption = event.target.innerText;
         data.selectedService = selectedOption;
         console.log(data);
@@ -153,11 +161,8 @@ export default memo(({ data, isConnectable }) => {
                                                 <td>
                                                     <div className="custom-select">
                                                         <select ref={selectRef} onChange={handleServiceChange}>
-                                                            <option key={0} value={0}>
-                                                                Выберите опцию
-                                                            </option>
                                                             {services_functions.map((item, index) => (
-                                                                <option key={index+1} value={index+1}>
+                                                                <option key={index} value={index}>
                                                                     {item.Название}
                                                                 </option>
                                                             ))}
@@ -182,15 +187,12 @@ export default memo(({ data, isConnectable }) => {
                                                 <td>
                                                     <div className="custom-select">
                                                         <select ref={selectRef2} onChange={handleEntryChange}>
-                                                            <option key={0} value={0}>
-                                                                Выберите опцию
-                                                            </option>
                                                             {entry_points.map((item, index) => (
-                                                                <option key={index+1} value={index+1}>
+                                                                <option key={index} value={index}>
                                                                     {item.uri}
                                                                 </option>
                                                             ))}
-                                                            
+
                                                         </select>
                                                     </div>
                                                 </td>
