@@ -133,26 +133,22 @@ export default memo(({ data, isConnectable }) => {
                                                 <th>
                                                     Название
                                                 </th>
-                                                <th>
-                                                    Ссылка
-                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {services_functions.map((item, index) => (
-                                                <tr key={index}>
-                                                    <td>
-                                                        <textarea name="" id="" cols="20" rows="10">
-                                                            {item.Название}
-                                                        </textarea>
-                                                    </td>
-                                                    <td>
-                                                        <textarea name="" id="" cols="20" rows="10">
-                                                            {item.Ссылка}
-                                                        </textarea>
-                                                    </td>
-                                                </tr>
-                                            ))}
+                                            <tr>
+                                                <td>
+                                                    <div className="custom-select">
+                                                        <select>
+                                                            {services_functions.map((item, index) => (
+                                                                <option key={index} value={index}>
+                                                                    {item.Название}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+                                                </td>
+                                            </tr>
                                         </tbody>
                                     </table>
 
@@ -166,16 +162,19 @@ export default memo(({ data, isConnectable }) => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {entry_points.map((item, index) => (
-                                                <tr key={index}>
-                                                    <td>
-                                                        <p>
-                                                            {item.uri}
-                                                        </p>
-                                                    </td>
-
-                                                </tr>
-                                            ))}
+                                            <tr>
+                                                <td>
+                                                    <div className="custom-select">
+                                                        <select>
+                                                            {entry_points.map((item, index) => (
+                                                                <option key={index} value={index}>
+                                                                    {item.uri}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+                                                </td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </td>
