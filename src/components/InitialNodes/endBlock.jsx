@@ -3,6 +3,7 @@ import { Handle, Position } from 'reactflow';
 export default memo(({ data, isConnectable }) => {
     return (
       <>
+        <div>
         <Handle
           type="target"
           position={Position.Left}
@@ -13,7 +14,7 @@ export default memo(({ data, isConnectable }) => {
             {data.label}
         </div>
 
-      
+        </div>
       </>
     );
   });

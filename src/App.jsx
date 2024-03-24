@@ -2,9 +2,10 @@ import ComponentPanel from './componentPanel/componentPanel';
 import './css/app.css';
 // import ReactFlowSpace from './ReactFlow/ReactFlow'
 import CustomNode from './components/mycomponent/CustomNode';
+
 import StartNode from './components/InitialNodes/startBlock';
 import EndNode from './components/InitialNodes/endBlock';
-
+import ParametrBlock from './components/InitialNodes/parametrBlock';
 
 
 
@@ -27,6 +28,7 @@ const nodeTypes = {
     custom: CustomNode,
     startBlock:StartNode,
     endBlock:EndNode,
+    parametrBlock:ParametrBlock,
 };
 
 
@@ -155,6 +157,9 @@ export default function App() {
                 break;
             case 'endBlock':
                 newData = { label: 'Конечный блок'};
+                break;
+            case 'parametrBlock':
+                newData = { label: 'Блок с параметрами'};
                 break;
             default:
                 newData = { label: `${type} node` };

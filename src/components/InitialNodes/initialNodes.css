@@ -9,3 +9,73 @@
     font-weight: 400;
     font-style: normal;
 }
+
+/* div.handle{
+    transition: transform 0.2s ease-in-out;
+}
+div.handle:hover{
+    
+    transform: scale(1.2);
+} */
+
+.parametrNode{
+    background-color: white;
+    padding: 15px;
+    border:1px black solid;
+    border-radius: 10px;
+
+    font-size: 14px;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    min-width: 300px;
+}
+.addButton{
+    margin-top: 10px;
+    display: flex;
+    color: #ffffff;
+    justify-content: center;
+    padding: 5px 5px;
+    font-size: 17px;
+   
+    background-color: rgb(46, 77, 161);
+    border-radius: 20px;
+}
+header{
+    font-size: 9px;
+    color: grey;
+    display: flex;
+    flex-direction: row;
+    padding-bottom: 10px;
+    justify-content: stretch;
+    
+}
+
+.header-number{
+    flex-grow: 1;
+}
+.header-name{
+    flex-grow: 3;
+}
+.header-type{
+    flex-grow: 2;
+}
+.header-value{
+    flex-grow: 3;
+}
+.name{
+    
+    max-width: 100px;
+}
+.name input{
+    width:100%;
+}
+
+.parametr{
+
+    display: flex;
+    flex-direction: row;
+}
+.parametrs{
+    gap:10px
+}
