@@ -1,17 +1,20 @@
-import React, { useState, useRef, useCallback } from 'react';
-import ReactFlow, {
-    ReactFlowProvider,
-    MiniMap,
-    Controls,
-    Background,
-    useNodesState,
-    useEdgesState,
-    addEdge,
-    Panel,
-} from 'reactflow';
-import 'reactflow/dist/style.css';
-export const customElements = [
-    {
-        data: { label: 'Custom Node' }
-    }
-];
+import React, { memo } from 'react';
+import { Handle, Position } from 'reactflow';
+export default memo(({ data, isConnectable }) => {
+    return (
+      <>
+        
+        <div>
+            {data.label}
+        </div>
+
+        <Handle
+          type="source"
+          position={Position.Right}
+          id="a"
+          style={{ top: 10, background: '#555' }}
+          isConnectable={isConnectable}
+        />
+      </>
+    );
+  });

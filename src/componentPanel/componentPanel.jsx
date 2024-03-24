@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ReactComponent as Arrow } from '../images/panel/arrow.svg';
 import '../css/componentPanel.css';
 import ComponentFunc from './componentFunc';
+import InitialNode from '../components/InitialNodes/initialNode';
 
 const ComponentPanel = () => {
   const [isVisible, setIsVisible] = useState(true);
@@ -80,7 +81,9 @@ const ComponentPanel = () => {
           <hr />
           {panelMode === 'Initial' && (
             <div className="initialNodes">
-              <p>fsdfdsfsf</p>
+              <InitialNode name={"Начальный блок"} type={"startBlock"}></InitialNode>
+              <InitialNode name={"Конечный блок"} type={"endBlock"}></InitialNode>
+              <InitialNode name={"Блок с параметрами"} type={"parametrBlock"}></InitialNode>
             </div>
           )}
           {panelMode === 'Components' && (

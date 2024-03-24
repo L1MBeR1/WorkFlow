@@ -2,6 +2,8 @@ import ComponentPanel from './componentPanel/componentPanel';
 import './css/app.css';
 // import ReactFlowSpace from './ReactFlow/ReactFlow'
 import CustomNode from './components/mycomponent/CustomNode';
+import StartNode from './components/InitialNodes/startBlock';
+import EndNode from './components/InitialNodes/endBlock';
 
 
 
@@ -23,19 +25,32 @@ import 'reactflow/dist/style.css';
 
 const nodeTypes = {
     custom: CustomNode,
+    startBlock:StartNode,
+    endBlock:EndNode,
 };
 
 
-const initialNodes = [
-    // { id: '1', position: { x: 500, y: 500 }, data: { label: '1' } },
-    // { id: '2', position: { x: 500, y: 600 }, data: { label: '2' } },
-];
 
 
-const initialEdges = [];
+
 let id = 1;
 const getId = () => `${id++}`;
+const initialNodes = [
+    {
+        id: getId(),
+        type: 'startBlock',
+        position: { x: 300, y: 100 },
+        data: { label: 'Начальный блок' }
+    },
+    {
+        id: getId(),
+        type: 'endBlock',
+        position: { x: 500, y: 100 },
+        data: { label: 'Конечный блок' }
+    }
+];
 
+const initialEdges = [];
 //fgdgfgfdg
 export default function App() {
     const reactFlowWrapper = useRef(null);
@@ -122,31 +137,37 @@ export default function App() {
         if (!type) {
             return;
         }
-        let newNode
+        let newData
+        console.log(type)
         switch (type) {
             case 'custom':
                 
                 console.log(function_name, ' HHHH', function_id);
-                newNode = { 
-                    id: getId(),
-                    type:`${type}`,
-                    position,
-                    data: { 
+                newData = { 
                         label: `${function_name}` ,
                         function_id: function_id,
                         is_return: false,
                         component_id: component_id
-                    },
-                };
+                    };
                 break;
-            case 'StartBlock':
-                newNode = { label: 'Another Node', anotherProperty: 'Another Property Value' };
+            case 'startBlock':
+                newData = { label: 'Начальный блок'};
+                break;
+            case 'endBlock':
+                newData = { label: 'Конечный блок'};
                 break;
             default:
-                newNode = { label: `${type} node` };
+                newData = { label: `${type} node` };
         }
 
-
+        const newNode = [
+            {
+                id: getId(),
+                type,
+                position,
+                data: newData
+            }
+        ];
 
         setNodes((nds) => nds.concat(newNode));
     },
