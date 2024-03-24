@@ -211,11 +211,7 @@ export default memo(({ data, isConnectable }) => {
                                 </td>
                             </tr>
                         </tbody>
-
                     </table>
-
-
-
                 </div>
             </div>
         </>
