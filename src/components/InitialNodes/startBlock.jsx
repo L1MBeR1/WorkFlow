@@ -10,10 +10,9 @@ export default memo(({ data, isConnectable }) => {
         </div>
 
         <Handle
-          className='handle'
+          className='HandleComponent'
           type="source"
           position={Position.Right}
-          style={{background: '#555' }}
           isConnectable={isConnectable}
         />
         </div>
