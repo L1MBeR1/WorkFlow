@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useEffect, memo, useRef } from 'react';
 import { Handle, Position } from 'reactflow';
 import './ccc.css';
 
@@ -6,6 +6,8 @@ export default memo(({ data, isConnectable }) => {
     const [input_parameters, setInputParameters] = useState([]);
     const [services_functions, setServicesFunctions] = useState([]);
     const [entry_points, setEntryPoints] = useState([]);
+    const selectRef = useRef(null);
+    const selectRef2 = useRef(null);
 
     useEffect(() => {
         const fetchInputParameters = async () => {
@@ -62,7 +64,7 @@ export default memo(({ data, isConnectable }) => {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            "service_id": services_functions[0].id // Assuming you want to use the first service function's id
+                            "service_id": services_functions[0].id
                         }),
                     });
                     const responseData = await response.json();
@@ -73,13 +75,24 @@ export default memo(({ data, isConnectable }) => {
             }
         };
 
-        fetchEntryPoints(); // Call fetchEntryPoints once when services_functions changes
+        fetchEntryPoints();
     }, [services_functions]);
 
 
-    console.log('InPar: ', input_parameters);
-    console.log('SerFunc: ', services_functions);
-    console.log('EP: ', entry_points);
+    const handleServiceChange = (event) => {
+        const selectedOption = event.target.value; 
+        // const selectedOption = event.target.innerText;
+        data.selectedService = selectedOption;
+        console.log(data);
+    };
+
+    const handleEntryChange = (event) => {
+        const selectedOption = event.target.value;
+        // const selectedOption = event.target.innerText;
+        data.selectedEntry = selectedOption;
+        console.log(data);
+    };
+
 
     return (
         <>
@@ -139,9 +152,12 @@ export default memo(({ data, isConnectable }) => {
                                             <tr>
                                                 <td>
                                                     <div className="custom-select">
-                                                        <select>
+                                                        <select ref={selectRef} onChange={handleServiceChange}>
+                                                            <option key={0} value={0}>
+                                                                Выберите опцию
+                                                            </option>
                                                             {services_functions.map((item, index) => (
-                                                                <option key={index} value={index}>
+                                                                <option key={index+1} value={index+1}>
                                                                     {item.Название}
                                                                 </option>
                                                             ))}
@@ -165,12 +181,16 @@ export default memo(({ data, isConnectable }) => {
                                             <tr>
                                                 <td>
                                                     <div className="custom-select">
-                                                        <select>
+                                                        <select ref={selectRef2} onChange={handleEntryChange}>
+                                                            <option key={0} value={0}>
+                                                                Выберите опцию
+                                                            </option>
                                                             {entry_points.map((item, index) => (
-                                                                <option key={index} value={index}>
+                                                                <option key={index+1} value={index+1}>
                                                                     {item.uri}
                                                                 </option>
                                                             ))}
+                                                            
                                                         </select>
                                                     </div>
                                                 </td>
