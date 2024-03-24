@@ -32,8 +32,8 @@ const initialNodes = [
 
 
 const initialEdges = [];
-let id = 0;
-const getId = () => `dndnode_${id++}`;
+let id = 1;
+const getId = () => `${id++}`;
 
 //fgdgfgfdg
 export default function App() {
@@ -44,26 +44,25 @@ export default function App() {
 
     const onConnect = useCallback(
       (params) => {
-          const { source, target } = params;
-  
-          const sourceNodeId = source.id;
-          const targetNodeId = target.id;
-  
-          
-          const sourceNode = nodes.find(node => node.id === sourceNodeId);
-          const targetNode = nodes.find(node => node.id === targetNodeId);
-  
-          if (!sourceNode || !targetNode) {
-              console.error("Source or target node not found:", sourceNodeId, targetNodeId);
-              return;
-          }
-  
-          
-          const sourceNodeData = sourceNode.data;
-          const targetNodeData = targetNode.data;
-  
-          console.log("Source Node Data:", sourceNodeData);
-          console.log("Target Node Data:", targetNodeData);
+        console.log("Connection parameters:", params);
+        const sourceNodeId = params.source;
+    const sourceNode = nodes.find(node => node.id === sourceNodeId);
+    if (!sourceNode) {
+        console.error("Source node not found:", sourceNodeId);
+        return;
+    }
+    console.log("Source Node ID:", sourceNodeId); // Логируем идентификатор начальной ноды
+    console.log("Source Node Data:", sourceNode.data); // Логируем данные начальной ноды
+
+    // Получаем информацию о конечной ноде
+    const targetNodeId = params.target;
+    const targetNode = nodes.find(node => node.id === targetNodeId);
+    if (!targetNode) {
+        console.error("Target node not found:", targetNodeId);
+        return;
+    }
+    console.log("Target Node ID:", targetNodeId); // Логируем идентификатор конечной ноды
+    console.log("Target Node Data:", targetNode.data); // Логируем данные конечной ноды
   
           
           setEdges((prevEdges) => addEdge(params, prevEdges));
