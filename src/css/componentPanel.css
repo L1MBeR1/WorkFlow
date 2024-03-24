@@ -17,11 +17,25 @@
 }
 
 .content{
-  font-size: 20px;
+  font-size: 14px;
   padding: 20px 20px;
   font-family: "Roboto", sans-serif;
   font-weight: 500;
   font-style: normal;
+}
+.panelHeader{
+  display: flex;
+  gap:20px;
+  flex-direction: row;
+}
+.section p{
+  color: rgb(163, 163, 163);
+}
+.section p:hover{
+  color: rgb(63, 63, 63);
+}
+.active p{
+  color: rgb(0, 0, 0);
 }
 
 .hidden {
@@ -56,7 +70,7 @@
 
 .component {
   margin-top: 20px;
-  font-size: 18px;
+  font-size: 14px;
   cursor: pointer;
 }
 

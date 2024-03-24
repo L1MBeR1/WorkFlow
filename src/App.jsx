@@ -35,7 +35,7 @@ export default function App() {
           const sourceNodeId = source.id;
           const targetNodeId = target.id;
   
-          // Проверяем, существуют ли ноды с такими идентификаторами в массиве nodes
+          
           const sourceNode = nodes.find(node => node.id === sourceNodeId);
           const targetNode = nodes.find(node => node.id === targetNodeId);
   
@@ -44,17 +44,17 @@ export default function App() {
               return;
           }
   
-          // Получаем данные начальной и конечной нод
+          
           const sourceNodeData = sourceNode.data;
           const targetNodeData = targetNode.data;
   
           console.log("Source Node Data:", sourceNodeData);
           console.log("Target Node Data:", targetNodeData);
   
-          // Добавляем соединение в ваш массив рёбер
+          
           setEdges((prevEdges) => addEdge(params, prevEdges));
       },
-      [nodes] // Указываем зависимость от состояния nodes
+      [nodes] 
   );
 
     const onDragOver = useCallback((event) => {

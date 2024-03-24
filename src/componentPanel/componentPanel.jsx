@@ -8,6 +8,7 @@ const ComponentPanel = () => {
   const [selectedComponent, setSelectedComponent] = useState(null);
   const [componentsData, setComponentsData] = useState([]);
   const [componentsFuncData, setComponentsFuncData] = useState([]);
+  const [panelMode, setPanelMode] = useState('Initial');
 
   
   const toggleVisibility = () => {
@@ -16,10 +17,16 @@ const ComponentPanel = () => {
 
   const handleComponentClick = (component) => {
     setSelectedComponent(component === selectedComponent ? null : component);
-
     fetchComponentsFuncData(component);
   };
 
+  const togglePanelSection = () => {
+    if (panelMode === 'Initial') {
+      setPanelMode('Components');
+    } else if (panelMode === 'Components'){
+      setPanelMode('Initial');
+    }
+  };
   const fetchComponentsFuncData = async (component) => {
     try {
       const response = await fetch('http://localhost:4000/database/components/functions/by_component_id', {
@@ -62,8 +69,21 @@ const ComponentPanel = () => {
     <div className={`panelDiv ${isVisible ? 'visible' : 'hidden'}`}>
       <div className="panel">
         <div className="content">
-          <p>Компоненты</p>
+          <div className="panelHeader"onClick={togglePanelSection} >
+            <div className={`section ${panelMode === 'Initial' && 'active'}`}>
+              <p >Начальные блоки</p>
+            </div>
+            <div className={`section ${panelMode === 'Components' && 'active'}`} onClick={togglePanelSection}>
+              <p>Компоненты</p>
+            </div>
+          </div>
           <hr />
+          {panelMode === 'Initial' && (
+            <div className="initialNodes">
+              <p>fsdfdsfsf</p>
+            </div>
+          )}
+          {panelMode === 'Components' && (
           <div className="components">
               {componentsData.map(component => (
                 <div key={component.id} className="componentAndFuncs">
@@ -78,9 +98,9 @@ const ComponentPanel = () => {
                     </div>
                   )}
                 </div>
-              ))
-            }
+              ))}
           </div>
+          )}
         </div>
       </div>
       <button onClick={toggleVisibility} className="toggle-button">
