@@ -1,43 +1,58 @@
 .component-Function-Block {
+    font-family: "Roboto", sans-serif;
     display: flex;
     flex-direction: column;
     overflow-y: visible;
     z-index: 110;
     width: auto;
     height: auto;
-    background-color: #00b1b1;
+    background-color: #3aafa9;
     border: 1px solid black;
     border-radius: 10px;
     align-items: center;
+    
+}
+
+.component-Function-Block p{
+    text-align: left;
 }
 
 .component-Function-Block .block-Header {
+    text-align: center;
     font-size: larger;
     font-weight: bolder;
     width: 90%;
     padding: 10px;
-    background-color: #009999; /* Цвет заголовка */
-    color: white; /* Цвет текста заголовка */
-    border-radius: 10px 10px 0 0; /* Закругление верхних углов */
+    background-color: #3aafa9; 
+    color: white;
+    border-radius: 10px 10px 0 0; 
 }
 
 .parameters-Box {
     width: 90%;
-    background-color: antiquewhite;
+    background-color: #ffffff;
     border: 1px solid black;
-    border-radius: 0 0 10px 10px; /* Закругление нижних углов */
-    margin-top: -1px; /* Коррекция для границы между заголовком и содержимым */
+    border-radius: 0 0 10px 10px;
+    margin-top: -1px; 
+}
+.parameters-Box table {
+    width: 100%;
+}
+
+.parameters-Box thead {
+    background-color: aqua;
+    width: 100%;
 }
 
 .parameters-Box table {
-    width: 100%;
-    margin-bottom: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .table-Parameters {
     width: 100%;
     border: 1px solid black;
-    border-collapse: collapse; /* Схлопывание границ */
+    border-collapse: collapse;
 }
 
 .table-Parameters th,
@@ -49,8 +64,8 @@
 
 .custom-select {
     position: relative;
-    width: 100%; /* Используем ширину контейнера */
-    margin-bottom: 10px; /* Отступ между элементами */
+    width: 100%; 
+    margin-bottom: 10px; 
 }
 
 .custom-select select {
@@ -60,7 +75,7 @@
     border: none;
     background-color: transparent;
     cursor: pointer;
-    border: 1px solid #ccc; /* Добавляем рамку для эффекта нажатия */
+    border: 1px solid #ccc;
     border-radius: 5px;
 }
 
@@ -78,12 +93,12 @@
     background-color: #e0e0e0;
 }
 
-.custom-select::after {
+/* .custom-select::after {
     content: '\25BC';
     position: absolute;
-    top: calc(50% - 5px); /* Позиционирование стрелки по центру вертикально */
+    top: calc(50% - 5px); 
     right: 10px;
     transform: translateY(-50%);
     pointer-events: none;
-    color: #666; /* Цвет стрелки */
-}
+    color: #666; 
+} */
