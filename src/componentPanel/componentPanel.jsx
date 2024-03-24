@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { ReactComponent as Arrow } from '../images/panel/arrow.svg';
 import '../css/componentPanel.css';
 import ComponentFunc from './componentFunc';
@@ -10,10 +10,10 @@ const ComponentPanel = () => {
   const [componentsFuncData, setComponentsFuncData] = useState([]);
   const [panelMode, setPanelMode] = useState('Initial');
 
-  
-  const toggleVisibility = () => {
-    setIsVisible(!isVisible);
-  };
+
+	const toggleVisibility = () => {
+		setIsVisible(!isVisible);
+	};
 
   const handleComponentClick = (component) => {
     setSelectedComponent(component === selectedComponent ? null : component);
@@ -44,26 +44,26 @@ const ComponentPanel = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchComponentsData = async () => {
-      try {
-        const response = await fetch('http://localhost:4000/database/components/all', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({}),
-        });
-        const responseData = await response.json();
-        console.log(responseData)
-        setComponentsData(responseData); 
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
+	useEffect(() => {
+		const fetchComponentsData = async () => {
+			try {
+				const response = await fetch('http://localhost:4000/database/components/all', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({}),
+				});
+				const responseData = await response.json();
+				console.log(responseData)
+				setComponentsData(responseData);
+			} catch (error) {
+				console.error('Error fetching data:', error);
+			}
+		};
 
-    fetchComponentsData();
-  }, []); 
+		fetchComponentsData();
+	}, []);
 
   return (
     <div className={`panelDiv ${isVisible ? 'visible' : 'hidden'}`}>
@@ -93,7 +93,11 @@ const ComponentPanel = () => {
                   {selectedComponent && selectedComponent.id === component.id && (
                     <div className="functions">
                       {componentsFuncData.map(func => (
-                        <ComponentFunc key={func.id} name={func.Название}></ComponentFunc>
+                        <ComponentFunc 
+                        key={func.id} 
+                        name={func.Название}
+                        function_id={func.id}
+												component_id={component.id}></ComponentFunc>
                       ))}
                     </div>
                   )}
