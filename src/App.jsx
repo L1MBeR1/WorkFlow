@@ -21,7 +21,7 @@ const initialEdges = [];
 let id = 0;
 const getId = () => `dndnode_${id++}`;
 
-
+//fgdgfgfdg
 export default function App() {
 	const reactFlowWrapper = useRef(null);
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
