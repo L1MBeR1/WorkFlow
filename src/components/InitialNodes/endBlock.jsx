@@ -6,11 +6,10 @@ export default memo(({ data, isConnectable }) => {
         <Handle
           type="target"
           position={Position.Left}
-          id="a"
-          style={{ top: 10, background: '#555' }}
+          style={{background: '#555' }}
           isConnectable={isConnectable}
         />
-        <div>
+        <div className='node'>
             {data.label}
         </div>
 

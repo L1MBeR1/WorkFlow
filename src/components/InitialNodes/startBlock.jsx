@@ -1,18 +1,18 @@
 import React, { memo } from 'react';
 import { Handle, Position } from 'reactflow';
+import './initialNodes.css';
 export default memo(({ data, isConnectable }) => {
     return (
       <>
         
-        <div>
+        <div className='node'>
             {data.label}
         </div>
 
         <Handle
           type="source"
           position={Position.Right}
-          id="a"
-          style={{ top: 10, background: '#555' }}
+          style={{background: '#555' }}
           isConnectable={isConnectable}
         />
       </>
