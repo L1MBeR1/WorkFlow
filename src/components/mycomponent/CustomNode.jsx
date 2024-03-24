@@ -32,46 +32,49 @@ export default memo(({ data, isConnectable }) => {
 
     return (
         <>
-            <div className="CCC">
-                {data.label}
-            </div>
-            <div className='parameters-Box'>
-                {input_parameters.map((item, index) => (
-                    <div key={index}>
-                        
-                        <table className='tablep'>
-                            <thead>
+            <div className='component-Function-Block'>
+                <div className="block-Header">
+                    {data.label}
+                </div>
+                <div className='parameters-Box'>
+                    {input_parameters.map((item, index) => (
+                        <div key={index}>
+                            <table>
                                 <tr>
-                                    <th>
-                                        <p>Название</p>
-                                    </th>
-                                    <th>
-                                        <p>Тип</p>
-                                    </th>
-                                    <th>
-                                        <p>Поле</p>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {input_parameters.map((item, index) => (
-                                    <tr key={index}>
-                                        <td>
-                                            <p>{item.Название}</p>
-                                        </td>
-                                        <td>
-                                            <p>{item.type}</p>
-                                        </td>
-                                        <td>
-                                            <input type="text" name="" id="" />
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                    <td>
+                                        +
+                                    </td>
+                                    <td>
 
-                    </div>
-                ))}
+                                        <table className='tablep'>
+                                            <tr>
+                                                <th>
+                                                    <p>Название</p>
+                                                </th>
+                                                <th>
+                                                    <p>Поле ввода</p>
+                                                </th>
+                                            </tr>
+                                            {input_parameters.map((item, index) => (
+                                                <tr key={index}>
+                                                    <td>
+                                                        <p>{item.Название}</p>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="" id="" placeholder={item.type} />
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </table>
+                                    </td>
+                                    <td>
+                                        +
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    ))}
+                </div>
             </div>
         </>
     );
