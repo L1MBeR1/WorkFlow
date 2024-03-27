@@ -11,7 +11,21 @@ const ComponentPanel = () => {
   const [componentsFuncData, setComponentsFuncData] = useState([]);
   const [panelMode, setPanelMode] = useState('Initial');
 
+  const [animationTriggered, setAnimationTriggered] = useState(false);
 
+//   const playAnimationForSections = () => {
+//     setAnimationTriggered(true); 
+
+//     setAnimationTriggered(false); 
+
+//   };
+
+//   const playAnimationForFunctions = () => {
+//     setAnimationTriggered(true); 
+//     setTimeout(() => {
+//         setAnimationTriggered(false); 
+//     }, 100);
+// };
 	const toggleVisibility = () => {
 		setIsVisible(!isVisible);
 	};
@@ -21,11 +35,13 @@ const ComponentPanel = () => {
     fetchComponentsFuncData(component);
   };
 
-  const togglePanelSection = () => {
-    if (panelMode === 'Initial') {
-      setPanelMode('Components');
-    } else if (panelMode === 'Components'){
+  const togglePanelSection = (section) => {
+    if (section === 'Initial') {
       setPanelMode('Initial');
+      // playAnimationForSections();
+    } else if (section === 'Components'){
+      setPanelMode('Components');
+      // playAnimationForSections();
     }
   };
   const fetchComponentsFuncData = async (component) => {
@@ -70,31 +86,31 @@ const ComponentPanel = () => {
     <div className={`panelDiv ${isVisible ? 'visible' : 'hidden'}`}>
       <div className="panel">
         <div className="content">
-          <div className="panelHeader"onClick={togglePanelSection} >
-            <div className={`section ${panelMode === 'Initial' && 'active'}`}>
+          <div className="panelHeader">
+            <div className={`section ${panelMode === 'Initial' && 'active'}`}onClick={() => togglePanelSection('Initial')}>
               <p >Начальные блоки</p>
             </div>
-            <div className={`section ${panelMode === 'Components' && 'active'}`} onClick={togglePanelSection}>
+            <div className={`section ${panelMode === 'Components' && 'active'}`} onClick={() => togglePanelSection('Components')}>
               <p>Компоненты</p>
             </div>
           </div>
           <hr />
           {panelMode === 'Initial' && (
-            <div className="initialNodes">
+             <div className="initialNodes animateContent">
               <InitialNode name={"Начальный блок"} type={"startBlock"}></InitialNode>
               <InitialNode name={"Конечный блок"} type={"endBlock"}></InitialNode>
               <InitialNode name={"Блок с параметрами"} type={"parametrBlock"}></InitialNode>
             </div>
           )}
           {panelMode === 'Components' && (
-          <div className="components">
+          <div className="components animateContent" onAnimationEnd={() => console.log(1231)}>
               {componentsData.map(component => (
                 <div key={component.id} className="componentAndFuncs">
                   <div className="component" onClick={() => handleComponentClick(component)}>
                     <p>{component.Название}</p>
                   </div>
-                  {selectedComponent && selectedComponent.id === component.id && (
-                    <div className="functions">
+                  {/* {selectedComponent && selectedComponent.id === component.id && ( */}
+                    <div className={`functions ${selectedComponent && selectedComponent.id === component.id?'visibleFNS':'hiddenFNS'}`}>
                       {componentsFuncData.map(func => (
                         <ComponentFunc 
                         key={func.id} 
@@ -103,7 +119,7 @@ const ComponentPanel = () => {
 												component_id={component.id}></ComponentFunc>
                       ))}
                     </div>
-                  )}
+                  {/* // )} */}
                 </div>
               ))}
           </div>
