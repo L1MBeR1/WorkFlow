@@ -1,47 +1,34 @@
 .component-Function-Block {
-    font-family: "Roboto", sans-serif;
-    display: flex;
-    flex-direction: column;
-    overflow-y: visible;
-    z-index: 110;
-    width: auto;
-    height: auto;
-    background-color: #3aafa9;
-    border: 1px solid black;
+    background-color: white;
+    padding: 15px;
+    border: 1px black solid;
     border-radius: 10px;
-    align-items: center;
+    max-width: 350px;
+    font-size: 14px;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: normal;
 
 }
 
 .component-Function-Block .HandleComponent {
-    border: 2px solid purple;
-    border-radius: 10% !important;
-    width: 16px !important;
-    height: 30px !important;
     overflow: hidden;
-    /* Обрезаем градиент внутри элемента */
-    background-color: #555;
     animation: colorAnimation 1s linear infinite alternate;
-    /* Анимация цвета */
 }
-
-@keyframes colorAnimation {
-    0% {
-        background-color: #00009b;
-    }
-
-    100% {
-        background-color: rgb(246, 255, 0);
-    }
+.function-block__header{
+    color: #000;
+    font-size: 14px;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+.function-block__header::first-letter{
+    text-transform: uppercase;
 }
 
 .component-Function-Block .HandleComponent:hover {
-    transform: scale(1.3) translate(-0%, -40%);
-    /* Дополнительное преобразование при наведении */
-    animation: none;
-    /* Отключаем анимацию при наведении */
-    background-color: red;
-    /* Цвет фона при наведении */
+    transform: scale(2) translate(-0%, -25%);
+
 }
 
 
@@ -61,11 +48,7 @@
 }
 
 .parameters-Box {
-    width: 90%;
-    background-color: #ffffff;
-    border: 1px solid black;
-    border-radius: 0 0 10px 10px;
-    margin-top: -1px;
+
 }
 
 .parameters-Box table {
@@ -76,12 +59,37 @@
     background-color: rgb(234, 238, 243);
     width: 100%;
 }
+.fucn_parameter_value{
+
+
+}
+.parameter-Header_name{
+    width: 150px;
+}
+.parameter-Header_type{
+    width: 100px;
+}
+.fucn_parameter_name{
+    font-size: 11px;
+    width: 150px;
+}
+.fucn_parameter_type{
+    font-size: 11px;
+    width: 100px; 
+}
+.fucn_parameter_value{
+    font-size: 11px;
+    max-width: 100px; 
+}
 
 .parameters-Box table {
     margin-top: 10px;
     margin-bottom: 10px;
 }
-
+.h{
+    font-size: 12px;
+    margin-bottom: 10px;
+}
 .table-Parameters {
     width: 100%;
     border: 1px solid black;

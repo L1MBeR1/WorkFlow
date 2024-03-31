@@ -23,6 +23,7 @@ export default memo(({ data, isConnectable }) => {
                     }),
                 });
                 const responseData = await response.json();
+                console.log(responseData)
                 setInputParameters(responseData);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -103,118 +104,88 @@ export default memo(({ data, isConnectable }) => {
 
 
     return (
-        <>
-            <div className='component-Function-Block'>
-                <div className="block-Header">
-                    {data.label}
-                </div>
-                <div className='parameters-Box'>
+<>
+  <div className='component-Function-Block'>
+  <Handle
+          className='HandleComponent'
+          type="target"
+          position={Position.Left}
+          onConnect={(params) => console.log('handle onConnect', params)}
+          isConnectable={isConnectable}
+        />
+    <header className='function-block__header'>
+        {data.label}
+    </header>
+    <hr></hr>
+    <div className='parameters-Box'>
+        <div className='parameter-Block'>
+            <p className='h'>Входные параметры</p>
+            <header className='parameter-Header'>
+                <div className='parameter-Header_name'>Название</div>
+                <div className='parameter-Header_type'>Тип</div>
+                <div className='parameter-Header_type'>Значение</div>
+            </header>
+            <div className='parametrs'>
+                {input_parameters.map((item, index) => (
+                <div key={index} className='parameter'>
+                    <div className='fucn_parameter_name'>{item.Название}</div>
+                    <div className='fucn_parameter_type'>{item.type}</div>
+                    <select className='fucn_parameter_value'>
+                        <option value="Chrome">Chrome</option>
+                        <option value="Chrome">Chrome2222222222</option>
+                    </select>
 
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <Handle
-                                        className='HandleComponent'
-                                        type="target"
-                                        position={Position.Left}
-                                        onConnect={(params) => console.log('handle onConnect', params)}
-                                        isConnectable={isConnectable}
-                                    />
-                                </td>
-                                <td>
-                                    <table className='table-Parameters'>
-                                        <thead>
-                                            <tr>
-                                                <th>
-                                                    <p>Название</p>
-                                                </th>
-                                                <th>
-                                                    <p>Поле ввода</p>
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {input_parameters.map((item, index) => (
-                                                <tr key={index}>
-                                                    <td>
-                                                        <p>{item.Название}</p>
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" name="" id="" placeholder={item.type} />
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-
-                                    </table>
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>
-                                                    Название
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <div className="custom-select">
-                                                        <select ref={selectRef} onChange={handleServiceChange}>
-                                                            {services_functions.map((item, index) => (
-                                                                <option key={index} value={index}>
-                                                                    {item.Название}
-                                                                </option>
-                                                            ))}
-                                                        </select>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>
-                                                    URI
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <div className="custom-select">
-                                                        <select ref={selectRef2} onChange={handleEntryChange}>
-                                                            {entry_points.map((item, index) => (
-                                                                <option key={index} value={index}>
-                                                                    {item.uri}
-                                                                </option>
-                                                            ))}
-
-                                                        </select>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                                <td>
-                                    <Handle
-                                        className='HandleComponent'
-                                        type="source"
-                                        position={Position.Right}
-                                        id="b"
-                                        isConnectable={isConnectable}
-                                    />
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                    </div>
+                ))}
+                
             </div>
-        </>
+        </div>
+      <div className='parameter-Block'>
+        <div className='parameter-Container'>
+          <div className='parameter-Header'>
+            <p>Название</p>
+          </div>
+          <div className='parameter-Select'>
+            <div className="custom-select">
+              <select ref={selectRef} onChange={handleServiceChange}>
+                {services_functions.map((item, index) => (
+                  <option key={index} value={index}>
+                    {item.Название}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className='parameter-Block'>
+        <div className='parameter-Container'>
+          <div className='parameter-Header'>
+            <p>URI</p>
+          </div>
+          <div className='parameter-Select'>
+            <div className="custom-select">
+              <select ref={selectRef2} onChange={handleEntryChange}>
+                {entry_points.map((item, index) => (
+                  <option key={index} value={index}>
+                    {item.uri}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    <Handle
+          className='HandleComponent'
+          type="source"
+          position={Position.Right}
+          isConnectable={isConnectable}
+        />
+  </div>
+</>
     );
 });
 

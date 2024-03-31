@@ -1,46 +1,102 @@
-import React, { memo } from 'react';
+import React, { memo, useState} from 'react';
 import { Handle, Position } from 'reactflow';
+import { ReactComponent as Trash } from './trash.svg';
 import './initialNodes.css';
+let paramID = 1;
 export default memo(({ data, isConnectable }) => {
-    
-  
-  
-  return (
-      <>
-        <div>
-        <div className='parametrNode'>
-          <div>
-           {data.label}
-          </div>
-          <hr></hr>
-          <div className='parametrs'>
-            <header >
-              <div className='header-number'>№ </div>
-              <div className='header-name'>Название </div>
-              <div className='header-type'>Тип</div>
-              <div className='header-value'>Значение </div>
-              
-            </header>
-            <div className='parametr'>
-              <div className='number'>1</div>
-              <div className='name'>
-                <input ></input>
-              </div>
-              
-            </div>
-          </div>
-          <div className='addButton'>
-            +
-          </div>
-        </div>
 
-        <Handle
-          className='HandleComponent'
-          type="source"
-          position={Position.Right}
-          isConnectable={isConnectable}
-        />
-        </div>
+  const [parameters, setParameters] = useState([{ id: paramID, name: '' }]);
+  
+    const addParameter = () => {
+      paramID=paramID+1
+        const newParameter = {
+            id: paramID,
+            name: '',
+            type: '',
+            value: ''
+        };
+        setParameters([...parameters, newParameter]);
+        // console.log(paramID)
+        console.log(parameters)
+    };
+    const handleDeleteParameter = (paramid) => {
+      const updatedParameters = parameters.filter(param => param.id !== paramid);
+      setParameters(updatedParameters);
+  };
+  const handleNameChange = (paramid, newName) => {
+    const updatedParameters = parameters.map(param => {
+      if (param.id === paramid) {
+        return { ...param, name: newName };
+      }
+      return param;
+    });
+    setParameters(updatedParameters);
+  };
+
+  const handleTypeChange = (paramid, newType) => {
+    const updatedParameters = parameters.map(param => {
+      if (param.id === paramid) {
+        return { ...param, type: newType };
+      }
+      return param;
+    });
+    setParameters(updatedParameters);
+  };
+
+  const handleValueChange = (paramid, newValue) => {
+    const updatedParameters = parameters.map(param => {
+      if (param.id === paramid) {
+        return { ...param, value: newValue };
+      }
+      return param;
+    });
+    setParameters(updatedParameters);
+  };
+    return (
+        <>
+            <div>
+                <div className='parametrNode'>
+                    <div>
+                        {data.label}
+                    </div>
+                    <hr></hr>
+                    <header >
+                            <div className='header-name'>Название</div>
+                            <div className='header-type'>Тип</div>
+                            <div className='header-value'>Значение</div>
+                    </header>
+                    <div className='parametrs'>
+                        {parameters.map(parameter => (
+                            <div key={parameter.id} className='parameter' >
+                                  <div className='parameter_name'>
+                                      <input placeholder="Имя параметра" onChange={(e) => handleNameChange(parameter.id, e.target.value)}></input>
+                                  </div>
+                                <div className='type_value'>
+                                    <select onChange={(e) => handleTypeChange(parameter.id, e.target.value)}>
+                                        <option value="string">String</option>
+                                        <option value="number">Number</option>
+                                        <option value="boolean">Boolean</option>
+                                    </select>
+                                    <input  placeholder="Значение" onChange={(e) => handleValueChange(parameter.id, e.target.value)}></input>
+                                </div>
+                                <div className='delete_button' onClick={() => handleDeleteParameter(parameter.id)}>
+                                  <Trash className='delete_img'/>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className='addButton' onClick={addParameter}>
+                        +
+                    </div>
+                </div>
+
+                <Handle
+                    className='HandleComponent'
+                    type="source"
+                    position={Position.Right}
+                    isConnectable={isConnectable}
+                />
+            </div>
       </>
     );
   });

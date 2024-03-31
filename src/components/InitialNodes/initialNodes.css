@@ -27,63 +27,94 @@
     border: 1px black solid;
     border-radius: 10px;
 
-    font-size: 14px;
+    font-size: 12px;
     font-family: "Roboto", sans-serif;
     font-weight: 400;
     font-style: normal;
-    min-width: 300px;
+    max-width: 400px;
+    width: 400px;
+
 }
 
 .addButton {
+    cursor: pointer;
     margin-top: 10px;
     display: flex;
     color: #ffffff;
     justify-content: center;
     padding: 5px 5px;
-    font-size: 17px;
+    font-size: 12px;
 
     background-color: rgb(46, 77, 161);
     border-radius: 20px;
 }
 
 header {
-    font-size: 9px;
+    font-size: 8px;
     color: grey;
     display: flex;
     flex-direction: row;
-    padding-bottom: 10px;
+    padding-bottom: 5px;
     justify-content: stretch;
 }
 
-.header-number {
-    flex-grow: 1;
-}
 
 .header-name {
-    flex-grow: 3;
+    width: 180px;
 }
 
 .header-type {
-    flex-grow: 2;
+    width: 80px;
 }
 
 .header-value {
-    flex-grow: 3;
+    width: 50px;
+
 }
 
-.name {
-    max-width: 100px;
-}
-
-.name input {
-    width: 100%;
-}
-
-.parametr {
+.parameter {
     display: flex;
     flex-direction: row;
+
+    align-items: center;
 }
 
 .parametrs {
-    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.parameter_name{
+    width: 180px;
+}
+
+.parameter_name input{
+    font-size: 12px;
+    width: 80%;
+    height: 12px;
+}
+.type_value{
+    display: flex;
+    justify-content: left;
+    width: 210px;
+}
+.type_value input{
+    font-size: 12px;
+    width: 120px;
+    height: 12px; 
+}
+.type_value select {
+    font-size: 12px;
+}
+.delete_button{
+    cursor: pointer;
+    width: 12px;
+    height: 12px;
+}
+
+.delete_img{
+stroke:gray;
+  width: 100%;
+  height: auto;
 }
