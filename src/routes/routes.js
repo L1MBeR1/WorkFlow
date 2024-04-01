@@ -1,6 +1,7 @@
 const express = require("express");
 const {
     select_all_components,
+    select_all_functions,
     select_component_functions_by_component_id,
     select_services_by_component_id,
     select_component_function_parameters_by_function_id,
@@ -31,6 +32,15 @@ router.post("/database/components/all", async (req, res) => {
         select_all_components,
         [],
         "Components not found"
+    );
+});
+
+router.post("/database/functions/all", async (req, res) => {
+    await handleRequest(
+        res,
+        select_all_functions,
+        [],
+        "Functions not found"
     );
 });
 

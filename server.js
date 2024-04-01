@@ -10,4 +10,4 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/", routes);
-app.listen(5101, () => console.log("Server running on localhost:5101"));
+app.listen(4000, () => console.log("Server running on localhost:4000"));

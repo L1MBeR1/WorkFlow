@@ -10,7 +10,7 @@ import ParametrBlock from './components/InitialNodes/parametrBlock';
 
 
 
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import ReactFlow, {
     ReactFlowProvider,
     MiniMap,
@@ -26,9 +26,9 @@ import 'reactflow/dist/style.css';
 
 const nodeTypes = {
     custom: CustomNode,
-    startBlock:StartNode,
-    endBlock:EndNode,
-    parametrBlock:ParametrBlock,
+    startBlock: StartNode,
+    endBlock: EndNode,
+    parametrBlock: ParametrBlock,
 };
 
 
@@ -38,55 +38,95 @@ const nodeTypes = {
 let id = 1;
 const getId = () => `${id++}`;
 const initialNodes = [
-    {
-        id: getId(),
-        type: 'startBlock',
-        position: { x: 300, y: 100 },
-        data: { label: 'Начальный блок' }
-    },
-    {
-        id: getId(),
-        type: 'endBlock',
-        position: { x: 500, y: 100 },
-        data: { label: 'Конечный блок' }
-    }
+    // {
+    //     id: getId(),
+    //     type: 'startBlock',
+    //     position: { x: 300, y: 100 },
+    //     data: { label: 'Начальный блок' }
+    // },
+    // {
+    //     id: getId(),
+    //     type: 'endBlock',
+    //     position: { x: 500, y: 100 },
+    //     data: { label: 'Конечный блок' }
+    // }
 ];
 
 const initialEdges = [];
-//fgdgfgfdg
+
 export default function App() {
     const reactFlowWrapper = useRef(null);
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState([]);
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
+    // const updateNodeData = (nodeId, newOptions) => {
+    //     setNodes((prevNodes) =>
+    //         prevNodes.map((node) =>
+    //             node.id === nodeId ? { ...node, data: { ...node.data, options: newOptions } } : node
+    //         )
+    //     );
+    // };
+    const updateNodeData = (nodeId, newOptions) => {
+        setNodes((prevNodes) =>
+            prevNodes.map((node) =>
+                node.id === nodeId ? { ...node, data: { ...node.data, options: newOptions } } : node
+            )
+        );
+    };
+
+
+    const [options, setOptions] = useState('initialValue');
+
+    const handleUpdateOptions = () => {
+        setOptions('newValue');
+    };
+    
+
 
     const onConnect = useCallback(
-      (params) => {
-        console.log("Connection parameters:", params);
-        const sourceNodeId = params.source;
-    const sourceNode = nodes.find(node => node.id === sourceNodeId);
-    if (!sourceNode) {
-        console.error("Source node not found:", sourceNodeId);
-        return;
-    }
-    console.log("Source Node ID:", sourceNodeId); 
-    console.log("Source Node Data:", sourceNode.data); 
+        (params) => {
+            console.log("Connection parameters:", params);
+            const sourceNodeId = params.source;
+            const sourceNode = nodes.find(node => node.id === sourceNodeId);
+            if (!sourceNode) {
+                console.error("Source node not found:", sourceNodeId);
+                return;
+            }
+            console.log("Source Node ID:", sourceNodeId);
+            console.log("Source Node Data:", sourceNode.data.parameters);
 
- 
-    const targetNodeId = params.target;
-    const targetNode = nodes.find(node => node.id === targetNodeId);
-    if (!targetNode) {
-        console.error("Target node not found:", targetNodeId);
-        return;
-    }
-    console.log("Target Node ID:", targetNodeId); 
-    console.log("Target Node Data:", targetNode.data); 
-  
-          
-          setEdges((prevEdges) => addEdge(params, prevEdges));
-      },
-      [nodes] 
-  );
+
+            const targetNodeId = params.target;
+            const targetNode = nodes.find(node => node.id === targetNodeId);
+            if (!targetNode) {
+                console.error("Target node not found:", targetNodeId);
+                return;
+            }
+
+            
+            if (targetNode.type === 'custom') {
+                
+                const dataFromServer = {
+                    options: {
+                        select_options: [
+                            { value: "1", label: 'опции' },
+                            { value: "2", label: 'опции2' },
+                            { value: "3", label: 'опции3' },
+                        ]
+                    }
+                };
+                console.log(sourceNode.data.parameters);
+                console.log(dataFromServer.options.select_options);
+                updateNodeData(targetNodeId, sourceNode.data.parameters);
+                
+            }
+            console.log("Target Node ID:", targetNodeId);
+            console.log("Target Node Data:", targetNode.data);
+
+            setEdges((prevEdges) => addEdge(params, prevEdges));
+        },
+        [nodes]
+    );
 
     const onDragOver = useCallback((event) => {
         event.preventDefault();
@@ -125,7 +165,7 @@ export default function App() {
     const onDrop = useCallback((event) => {
         event.preventDefault();
 
-        const { type,function_name, function_id, component_id } = JSON.parse(event.dataTransfer.getData('application/reactflow'));
+        const { type, function_name, function_id, component_id } = JSON.parse(event.dataTransfer.getData('application/reactflow'));
         /*if (typeof type === 'undefined' || !type) {
             return;
         }*/
@@ -135,7 +175,7 @@ export default function App() {
             y: event.clientY,
         });
 
-       
+
         if (!type) {
             return;
         }
@@ -143,23 +183,23 @@ export default function App() {
         console.log(type)
         switch (type) {
             case 'custom':
-                
-                console.log(function_name, ' HHHH', function_id);
-                newData = { 
-                        label: `${function_name}` ,
-                        function_id: function_id,
-                        is_return: false,
-                        component_id: component_id
-                    };
+
+                //console.log(function_name, ' HHHH', function_id);
+                newData = {
+                    label: `${function_name}`,
+                    function_id: function_id,
+                    is_return: false,
+                    component_id: component_id
+                };
                 break;
             case 'startBlock':
-                newData = { label: 'Начальный блок'};
+                newData = { label: 'Начальный блок' };
                 break;
             case 'endBlock':
-                newData = { label: 'Конечный блок'};
+                newData = { label: 'Конечный блок' };
                 break;
             case 'parametrBlock':
-                newData = { label: 'Блок с параметрами'};
+                newData = { label: 'Блок с параметрами' };
                 break;
             default:
                 newData = { label: `${type} node` };
@@ -170,7 +210,7 @@ export default function App() {
                 id: getId(),
                 type,
                 position,
-                data: newData
+                data: newData,
             }
         ];
 

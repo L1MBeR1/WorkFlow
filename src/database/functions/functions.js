@@ -24,6 +24,22 @@ async function select_all_components() {
 	}
 }
 
+async function select_all_functions() {
+	const query = `
+					SELECT * 
+					FROM  components.component_function cf 
+					WHERE (cf.name <> '') AND (cf.name is not null)
+	`;
+
+	try {
+		const result = await pool.query(query);
+		return result.rows;
+	} catch (error) {
+		console.error("Error executing query:", error);
+		throw error;
+	}
+}
+
 async function select_component_functions_by_component_id(component_id) {
 	const query = `
 					SELECT cf.id, cf.name as "Название"
@@ -62,7 +78,10 @@ async function select_services_by_component_id(component_id) {
 	}
 }
 
-async function select_component_function_parameters_by_function_id(function_id, is_return) {
+async function select_component_function_parameters_by_function_id(
+	function_id,
+	is_return
+) {
 	const query = `
 					SELECT cfp.id, cfp.name as "Название", t.type
                     FROM components.component_function_parameter cfp
@@ -74,7 +93,10 @@ async function select_component_function_parameters_by_function_id(function_id, 
 	`;
 
 	try {
-		const result = await pool.query(query, [Number(function_id), Boolean(is_return)]);
+		const result = await pool.query(query, [
+			Number(function_id),
+			Boolean(is_return),
+		]);
 		return result.rows;
 	} catch (error) {
 		console.error("Error executing query:", error);
@@ -100,6 +122,7 @@ async function select_service_points_by_service_id(service_id) {
 
 module.exports = {
 	select_all_components,
+	select_all_functions,
 	select_component_functions_by_component_id,
 	select_services_by_component_id,
 	select_component_function_parameters_by_function_id,
