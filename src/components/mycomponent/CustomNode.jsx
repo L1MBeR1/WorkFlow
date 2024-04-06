@@ -1,14 +1,16 @@
 import React, { useState, useEffect, memo, useRef } from 'react';
 import { Handle, Position } from 'reactflow';
 import './ccc.css';
+import { v4 as uuidv4 } from 'uuid';
 
 export default memo(({ data, isConnectable }) => {
     const [input_parameters, setInputParameters] = useState([]);
     const [services_functions, setServicesFunctions] = useState([]);
     const [entry_points, setEntryPoints] = useState([]);
     const [options, setOptions] = useState([
-        { id: 'def', value: 'default' },
+        { id: '1', value: '-' },
     ]);
+    
     // const [data, setData] = useState({
     //     options: null, // Начальное значение options устанавливаем как null
     // });
@@ -111,22 +113,18 @@ export default memo(({ data, isConnectable }) => {
 
 
 
-    const changeSelect = () => {
-        // setData({
-        //     ...data,
-        //     options: fetchedOptions,
-        // });
-        console.log(data.options);
+    const changeSelect = (e) => {
+        const selectedValue = e.target.value;
+        const def = [{ id: '1', value: '-' }];
+        console.log('nnnn', data.options, selectedValue);
+
         if (!data.options || !Array.isArray(data.options) || data.options.length === 0) {
-            setOptions([{ id: 'def', value: 'default' }]);
+            setOptions([{ id: '1', value: '-' }]);
         } else {
-            setOptions(data.options);
+            const combinedOptions = def.concat(data.options);
+            setOptions(combinedOptions);
         }
-
-
-
-
-
+        //console.log('gg', data.connected_parameters);
     };
 
 
