@@ -2,26 +2,31 @@ import React, { memo, useState } from 'react';
 import { Handle, Position } from 'reactflow';
 import { ReactComponent as Trash } from './trash.svg';
 import './initialNodes.css';
-let paramID = 1;
+
+import { v4 as uuidv4 } from 'uuid';
+
 export default memo(({ data, isConnectable }) => {
 
-    const [parameters, setParameters] = useState([{ id: paramID, name: '' }]);
+    const [parameters, setParameters] = useState([{ id: uuidv4(), name: '' }]);
 
     const addParameter = () => {
-        paramID = paramID + 1
-        const newParameter = {
-            id: paramID,
+        //paramID = `${uuidv4()}`;
+        let newParameter = {
+            id: `${uuidv4()}`,
             name: '',
             type: '',
             value: ''
         };
         setParameters([...parameters, newParameter]);
         // console.log(paramID)
-        console.log(parameters)
+        // console.log(parameters)
     };
     const handleDeleteParameter = (paramid) => {
         const updatedParameters = parameters.filter(param => param.id !== paramid);
         setParameters(updatedParameters);
+        data.function_to_update_parameters(data.id, updatedParameters);
+        //console.log('settedDel', updatedParameters);
+        
     };
     const handleNameChange = (paramid, newName) => {
         const updatedParameters = parameters.map(param => {
@@ -31,6 +36,8 @@ export default memo(({ data, isConnectable }) => {
             return param;
         });
         setParameters(updatedParameters);
+        data.function_to_update_parameters(data.id, updatedParameters);
+        
     };
 
     const handleTypeChange = (paramid, newType) => {
@@ -41,6 +48,7 @@ export default memo(({ data, isConnectable }) => {
             return param;
         });
         setParameters(updatedParameters);
+        data.function_to_update_parameters(data.id, updatedParameters);
     };
 
     
@@ -52,7 +60,8 @@ export default memo(({ data, isConnectable }) => {
             return param;
         });
         setParameters(updatedParameters);
-        data.parameters = updatedParameters;
+        data.function_to_update_parameters(data.id, updatedParameters);
+        //data.parameters = updatedParameters;
     };
 
 
