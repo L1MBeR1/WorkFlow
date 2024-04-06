@@ -2,86 +2,87 @@ import React, { useState, useEffect } from 'react';
 import { ReactComponent as Arrow } from '../images/panel/arrow.svg';
 import '../css/componentPanel.css';
 import ComponentFunc from './componentFunc';
+import Component from './component';
 import InitialNode from '../components/InitialNodes/initialNode';
 
 const ComponentPanel = () => {
   const [isVisible, setIsVisible] = useState(true);
-  const [selectedComponent, setSelectedComponent] = useState(null);
   const [componentsData, setComponentsData] = useState([]);
-  const [componentsFuncData, setComponentsFuncData] = useState([]);
+  const [functionsData, setFunctionsData] = useState([]);
   const [panelMode, setPanelMode] = useState('Initial');
 
-  const [animationTriggered, setAnimationTriggered] = useState(false);
 
-//   const playAnimationForSections = () => {
-//     setAnimationTriggered(true); 
+  var componentAndFuncs=[]
 
-//     setAnimationTriggered(false); 
-
-//   };
-
-//   const playAnimationForFunctions = () => {
-//     setAnimationTriggered(true); 
-//     setTimeout(() => {
-//         setAnimationTriggered(false); 
-//     }, 100);
-// };
 	const toggleVisibility = () => {
 		setIsVisible(!isVisible);
 	};
-
-  const handleComponentClick = (component) => {
-    setSelectedComponent(component === selectedComponent ? null : component);
-    fetchComponentsFuncData(component);
-  };
-
   const togglePanelSection = (section) => {
     if (section === 'Initial') {
       setPanelMode('Initial');
-      // playAnimationForSections();
     } else if (section === 'Components'){
       setPanelMode('Components');
-      // playAnimationForSections();
     }
   };
-  const fetchComponentsFuncData = async (component) => {
+  const fetchFunctionsData = async (component) => {
     try {
-      const response = await fetch('http://localhost:4000/database/components/functions/by_component_id', {
+      const response = await fetch('http://localhost:4000/database/functions/all', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ "component_id" : component.id}),
+        body: JSON.stringify({}),
       });
       const responseData = await response.json();
-      console.log(responseData)
-      setComponentsFuncData(responseData); 
+      // console.log(responseData)
+      setFunctionsData(responseData); 
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
+  const fetchComponentsData = async () => {
+    try {
+      const response = await fetch('http://localhost:4000/database/components/all', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({}),
+      });
+      const responseData = await response.json();
+      console.log(responseData)
+      setComponentsData(responseData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  function combineComponentsAndFunctions(components, functions) {
+    const combinedArray = [];
 
+    components.forEach(component => {
+        const componentFunctions = functions.filter(func => func.id_of_component === component.id);
+
+        const combinedComponent = {
+            id: component.id,
+            Название: component.Название,
+            Описание: component.Описание,
+            functions: componentFunctions.map(func => ({
+                id: func.id,
+                name: func.name
+            }))
+        };
+
+        combinedArray.push(combinedComponent);
+    });
+    return combinedArray;
+}
 	useEffect(() => {
-		const fetchComponentsData = async () => {
-			try {
-				const response = await fetch('http://localhost:4000/database/components/all', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({}),
-				});
-				const responseData = await response.json();
-				console.log(responseData)
-				setComponentsData(responseData);
-			} catch (error) {
-				console.error('Error fetching data:', error);
-			}
-		};
-
 		fetchComponentsData();
+    fetchFunctionsData();
 	}, []);
 
+  componentAndFuncs=combineComponentsAndFunctions(componentsData,functionsData);
+  // console.log(componentAndFuncs)
   return (
     <div className={`panelDiv ${isVisible ? 'visible' : 'hidden'}`}>
       <div className="panel">
@@ -103,24 +104,19 @@ const ComponentPanel = () => {
             </div>
           )}
           {panelMode === 'Components' && (
-          <div className="components animateContent" onAnimationEnd={() => console.log(1231)}>
-              {componentsData.map(component => (
-                <div key={component.id} className="componentAndFuncs">
-                  <div className="component" onClick={() => handleComponentClick(component)}>
-                    <p>{component.Название}</p>
-                  </div>
-                  {/* {selectedComponent && selectedComponent.id === component.id && ( */}
-                    <div className={`functions ${selectedComponent && selectedComponent.id === component.id?'visibleFNS':'hiddenFNS'}`}>
-                      {componentsFuncData.map(func => (
-                        <ComponentFunc 
-                        key={func.id} 
-                        name={func.Название}
-                        function_id={func.id}
-												component_id={component.id}></ComponentFunc>
-                      ))}
-                    </div>
-                  {/* // )} */}
-                </div>
+          <div className="components animateContent">
+          {componentAndFuncs.map(component => (
+              <Component key={component.id} compName={component.Название} compDescripton={component.Описание}>
+                  {component.functions.map(func => (
+                      <ComponentFunc 
+                          key={func.id} 
+                          name={func.name}
+                          function_id={func.id}
+                          component_id={component.id}
+                      />
+                  ))}
+              </Component>
+              
               ))}
           </div>
           )}
