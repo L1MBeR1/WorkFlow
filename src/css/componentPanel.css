@@ -104,8 +104,7 @@
   /* overflow: hidden; */
   overflow-y: hidden;
   transition: height .4s ease; 
-  
-  height:calc(var(--function-height));
+
 
 }
 .function{

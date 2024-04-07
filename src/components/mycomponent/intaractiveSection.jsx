@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import '../css/componentPanel.css';
-import Info from './componentDescription';
-import { ReactComponent as ComArrow } from '../images/panel/component-arrow.svg';
+import './ccc.css';
+import { ReactComponent as ComArrow } from './arrow.svg';
 
-const Component = (props) => {
-    const [isVisible, setIsVisible] = useState(false);
+const IntaractiveSection = (props) => {
+    const [isVisible, setIsVisible] = useState(props.visible);
+
     const functionsRef = useRef(null);
     const [contentHeight, setContentHeight] = useState('auto');
 
@@ -12,7 +12,7 @@ const Component = (props) => {
         if (functionsRef.current) {
             setContentHeight(functionsRef.current.scrollHeight);
         }
-    });
+    }, [isVisible,props.children]);
 
     const handleComponentClick = () => {
         setIsVisible(!isVisible);
@@ -20,20 +20,17 @@ const Component = (props) => {
     };
     
     return (
-        <div className="componentAndFuncs">
-            <div className="component" onClick={handleComponentClick}>
-                <p>{props.compName}</p>
-                <div className='icons'>
-                    {props.compDescripton &&(
-                        <Info content={props.compDescripton}/>
-                    )}
-                    <div className='compArrow'>
+        <div className="Section">
+            
+            <div className="Trigger" onClick={handleComponentClick}>
+            <div className='Arrow'>
                         <ComArrow className='svg' style={{ transform: isVisible ? 'scaleY(-1)' : 'scaleY(1)' }}></ComArrow>
-                    </div>
                 </div>
+                <p>{props.sectionName}</p>
+
             </div>
             <div
-                className='functions'
+                className='section-content'
                 style={{ height: isVisible ? contentHeight : 0 }}
             >
                 <div ref={functionsRef}>
@@ -44,4 +41,4 @@ const Component = (props) => {
     );
 };
 
-export default Component;
+export default IntaractiveSection;

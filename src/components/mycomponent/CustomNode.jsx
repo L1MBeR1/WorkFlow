@@ -3,6 +3,8 @@ import { Handle, Position } from 'reactflow';
 import './ccc.css';
 import { v4 as uuidv4 } from 'uuid';
 
+import IntaractiveSection from './intaractiveSection';
+
 export default memo(({ data, isConnectable }) => {
     const [input_parameters, setInputParameters] = useState([]);
     const [services_functions, setServicesFunctions] = useState([]);
@@ -245,41 +247,43 @@ export default memo(({ data, isConnectable }) => {
                 </header>
                 <hr></hr>
                 <div className='parameters-Box'>
-                    <div className='parameter-Block'>
-                        <p className='h'>Входные параметры</p>
-                        <header className='parameter-Header'>
-                            <div className='parameter-Header_name'>Название</div>
-                            <div className='parameter-Header_type'>Тип</div>
-                            <div className='parameter-Header_type'>Параметр</div>
-                            {/* <div className='parameter-Header_type'>Значение</div> */}
-                        </header>
-                        <div ref={param_ref} className='parametrs'>
-                            {input_parameters.map((item, index) => (
-                                <div key={index} className='parameter'>
-                                    <div className='fucn_parameter_name'>{item.Название}</div>
-                                    <div className='fucn_parameter_type'>{item.type}</div>
-                                    <select data-id={index} onClick={changeSelect} className='fucn_parameter_value'>
-                                        {filterOptionsByType(options, item.type).map(option => (
-                                            <option data-id={option.id} key={option.id} value={option.value}>
-                                                {option.name} ({option.value})
-                                            </option>
-                                        ))}
-                                    </select>
-                                    {/* <div data-id={index} className='func_parameter_value' > {data.options[selectedOptions[index]].value} </div> */}
-                                </div>
-                            ))}
-
-
-                        </div>
-                    </div>
-                    <div className='parameter-Block'>
-                        <div className='parameter-Container'>
-                            <div className='parameter-Header'>
-                                <p>Название</p>
+                        {/* <p className='h'>Входные параметры</p> */}
+                        {input_parameters.length !=0 &&(
+                            <IntaractiveSection sectionName='Входные параметры' visible='true' >
+                            <header className='parameter-Header'>
+                                <div className='parameter-Header_name'>Название</div>
+                                <div className='parameter-Header_type'>Тип</div>
+                                <div className='parameter-Header_type'>Параметр</div>
+                                {/* <div className='parameter-Header_type'>Значение</div> */}
+                            </header>
+                            <div ref={param_ref} className='parametrs'>
+                                {input_parameters.map((item, index) => (
+                                    <div key={index} className='parameter'>
+                                        <div className='fucn_parameter_name'>{item.Название}</div>
+                                        <div className='fucn_parameter_type'>{item.type}</div>
+                                        <select data-id={index} onClick={changeSelect} className='fucn_parameter_value'>
+                                            {filterOptionsByType(options, item.type).map(option => (
+                                                <option data-id={option.id} key={option.id} value={option.value}>
+                                                    {option.name} ({option.value})
+                                                </option>
+                                            ))}
+                                        </select>
+                                        {/* <div data-id={index} className='func_parameter_value' > {data.options[selectedOptions[index]].value} </div> */}
+                                    </div>
+                                ))}
                             </div>
+                        </IntaractiveSection>
+                        )}
+                        
+
+
+                    <IntaractiveSection sectionName='Сервис' >
+                    <div className='parameter-Container'>
+                            <header>Название сервиса</header>
+
                             <div className='parameter-Select'>
                                 <div className="custom-select">
-                                    <select ref={selectRef} onChange={handleServiceChange}>
+                                    <select className='select' ref={selectRef} onChange={handleServiceChange}>
                                         {services_functions.map((item, index) => (
                                             <option key={index} value={index}>
                                                 {item.Название}
@@ -289,15 +293,13 @@ export default memo(({ data, isConnectable }) => {
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className='parameter-Block'>
-                        <div className='parameter-Container'>
-                            <div className='parameter-Header'>
-                                <p>URI</p>
-                            </div>
+                    </IntaractiveSection>
+                    <IntaractiveSection sectionName='Uri' >
+                    <div className='parameter-Container'>
+                        <header>Точка входа</header>
                             <div className='parameter-Select'>
                                 <div className="custom-select">
-                                    <select ref={selectRef2} onChange={handleEntryChange}>
+                                    <select className='select'ref={selectRef2} onChange={handleEntryChange}>
                                         {entry_points.map((item, index) => (
                                             <option key={index} value={index}>
                                                 {item.uri}
@@ -307,8 +309,7 @@ export default memo(({ data, isConnectable }) => {
                                 </div>
                             </div>
                         </div>
-
-                    </div>
+                    </IntaractiveSection>
                 </div>
                 <Handle
                     className='HandleComponent'
