@@ -24,7 +24,7 @@ const Component = (props) => {
         <div className="componentAndFuncs">
             <div className="component" onClick={handleComponentClick}>
                 <p>{props.compName}</p>
-                <div class='icons'>
+                <div className='icons'>
                     {props.compDescripton &&(
                         <Info content={props.compDescripton}/>
                     )}

@@ -7,7 +7,7 @@ import EndNode from './components/InitialNodes/endBlock';
 import ParametrBlock from './components/InitialNodes/parametrBlock';
 
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import ReactFlow, {
     getOutgoers,
     getIncomers,
@@ -58,6 +58,7 @@ export default function App() {
     const [edges, setEdges] = useEdgesState(/*initialEdges*/[]);
     const [selectedNodeId, setSelectedNodeId] = useState(null);
     const [settedEdge, setEdge] = useState(null);
+    const [edgeDeleted, setEdgeDel] = useState(null);
 
 
     const updateOptions = (id, newData) => {
@@ -65,24 +66,16 @@ export default function App() {
             ...prevState,
             [id]: newData
         }));
-        console.log('VVVVVV', options_lists_data);
         setSelectedNodeId([id, Math.random()]);
     };
 
 
-
-
-
     const get_outgoers_node = useCallback((node) => {
-        //const NODE = nodes.find(node => node.id === ids);
-        //console.log('self: ', NODE);
-
         const incomers = getOutgoers(
             node,
             nodes,
             edges,
         );
-        console.log('connected with: ', incomers);
         return incomers;
 
     },
@@ -90,15 +83,12 @@ export default function App() {
     );
 
     const get_incomers_node = useCallback((node) => {
-        //const NODE = nodes.find(node => node.id === ids);
-        //console.log('self: ', NODE);
-
         const incomers = getIncomers(
             node,
             nodes,
             edges,
         );
-        console.log('connected with: ', incomers);
+        //console.log('connected with: ', incomers);
         return incomers;
 
     },
@@ -107,40 +97,28 @@ export default function App() {
 
     useEffect(() => {
         if (selectedNodeId != null) {
+
+
             const NODE = nodes.find(node => node.id === selectedNodeId[0]);
+            //if (NODE.type === 'custom') {
             let connected_custom_nodes_to_parameter = get_outgoers_node(NODE);
 
             connected_custom_nodes_to_parameter.forEach(element => {
                 let parameters_of_connected_custom_node = get_incomers_node(element);
+                parameters_of_connected_custom_node = parameters_of_connected_custom_node.filter(item => item.type === 'parametrBlock');
                 let united_data = parameters_of_connected_custom_node.map(ee => options_lists_data[ee.id]);
                 united_data = united_data.flat();
-                console.log(united_data);
+                console.log('HHH', united_data);
                 updateNodeDataOptions(element.id, united_data);
+                update_end();
             });
-
-            // connected_custom_nodes_to_parameter.forEach(element => {
-            //     let parameters_of_connected_custom_node = get_incomers_node(element);
-            //     let united_data = [];
-            //     /*parameters_of_connected_custom_node.forEach(ee => {
-            //         console.log('kkla', options_lists_data[ee.id]);
-
-            //     });*/
-
-            //     parameters_of_connected_custom_node.forEach(ee => {
-            //         united_data = [...united_data, options_lists_data[ee.id]];
-            //     });
-
-            //     console.log(united_data);
-
-            //     //updateNodeDataOptions(element.id, options_lists_data[NODE.id])
-            //     updateNodeDataOptions(element.id, united_data)
-            // });
-
-
-
+            //}
         }
 
     }, [setOptions, selectedNodeId, options_lists_data]);
+
+
+
 
 
 
@@ -152,93 +130,82 @@ export default function App() {
         );
     };
 
+
+
+    const updateNodeDataLabel = (nodeId, label) => {
+        setNodes((prevNodes) =>
+            prevNodes.map((node) =>
+                node.id === nodeId ? { ...node, data: { ...node.data, label: label } } : node
+            )
+        );
+    };
+
     const onEdgesChange = useCallback(
         (changes) => {
+            //let removed = false;
+            //console.log('TTT22');
             const connected_nodes_regexp = /^\w*-(\d+)-(\d+)$/gm;
             let SOURCE_NODE;
             let TARGET_NODE;
 
             changes.forEach(({ id, type, selected }) => {
                 const matches = [...id.matchAll(connected_nodes_regexp)];
-                /*for (const match of matches) {
-                    const [fullMatch, left_node_id, right_node_id] = match;
-                    SOURCE_NODE = nodes.find(node => node.id === left_node_id);
-                    TARGET_NODE = nodes.find(node => node.id === right_node_id);
-                    if (type === 'remove'){
-                        let parameters_of_connected_custom_node = get_incomers_node(TARGET_NODE);
-                        let united_data = parameters_of_connected_custom_node.map(ee => options_lists_data[ee.id]);
-                        united_data = united_data.flat();
-                        console.log('TTT', united_data);
-                        updateNodeDataOptions(TARGET_NODE.id, united_data);
-                    }
-                }*/
                 for (const match of matches) {
                     const [fullMatch, left_node_id, right_node_id] = match;
                     SOURCE_NODE = nodes.find(node => node.id === left_node_id);
                     TARGET_NODE = nodes.find(node => node.id === right_node_id);
                     if (type === 'remove') {
+                        //removed = true;
+                        //console.log('TTT1');
                         let parameters_of_connected_custom_node = get_incomers_node(TARGET_NODE)
                             .filter(ee => ee.id !== left_node_id); // Исключаем left_node_id из parameters_of_connected_custom_node
                         let united_data = parameters_of_connected_custom_node
                             .map(ee => options_lists_data[ee.id])
                             .flat();
-                        console.log('TTT', united_data);
+                        //console.log('TTT', united_data);
                         updateNodeDataOptions(TARGET_NODE.id, united_data);
+                        //console.log('iu');
+                        
+                        //setEdgeDel(Math.random());
                     }
                 }
-
-
             });
-
-            //console.log('-=LEFT  Node:', SOURCE_NODE);
-            //console.log('-=RIGHT Node:', TARGET_NODE);
-            //console.log('FFF', options_lists_data);
-
-            //updateNodeDataOptions(TARGET_NODE.id, null);
-
-
-
             setEdges((oldEdges) => applyEdgeChanges(changes, oldEdges));
+            console.log('rre');
+            //if (removed) update_end_block();
         },
         [setEdges, nodes],
     );
 
     const onConnect = useCallback(
         (params) => {
-            console.log("Connection parameters:", params);
+            //console.log("Connection parameters:", params);
             const sourceNodeId = params.source;
             const sourceNode = nodes.find(node => node.id === sourceNodeId);
             if (!sourceNode) {
-                console.error("Source node not found:", sourceNodeId);
+                //console.error("Source node not found:", sourceNodeId);
                 return;
             }
-            console.log("Source Node ID:", sourceNodeId);
-            console.log("Source Node Data:", sourceNode.data.parameters);
+            //console.log("Source Node ID:", sourceNodeId);
+            //console.log("Source Node Data:", sourceNode.data.parameters);
 
 
             const targetNodeId = params.target;
             const targetNode = nodes.find(node => node.id === targetNodeId);
             if (!targetNode) {
-                console.error("Target node not found:", targetNodeId);
+                //console.error("Target node not found:", targetNodeId);
                 return;
             }
 
+            //console.log("Target Node ID:", targetNodeId, targetNode.id, get_incomers_node(targetNode));
+            //console.log("Target Node Data:", targetNode.data);
 
 
-            console.log("Target Node ID:", targetNodeId, targetNode.id, get_incomers_node(targetNode));
-            console.log("Target Node Data:", targetNode.data);
 
             setEdges((prevEdges) => addEdge(params, prevEdges));
-            //handleCustomNode(targetNode);
-            // if (targetNode.type === 'custom') {
-            //     let parameters_of_connected_custom_node = get_incomers_node(targetNode);
-            //     let united_data = parameters_of_connected_custom_node.map(ee => options_lists_data[ee.id]);
-            //     united_data = united_data.flat();
-            //     console.log('ffefe', united_data, parameters_of_connected_custom_node);
-            //     updateNodeDataOptions(targetNode.id, united_data);
-            //     // updateNodeDataOptions(targetNodeId, sourceNode.data.parameters);
-            // }
             setEdge({ id: targetNodeId, type: targetNode.type });
+
+
         },
         [nodes]
     );
@@ -247,15 +214,50 @@ export default function App() {
         if (settedEdge != null) {
             if (settedEdge.type === 'custom') {
                 let parameters_of_connected_custom_node = get_incomers_node(settedEdge);
+                parameters_of_connected_custom_node = parameters_of_connected_custom_node.filter(item => item.type === 'parametrBlock');
                 let united_data = parameters_of_connected_custom_node.map(ee => options_lists_data[ee.id]);
                 united_data = united_data.flat();
-                console.log('ffefe', united_data, parameters_of_connected_custom_node);
+                //console.log('ffefe', united_data, parameters_of_connected_custom_node);
                 updateNodeDataOptions(settedEdge.id, united_data);
-                // updateNodeDataOptions(targetNodeId, sourceNode.data.parameters);
             }
+            update_end();
+            /*else if (settedEdge.type === 'endBlock') {
+                update_end();
+            }*/
         }
 
     }, [settedEdge, options_lists_data]);
+
+    function update_end() {
+        console.log('llawkd');
+
+        nodes.forEach(element => {
+            if (element.type !== 'endBlock') return;
+            function f(incomer) {
+                if (incomer.length === 0) return;
+                if (incomer.type === 'custom') {
+                    data_chain.push(incomer.data);
+                }
+                let incomers = get_incomers_node(incomer);
+                incomers.forEach(incomer => {
+                    f(incomer);
+                });
+            }
+            let data_chain = [];
+            let incomers = get_incomers_node(element);
+            incomers.forEach(incomer => {
+                f(incomer);
+            });
+            //console.log('CD - ', data_chain);
+            let lab = [];
+            data_chain.forEach(element => {
+                lab.push(element.id);
+            });
+            updateNodeDataLabel(element.id, lab);
+        });
+
+        console.log('llawkd2');
+    }
 
     const onDragOver = useCallback((event) => {
         event.preventDefault();
@@ -292,7 +294,10 @@ export default function App() {
                 newData = { label: 'Начальный блок' };
                 break;
             case 'endBlock':
-                newData = { label: 'Конечный блок' };
+                newData = {
+                    id: newid,
+                    label: 'Конечный блок'
+                };
                 break;
             case 'parametrBlock':
                 newData = {

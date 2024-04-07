@@ -7,18 +7,27 @@ export default memo(({ data, isConnectable }) => {
     const [input_parameters, setInputParameters] = useState([]);
     const [services_functions, setServicesFunctions] = useState([]);
     const [entry_points, setEntryPoints] = useState([]);
+    /*const [selectedValue, setSelectedValue] = useState('');*/
     const [options, setOptions] = useState([
-        { id: '1', value: '-' },
+        { id: '1', value: '-', type: 'string', name: '-' },
+        { id: '2', value: '-', type: 'boolean', name: '-' },
+        { id: '3', value: '-', type: 'number', name: '-' },
     ]);
+
+    /*const [selectedOptions, setSelectedOptions] = useState([{ id: '1', value: '-', type: 'string' }]); // Состояние для хранения выбранного значения
+    */
     
+
     // const [data, setData] = useState({
     //     options: null, // Начальное значение options устанавливаем как null
     // });
     const selectRef = useRef(null);
     const selectRef2 = useRef(null);
+    const param_ref = useRef(null);
 
 
     useEffect(() => {
+        
         const fetchInputParameters = async () => {
             try {
                 const response = await fetch('http://localhost:4000/database/components/functions/parameters/by_function_id', {
@@ -43,6 +52,33 @@ export default memo(({ data, isConnectable }) => {
     }, [data]);
 
     useEffect(() => {
+        console.log('Options updated!!');
+        const def = [
+            { id: '1', value: '-', type: 'string', name: '-' },
+            { id: '2', value: '-', type: 'boolean', name: '-' },
+            { id: '3', value: '-', type: 'number', name: '-' },
+        ];
+        //console.log('nnnn2', data.options);
+
+        if (!data.options || !Array.isArray(data.options) || data.options.length === 0 || data.options[0] === undefined) {
+            setOptions(def);
+        } else {
+            const combinedOptions = def.concat(data.options);
+            setOptions(combinedOptions);
+        }
+        // if (param_ref.current) {
+        //     console.log('param_ref', param_ref.current);
+
+        //     const divToUpdate = param_ref.current.querySelector(`.func_parameter_value[data-id="${dataId}"]`);
+        //     if (divToUpdate) {
+        //         console.log('7777', divToUpdate.textContent);
+
+        //         divToUpdate.textContent = e.target.value;
+        //     }
+        // }
+    }, [data.options]);
+
+    useEffect(() => {
         const fetchInputParameters = async () => {
             try {
                 const response = await fetch('http://localhost:4000/database/services/by_component_id', {
@@ -57,7 +93,7 @@ export default memo(({ data, isConnectable }) => {
                 const responseData = await response.json();
                 setServicesFunctions(responseData);
             } catch (error) {
-                console.error('Error fetching data:', error);
+                // console.error('Error fetching data:', error);
             }
         };
 
@@ -81,7 +117,7 @@ export default memo(({ data, isConnectable }) => {
                     setEntryPoints(responseData);
                 }
             } catch (error) {
-                console.error('Error fetching data:', error);
+                // console.error('Error fetching data:', error);
             }
         };
 
@@ -112,21 +148,88 @@ export default memo(({ data, isConnectable }) => {
     };
 
 
-
     const changeSelect = (e) => {
         const selectedValue = e.target.value;
-        const def = [{ id: '1', value: '-' }];
-        console.log('nnnn', data.options, selectedValue);
+        const dataId = e.target.dataset.id;
+        const selectedOption = e.target.options[e.target.selectedIndex];
+        // Доступ к данным выбранного option
+        /*const selectedValue3 = selectedOption.value;
+        const selectedText = selectedOption.text;
+        const selectedId = selectedOption.dataset.id;*/
 
-        if (!data.options || !Array.isArray(data.options) || data.options.length === 0) {
-            setOptions([{ id: '1', value: '-' }]);
+
+
+        const def = [
+            { id: '1', value: '-', type: 'string', name:'-' },
+            { id: '2', value: '-', type: 'boolean', name: '-' },
+            { id: '3', value: '-', type: 'number', name: '-' }
+        ];
+        /*console.log('nnnn', data.options, selectedValue, selectedOptions);
+        console.log('nnnn4', data.options, input_parameters);*/
+        // console.log('nnnn3', data.options[0]);
+
+        if (!data.options || !Array.isArray(data.options) || data.options.length === 0 || data.options[0] === undefined) {
+            setOptions(def);
+
+
         } else {
             const combinedOptions = def.concat(data.options);
             setOptions(combinedOptions);
+
+            /*let iter = 0;
+            input_parameters.forEach(element => {
+                setSelectedOptions(prevOptions => ({
+                    ...prevOptions,
+                    [iter++]: 0,
+                }));
+            });*/
+
         }
+        // const selectedValue2 = e.target.value;
+        // setSelectedOption(selectedValue2); // Обновляем состояние при изменении выбранной опции
         //console.log('gg', data.connected_parameters);
+        /*console.log('hhh', dataId, param_ref);*/
+        // selectedOption[dataId] = 
+        /*if (param_ref.current) {
+            console.log('param_ref', param_ref.current);
+
+            const divToUpdate = param_ref.current.querySelector(`.func_parameter_value[data-id="${dataId}"]`);
+            if (divToUpdate) {
+                console.log('7777', divToUpdate.textContent);
+
+                divToUpdate.textContent = e.target.value;
+            }
+        }*/
+
+        /*if (data.options || Array.isArray(data.options) || !(data.options.length === 0) || !(data.options[0] === undefined)) {
+            let index = data.options.findIndex(item => item.id === selectedId);
+            if (index !== -1) {
+                setSelectedOptions(prevOptions => ({
+                    ...prevOptions,
+                    [dataId]: index.toString(),
+                }));
+                console.log('jjj', selectedOptions);
+            }
+        }*/
+
+
     };
 
+    const filterOptionsByType = (options, itemType) => {
+        //console.log('iiiii', options);
+        //if (options === undefined) return ''; 
+        let a;
+        a = options.filter(option => option !== undefined);
+        //console.log('iiiii', options);
+        a = a.filter(option => option.type === itemType);
+        return a;
+    };
+
+    /*const handleClick = (event) => {
+        // Обработчик клика на кастомном элементе option
+        const selectedValue = event.target.getAttribute('data-value');
+        console.log(`Выбрано: ${selectedValue}`);
+    };*/
 
     return (
         <>
@@ -147,23 +250,25 @@ export default memo(({ data, isConnectable }) => {
                         <header className='parameter-Header'>
                             <div className='parameter-Header_name'>Название</div>
                             <div className='parameter-Header_type'>Тип</div>
-                            <div className='parameter-Header_type'>Значение</div>
+                            <div className='parameter-Header_type'>Параметр</div>
+                            {/* <div className='parameter-Header_type'>Значение</div> */}
                         </header>
-                        <div className='parametrs'>
+                        <div ref={param_ref} className='parametrs'>
                             {input_parameters.map((item, index) => (
                                 <div key={index} className='parameter'>
                                     <div className='fucn_parameter_name'>{item.Название}</div>
                                     <div className='fucn_parameter_type'>{item.type}</div>
-                                    <select onClick={changeSelect} className='fucn_parameter_value'>
-                                        {options.map(option => (
-                                            <option key={option.id} value={option.value}>
-                                                {option.value}
+                                    <select data-id={index} onClick={changeSelect} className='fucn_parameter_value'>
+                                        {filterOptionsByType(options, item.type).map(option => (
+                                            <option data-id={option.id} key={option.id} value={option.value}>
+                                                {option.name} ({option.value})
                                             </option>
                                         ))}
                                     </select>
-
+                                    {/* <div data-id={index} className='func_parameter_value' > {data.options[selectedOptions[index]].value} </div> */}
                                 </div>
                             ))}
+
 
                         </div>
                     </div>

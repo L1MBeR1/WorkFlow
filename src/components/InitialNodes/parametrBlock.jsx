@@ -7,14 +7,14 @@ import { v4 as uuidv4 } from 'uuid';
 
 export default memo(({ data, isConnectable }) => {
 
-    const [parameters, setParameters] = useState([{ id: uuidv4(), name: '' }]);
+    const [parameters, setParameters] = useState([{ id: uuidv4(), name: '', type: 'string', value: '' }]);
 
     const addParameter = () => {
         //paramID = `${uuidv4()}`;
         let newParameter = {
             id: `${uuidv4()}`,
             name: '',
-            type: '',
+            type: 'string',
             value: ''
         };
         setParameters([...parameters, newParameter]);
