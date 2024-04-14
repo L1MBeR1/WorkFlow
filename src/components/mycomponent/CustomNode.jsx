@@ -2,27 +2,23 @@ import React, { useState, useEffect, memo, useRef } from 'react';
 import { Handle, Position } from 'reactflow';
 import './ccc.css';
 import { v4 as uuidv4 } from 'uuid';
-
+import { useBlocks } from '../../store';
 import IntaractiveSection from './intaractiveSection';
 
 export default memo(({ data, isConnectable }) => {
+    const blocks = useBlocks((state) => state.blocks);
+    const block = blocks.find(block => block.selfId === data.id);
+
+
     const [input_parameters, setInputParameters] = useState([]);
     const [services_functions, setServicesFunctions] = useState([]);
     const [entry_points, setEntryPoints] = useState([]);
-    /*const [selectedValue, setSelectedValue] = useState('');*/
     const [options, setOptions] = useState([
         { id: '1', value: '-', type: 'string', name: '-' },
         { id: '2', value: '-', type: 'boolean', name: '-' },
         { id: '3', value: '-', type: 'number', name: '-' },
     ]);
 
-    /*const [selectedOptions, setSelectedOptions] = useState([{ id: '1', value: '-', type: 'string' }]); // Состояние для хранения выбранного значения
-    */
-    
-
-    // const [data, setData] = useState({
-    //     options: null, // Начальное значение options устанавливаем как null
-    // });
     const selectRef = useRef(null);
     const selectRef2 = useRef(null);
     const param_ref = useRef(null);
@@ -60,7 +56,6 @@ export default memo(({ data, isConnectable }) => {
             { id: '2', value: '-', type: 'boolean', name: '-' },
             { id: '3', value: '-', type: 'number', name: '-' },
         ];
-        //console.log('nnnn2', data.options);
 
         if (!data.options || !Array.isArray(data.options) || data.options.length === 0 || data.options[0] === undefined) {
             setOptions(def);
@@ -68,16 +63,6 @@ export default memo(({ data, isConnectable }) => {
             const combinedOptions = def.concat(data.options);
             setOptions(combinedOptions);
         }
-        // if (param_ref.current) {
-        //     console.log('param_ref', param_ref.current);
-
-        //     const divToUpdate = param_ref.current.querySelector(`.func_parameter_value[data-id="${dataId}"]`);
-        //     if (divToUpdate) {
-        //         console.log('7777', divToUpdate.textContent);
-
-        //         divToUpdate.textContent = e.target.value;
-        //     }
-        // }
     }, [data.options]);
 
     useEffect(() => {
@@ -95,7 +80,7 @@ export default memo(({ data, isConnectable }) => {
                 const responseData = await response.json();
                 setServicesFunctions(responseData);
             } catch (error) {
-                // console.error('Error fetching data:', error);
+                console.error('Error fetching data:', error);
             }
         };
 
@@ -119,7 +104,7 @@ export default memo(({ data, isConnectable }) => {
                     setEntryPoints(responseData);
                 }
             } catch (error) {
-                // console.error('Error fetching data:', error);
+                console.error('Error fetching data:', error);
             }
         };
 
@@ -154,21 +139,12 @@ export default memo(({ data, isConnectable }) => {
         const selectedValue = e.target.value;
         const dataId = e.target.dataset.id;
         const selectedOption = e.target.options[e.target.selectedIndex];
-        // Доступ к данным выбранного option
-        /*const selectedValue3 = selectedOption.value;
-        const selectedText = selectedOption.text;
-        const selectedId = selectedOption.dataset.id;*/
-
-
 
         const def = [
-            { id: '1', value: '-', type: 'string', name:'-' },
+            { id: '1', value: '-', type: 'string', name: '-' },
             { id: '2', value: '-', type: 'boolean', name: '-' },
             { id: '3', value: '-', type: 'number', name: '-' }
         ];
-        /*console.log('nnnn', data.options, selectedValue, selectedOptions);
-        console.log('nnnn4', data.options, input_parameters);*/
-        // console.log('nnnn3', data.options[0]);
 
         if (!data.options || !Array.isArray(data.options) || data.options.length === 0 || data.options[0] === undefined) {
             setOptions(def);
@@ -177,61 +153,15 @@ export default memo(({ data, isConnectable }) => {
         } else {
             const combinedOptions = def.concat(data.options);
             setOptions(combinedOptions);
-
-            /*let iter = 0;
-            input_parameters.forEach(element => {
-                setSelectedOptions(prevOptions => ({
-                    ...prevOptions,
-                    [iter++]: 0,
-                }));
-            });*/
-
         }
-        // const selectedValue2 = e.target.value;
-        // setSelectedOption(selectedValue2); // Обновляем состояние при изменении выбранной опции
-        //console.log('gg', data.connected_parameters);
-        /*console.log('hhh', dataId, param_ref);*/
-        // selectedOption[dataId] = 
-        /*if (param_ref.current) {
-            console.log('param_ref', param_ref.current);
-
-            const divToUpdate = param_ref.current.querySelector(`.func_parameter_value[data-id="${dataId}"]`);
-            if (divToUpdate) {
-                console.log('7777', divToUpdate.textContent);
-
-                divToUpdate.textContent = e.target.value;
-            }
-        }*/
-
-        /*if (data.options || Array.isArray(data.options) || !(data.options.length === 0) || !(data.options[0] === undefined)) {
-            let index = data.options.findIndex(item => item.id === selectedId);
-            if (index !== -1) {
-                setSelectedOptions(prevOptions => ({
-                    ...prevOptions,
-                    [dataId]: index.toString(),
-                }));
-                console.log('jjj', selectedOptions);
-            }
-        }*/
-
-
     };
 
     const filterOptionsByType = (options, itemType) => {
-        //console.log('iiiii', options);
-        //if (options === undefined) return ''; 
         let a;
         a = options.filter(option => option !== undefined);
-        //console.log('iiiii', options);
         a = a.filter(option => option.type === itemType);
         return a;
     };
-
-    /*const handleClick = (event) => {
-        // Обработчик клика на кастомном элементе option
-        const selectedValue = event.target.getAttribute('data-value');
-        console.log(`Выбрано: ${selectedValue}`);
-    };*/
 
     return (
         <>
@@ -325,15 +255,15 @@ export default memo(({ data, isConnectable }) => {
 
 /*
 {Object.entries(item).map(([key, value]) => (
-                            <p key={key}>
-                                <strong>{key}:</strong> {value}
-                                <input type="text" name={key} id="" />
-                            </p>
-                        ))}
+    <p key={key}>
+        <strong>{key}:</strong> {value}
+        <input type="text" name={key} id="" />
+    </p>
+))}
 */
 
 /*{options.map(option => (
-                                            <option key={option.value} value={option.value}>
-                                                {option.label}
-                                            </option>
-                                        ))}*/
+    <option key={option.value} value={option.value}>
+        {option.label}
+    </option>
+))}*/

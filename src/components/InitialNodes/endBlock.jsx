@@ -1,13 +1,20 @@
 import React, { memo, useRef, useEffect } from 'react';
 import { Handle, Position } from 'reactflow';
-export default memo(({ data, isConnectable }) => {
-    const labelRef = useRef(null);
-    useEffect(() => {
-        //console.log('l', labelRef.current, data.label);
-        
-        labelRef.current.innerHTML = data.label;
+import { useBlocks } from '../../store';
 
-    }, [data]);
+
+export default memo(({ data, isConnectable }) => {
+    const blocks = useBlocks((state) => state.blocks);
+    //const {blocks} = useBlocks();
+    const labelRef = useRef(null);
+
+
+    useEffect(() => {
+        //labelRef.current.innerHTML = blocks;  //data.label;
+        console.log(blocks);
+        
+
+    }, [blocks]);
 
 
     return (
@@ -21,7 +28,11 @@ export default memo(({ data, isConnectable }) => {
                 />
 
                 <div ref={labelRef} className='node'>
-                    {data.label}
+                    {blocks.map((block, index) => (
+                        <option key={index} value={index}>
+                            {block.selfId}
+                        </option>
+                    ))}
                 </div>
 
             </div>

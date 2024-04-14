@@ -1,10 +1,13 @@
 import ComponentPanel from './componentPanel/componentPanel';
 import './css/app.css';
 import CustomNode from './components/mycomponent/CustomNode';
-
+ 
 import StartNode from './components/InitialNodes/startBlock';
 import EndNode from './components/InitialNodes/endBlock';
 import ParametrBlock from './components/InitialNodes/parametrBlock';
+import { v4 as uuidv4 } from 'uuid';
+
+import { useBlocks } from './store';
 
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -24,6 +27,7 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 
 
+
 const nodeTypes = {
     custom: CustomNode,
     startBlock: StartNode,
@@ -32,8 +36,10 @@ const nodeTypes = {
 };
 
 
-let id = 1;
-const getId = () => `${id++}`;
+// let id = 1;
+// const getId = () => `${id++}`;
+
+
 const initialNodes = [
     // {
     //     id: getId(),
@@ -52,13 +58,17 @@ const initialNodes = [
 const initialEdges = [];
 
 export default function App() {
+    const blocks = useBlocks((state) => state.blocks);
+    const addBlock = useBlocks((state) => state.addBlock);
+
     const [options_lists_data, setOptions] = useState([]);
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
     const [nodes, setNodes, onNodesChange] = useNodesState(/*initialNodes*/[]);
+
+
     const [edges, setEdges] = useEdgesState(/*initialEdges*/[]);
     const [selectedNodeId, setSelectedNodeId] = useState(null);
     const [settedEdge, setEdge] = useState(null);
-    const [edgeDeleted, setEdgeDel] = useState(null);
 
 
     const updateOptions = (id, newData) => {
@@ -81,6 +91,13 @@ export default function App() {
     },
         [setNodes, nodes, edges, options_lists_data]
     );
+
+    useEffect(() => {
+        console.log('Nodes updated');
+        console.log(nodes);
+        
+        
+    }, [nodes]);
 
     const get_incomers_node = useCallback((node) => {
         const incomers = getIncomers(
@@ -142,8 +159,6 @@ export default function App() {
 
     const onEdgesChange = useCallback(
         (changes) => {
-            //let removed = false;
-            //console.log('TTT22');
             const connected_nodes_regexp = /^\w*-(\d+)-(\d+)$/gm;
             let SOURCE_NODE;
             let TARGET_NODE;
@@ -155,31 +170,24 @@ export default function App() {
                     SOURCE_NODE = nodes.find(node => node.id === left_node_id);
                     TARGET_NODE = nodes.find(node => node.id === right_node_id);
                     if (type === 'remove') {
-                        //removed = true;
-                        //console.log('TTT1');
                         let parameters_of_connected_custom_node = get_incomers_node(TARGET_NODE)
                             .filter(ee => ee.id !== left_node_id); // Исключаем left_node_id из parameters_of_connected_custom_node
                         let united_data = parameters_of_connected_custom_node
                             .map(ee => options_lists_data[ee.id])
                             .flat();
-                        //console.log('TTT', united_data);
                         updateNodeDataOptions(TARGET_NODE.id, united_data);
-                        //console.log('iu');
-                        
-                        //setEdgeDel(Math.random());
                     }
                 }
             });
             setEdges((oldEdges) => applyEdgeChanges(changes, oldEdges));
             console.log('rre');
-            //if (removed) update_end_block();
         },
         [setEdges, nodes],
     );
 
     const onConnect = useCallback(
         (params) => {
-            //console.log("Connection parameters:", params);
+            console.log("Connection parameters:", params);
             const sourceNodeId = params.source;
             const sourceNode = nodes.find(node => node.id === sourceNodeId);
             if (!sourceNode) {
@@ -231,7 +239,7 @@ export default function App() {
     function update_end() {
         console.log('llawkd');
 
-        nodes.forEach(element => {
+        /*nodes.forEach(element => {
             if (element.type !== 'endBlock') return;
             function f(incomer) {
                 if (incomer.length === 0) return;
@@ -254,7 +262,7 @@ export default function App() {
                 lab.push(element.id);
             });
             updateNodeDataLabel(element.id, lab);
-        });
+        });*/
 
         console.log('llawkd2');
     }
@@ -279,7 +287,7 @@ export default function App() {
             return;
         }
         let newData;
-        let newid = getId();
+        let newid = uuidv4();
         switch (type) {
             case 'custom':
                 newData = {
@@ -321,6 +329,7 @@ export default function App() {
         ];
 
         setNodes((nds) => nds.concat(newNode));
+        addBlock(newNode[0].id, [], [], newNode[0].data);
     },
         [reactFlowInstance],
     );
