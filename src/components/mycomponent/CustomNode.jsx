@@ -172,11 +172,15 @@ export default memo(({ data, isConnectable }) => {
     const handleToggleSelect = (e) => {
       const boundingRect = e.target.getBoundingClientRect();
     //   console.log(e)
-      setSelectCoords({ x: e.target.offsetLeft, y: e.target.offsetTop +e.target.clientHeight+5     });
+      setSelectCoords({ x: e.target.offsetLeft, y: e.target.offsetTop +e.target.clientHeight+5});
       setIsOpen(!isOpen);
 
     };
-  
+    const closeSelector = () => {
+        if (isOpen){
+            setIsOpen(false)
+        }
+    }
     const handleSelect = (option) => {
       setSelectedOption(option);
     };
@@ -184,7 +188,7 @@ export default memo(({ data, isConnectable }) => {
       const parentRef = useRef(null);
     return (
         <>
-            <div className='component-Function-Block' ref={parentRef} >
+            <div className='component-Function-Block' ref={parentRef} tabindex="0" onBlur={closeSelector} >
                 <Handle
                     className='HandleComponent'
                     type="target"
