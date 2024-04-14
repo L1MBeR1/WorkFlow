@@ -64,7 +64,12 @@
   border: none;
   cursor: pointer;
 }
-
+.toggle-button svg{
+  stroke:#1e31db;
+  fill:#1e31db;
+  width: 20px;
+  height: 20px;
+}
 .svg {
   
   width: 100%;

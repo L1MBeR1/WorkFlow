@@ -143,6 +143,8 @@
     color: #666; 
 } */
 .Trigger{
+    display: flex;
+    max-width: fit-content;
     cursor: pointer;
     display: flex;
     flex-direction: row;

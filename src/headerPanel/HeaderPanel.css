@@ -1,0 +1,67 @@
+.main-container{
+    padding: 15px 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    padding-right: 20px;
+}
+.item{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap:20px;
+}
+.svg-back{
+    width: 22px;
+    height: 22px;
+}
+.menu-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1px 0;
+    padding-right: 2px;
+    
+    border-radius: 5px;
+    cursor: pointer;
+    &:hover{
+        background-color: rgb(221, 219, 219);
+    }
+}
+.TestButton{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    gap: 5px;
+    padding: 10px;
+    background-color: white;
+    border:  rgb(221, 219, 219) 1px solid;
+    color: rgb(30, 49, 219);
+    font-size: 14px;
+    font-family: "Roboto", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+    border-radius: 10px;
+    &:hover{
+        background-color: rgb(30, 49, 219);
+        color: white;
+    }
+
+}
+.TestButton svg{
+    width: 22px;
+    rotate:180deg;
+    fill:white;
+    
+}
+.title{
+    color: black;
+    font-size: 16px;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}

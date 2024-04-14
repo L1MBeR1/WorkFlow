@@ -4,10 +4,13 @@ import './ccc.css';
 import { v4 as uuidv4 } from 'uuid';
 import { useBlocks } from '../../store';
 import IntaractiveSection from './intaractiveSection';
+import CustomSelect from './CustomSelectParametrs';
 
 export default memo(({ data, isConnectable }) => {
     const blocks = useBlocks((state) => state.blocks);
     const block = blocks.find(block => block.selfId === data.id);
+
+
 
 
     const [input_parameters, setInputParameters] = useState([]);
@@ -162,10 +165,26 @@ export default memo(({ data, isConnectable }) => {
         a = a.filter(option => option.type === itemType);
         return a;
     };
+    const [isOpen, setIsOpen] = useState(false);
+    const [selectedOption, setSelectedOption] = useState(null);
+    const [selectCoords, setSelectCoords] = useState({ x: 0, y: 0 });
+  
+    const handleToggleSelect = (e) => {
+      const boundingRect = e.target.getBoundingClientRect();
+    //   console.log(e)
+      setSelectCoords({ x: e.target.offsetLeft, y: e.target.offsetTop +e.target.clientHeight+5     });
+      setIsOpen(!isOpen);
 
+    };
+  
+    const handleSelect = (option) => {
+      setSelectedOption(option);
+    };
+    
+      const parentRef = useRef(null);
     return (
         <>
-            <div className='component-Function-Block'>
+            <div className='component-Function-Block' ref={parentRef} >
                 <Handle
                     className='HandleComponent'
                     type="target"
@@ -178,7 +197,7 @@ export default memo(({ data, isConnectable }) => {
                 <hr></hr>
                 <div className='parameters-Box'>
                         {/* <p className='h'>Входные параметры</p> */}
-                        {input_parameters.length !=0 &&(
+                        {input_parameters.length !==0 &&(
                             <IntaractiveSection sectionName='Входные параметры' visible='true' >
                             <header className='parameter-Header'>
                                 <div className='parameter-Header_name'>Название</div>
@@ -198,6 +217,7 @@ export default memo(({ data, isConnectable }) => {
                                                 </option>
                                             ))}
                                         </select>
+                                        
                                         {/* <div data-id={index} className='func_parameter_value' > {data.options[selectedOptions[index]].value} </div> */}
                                     </div>
                                 ))}
@@ -241,7 +261,11 @@ export default memo(({ data, isConnectable }) => {
                         </div>
                     </IntaractiveSection>
                 </div>
-                <Handle
+                <div onClick={handleToggleSelect} style={{ border: '1px solid black', padding: '10px', width: '200px' }}>
+                    Нажмите для открытия селекта
+                    </div>
+                    <CustomSelect isOpen={isOpen} options={['Option 1', 'Option 2', 'Option 3']} onSelect={handleSelect} selectCoords={selectCoords} />
+                            <Handle
                     className='HandleComponent'
                     type="source"
                     position={Position.Right}

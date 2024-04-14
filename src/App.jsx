@@ -5,6 +5,8 @@ import CustomNode from './components/mycomponent/CustomNode';
 import StartNode from './components/InitialNodes/startBlock';
 import EndNode from './components/InitialNodes/endBlock';
 import ParametrBlock from './components/InitialNodes/parametrBlock';
+import HeaderPanel from './headerPanel/panel';
+
 import { v4 as uuidv4 } from 'uuid';
 
 import { useBlocks } from './store';
@@ -337,7 +339,8 @@ export default function App() {
 
     return (
         <div className="App">
-
+            <HeaderPanel></HeaderPanel>
+            <div className='reactFlowDiv'>
             <ComponentPanel></ComponentPanel>
             <div className="mainCanvas" >
                 <ReactFlow
@@ -356,10 +359,10 @@ export default function App() {
                     <Controls position="bottom-right" />
 
                     {/* <MiniMap /> */}
-                    <Background variant="dots" color="#6e0cab" gap={15} size={1} />
+                    <Background variant="dots" color="#1e31db" gap={15} size={1} />
                 </ReactFlow>
             </div>
-
+            </div>
         </div>
     );
 }
