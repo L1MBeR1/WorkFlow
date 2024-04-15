@@ -1,12 +1,29 @@
 .App{
     display: flex;
-    position: relative;
     width: 100vw;
-    height:  100vh;
+    height: 100vh;
+    flex-direction: column;
     overflow: hidden;
 }
 
 .mainCanvas{
     flex-grow: 1;
+    background-color: #f1f1f7;
    
+}
+.reactFlowDiv{
+    display: flex;
+    position: relative;
+    width: 100vw;
+    flex-grow: 1;
+    overflow: hidden;
+}
+.react-flow__controls-button:hover{
+
+        background-color: rgb(236, 234, 234) !important;
+    
+}
+.react-flow__controls-button svg{
+    stroke:#1e31db;
+    fill:#1e31db;
 }
