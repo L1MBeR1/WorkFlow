@@ -42,6 +42,7 @@ export default function App() {
     const blocks = useBlocks((state) => state.blocks);
     const addBlock = useBlocks((state) => state.addBlock);
     const addParameterBlock = useParameterBlocksData((state) => state.add);
+    const parameterBlocks = useParameterBlocksData((state) => state.blocks);
     const updateBlockIncomers = useBlocks((state) => state.updateBlockIncomers); 
     const updateBlockOutcomers = useBlocks((state) => state.updateBlockOutcomers);
     const deleteBlockIncomer = useBlocks((state) => state.deleteBlockIncomer);
@@ -129,6 +130,8 @@ export default function App() {
             setEdges((oldEdges) => applyEdgeChanges(changes, oldEdges));
             console.log('rre');
             console.log(nodes);
+            console.log('rre');
+            console.log(parameterBlocks);
         },
         [setEdges, nodes],
     );
@@ -156,11 +159,11 @@ export default function App() {
             }
 
             let leftNodes = getIncomingNodes(rightSideNode);
-            updateBlockIncomers(rightSideNode.id, leftNodes[0].id);
-            updateBlockOutcomers(leftNodes[0].id, rightSideNode.id);
-            
+            leftNodes.forEach(element => {
+                updateBlockIncomers(rightSideNode.id, element.id);
+                updateBlockOutcomers(element.id, rightSideNode.id);
+            });
         }
-
     }, [rightSideNode/*, options_lists_data*/]);
 
     function update_end() {
@@ -256,6 +259,7 @@ export default function App() {
         ];
 
         setNodes((nds) => nds.concat(newNode));
+        console.log('spawned with id ', newid);
         if (type === 'parametrBlock') {
             addParameterBlock(newNode[0].id, newNode[0].type, newNode[0].data);
         }

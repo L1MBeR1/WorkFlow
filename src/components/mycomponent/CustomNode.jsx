@@ -78,7 +78,7 @@ export default memo(({ data, isConnectable }) => {
             if (incomingParameterBlocksIds.includes(block.selfId)) {
                 if (block.data){
                     if (Array.isArray(block.data)) {
-                        console.log('awdawdawd');
+                        console.log('awdawdawd', block.data);
                         block.data.forEach(parameterRow => {
                             loadoptions = [...loadoptions, parameterRow];
                         });
@@ -152,11 +152,6 @@ export default memo(({ data, isConnectable }) => {
         fetchEntryPoints();
     }, [services_functions]);
 
-    const dodo = () => {
-        console.log('ppp', blocks, parameterBlocks);
-        
-    };
-
     useEffect(() => {
         const selectedServiceOption = selectRef.current.value;
         data.selectedService = selectedServiceOption;
@@ -203,7 +198,7 @@ export default memo(({ data, isConnectable }) => {
       const parentRef = useRef(null);
     return (
         <>
-            <div className='component-Function-Block' ref={parentRef} tabindex="0" onBlur={closeSelector} >
+            <div className='component-Function-Block' ref={parentRef} tabIndex="0" onBlur={closeSelector} >
                 <Handle
                     className='HandleComponent'
                     type="target"
