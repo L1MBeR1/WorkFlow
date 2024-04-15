@@ -1,13 +1,14 @@
 import ComponentPanel from './componentPanel/componentPanel';
 import './css/app.css';
 import CustomNode from './components/mycomponent/CustomNode';
- 
+
 import StartNode from './components/InitialNodes/startBlock';
 import EndNode from './components/InitialNodes/endBlock';
 import ParametrBlock from './components/InitialNodes/parametrBlock';
 import { v4 as uuidv4 } from 'uuid';
 
 import { useBlocks } from './store';
+import { useParameterBlocksData } from './store';
 
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -35,31 +36,14 @@ const nodeTypes = {
     parametrBlock: ParametrBlock,
 };
 
-
-// let id = 1;
-// const getId = () => `${id++}`;
-
-
-const initialNodes = [
-    // {
-    //     id: getId(),
-    //     type: 'startBlock',
-    //     position: { x: 300, y: 100 },
-    //     data: { label: 'Начальный блок' }
-    // },
-    // {
-    //     id: getId(),
-    //     type: 'endBlock',
-    //     position: { x: 500, y: 100 },
-    //     data: { label: 'Конечный блок' }
-    // }
-];
-
-const initialEdges = [];
-
 export default function App() {
     const blocks = useBlocks((state) => state.blocks);
     const addBlock = useBlocks((state) => state.addBlock);
+    const addParameterBlock = useParameterBlocksData((state) => state.add);
+    const updateBlockIncomers = useBlocks((state) => state.updateBlockIncomers); 
+    const updateBlockOutcomers = useBlocks((state) => state.updateBlockOutcomers);
+    const deleteBlockIncomer = useBlocks((state) => state.deleteBlockIncomer);
+    const deleteBlockOutcomer = useBlocks((state) => state.deleteBlockOutcomer);
 
     const [options_lists_data, setOptions] = useState([]);
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
@@ -67,99 +51,58 @@ export default function App() {
 
 
     const [edges, setEdges] = useEdgesState(/*initialEdges*/[]);
-    const [selectedNodeId, setSelectedNodeId] = useState(null);
-    const [settedEdge, setEdge] = useState(null);
+    //const [selectedNodeId, setSelectedNodeId] = useState(null);
+    const [rightSideNode, setRightSideNode] = useState(null);
 
 
-    const updateOptions = (id, newData) => {
+
+    /*const updateOptions = (id, newData) => {
         setOptions(prevState => ({
             ...prevState,
             [id]: newData
         }));
         setSelectedNodeId([id, Math.random()]);
-    };
+    };*/
 
 
-    const get_outgoers_node = useCallback((node) => {
-        const incomers = getOutgoers(
-            node,
-            nodes,
-            edges,
-        );
-        return incomers;
+    const getOutgoingNodes = useCallback((node) => {
+        const outgoingNodes = getOutgoers(node, nodes, edges);
+        return outgoingNodes;
+    }, [nodes, edges]);
 
-    },
-        [setNodes, nodes, edges, options_lists_data]
-    );
+    const getIncomingNodes = useCallback((node) => {
+        const incomingNodes = getIncomers(node, nodes, edges);
+        return incomingNodes;
+    }, [nodes, edges]);
 
-    useEffect(() => {
-        console.log('Nodes updated');
-        console.log(nodes);
-        
-        
-    }, [nodes]);
+    /*useEffect(() => {
+        if (!selectedNodeId) return;
 
-    const get_incomers_node = useCallback((node) => {
-        const incomers = getIncomers(
-            node,
-            nodes,
-            edges,
-        );
-        //console.log('connected with: ', incomers);
-        return incomers;
+        const selectedNode = nodes.find(node => node.id === selectedNodeId[0]);
+        const connectedCustomNodes = getOutgoingNodes(selectedNode);
 
-    },
-        [setNodes, nodes, edges, options_lists_data]
-    );
+        connectedCustomNodes.forEach(node => {
+            const parameters = getIncomingNodes(node)
+                .filter(item => item.type === 'parametrBlock');
+            const options = parameters.map(node => options_lists_data[node.id])
+                .flat();
 
-    useEffect(() => {
-        if (selectedNodeId != null) {
+            //updateNodeDataOptions(node.id, options);
+        });
+    }, [selectedNodeId, options_lists_data]);*/
 
 
-            const NODE = nodes.find(node => node.id === selectedNodeId[0]);
-            //if (NODE.type === 'custom') {
-            let connected_custom_nodes_to_parameter = get_outgoers_node(NODE);
-
-            connected_custom_nodes_to_parameter.forEach(element => {
-                let parameters_of_connected_custom_node = get_incomers_node(element);
-                parameters_of_connected_custom_node = parameters_of_connected_custom_node.filter(item => item.type === 'parametrBlock');
-                let united_data = parameters_of_connected_custom_node.map(ee => options_lists_data[ee.id]);
-                united_data = united_data.flat();
-                console.log('HHH', united_data);
-                updateNodeDataOptions(element.id, united_data);
-                update_end();
-            });
-            //}
-        }
-
-    }, [setOptions, selectedNodeId, options_lists_data]);
-
-
-
-
-
-
-    const updateNodeDataOptions = (nodeId, options) => {
+    /*const updateNodeDataOptions = (nodeId, options) => {
         setNodes((prevNodes) =>
             prevNodes.map((node) =>
                 node.id === nodeId ? { ...node, data: { ...node.data, options: options } } : node
             )
         );
-    };
-
-
-
-    const updateNodeDataLabel = (nodeId, label) => {
-        setNodes((prevNodes) =>
-            prevNodes.map((node) =>
-                node.id === nodeId ? { ...node, data: { ...node.data, label: label } } : node
-            )
-        );
-    };
+    };*/
 
     const onEdgesChange = useCallback(
         (changes) => {
-            const connected_nodes_regexp = /^\w*-(\d+)-(\d+)$/gm;
+            const connected_nodes_regexp = /^\w*-(\w+)-(\w+)$/gm;
             let SOURCE_NODE;
             let TARGET_NODE;
 
@@ -170,71 +113,53 @@ export default function App() {
                     SOURCE_NODE = nodes.find(node => node.id === left_node_id);
                     TARGET_NODE = nodes.find(node => node.id === right_node_id);
                     if (type === 'remove') {
-                        let parameters_of_connected_custom_node = get_incomers_node(TARGET_NODE)
+                        let parameters_of_connected_custom_node = getIncomingNodes(TARGET_NODE)
                             .filter(ee => ee.id !== left_node_id); // Исключаем left_node_id из parameters_of_connected_custom_node
                         let united_data = parameters_of_connected_custom_node
                             .map(ee => options_lists_data[ee.id])
                             .flat();
-                        updateNodeDataOptions(TARGET_NODE.id, united_data);
+                        /*updateNodeDataOptions(TARGET_NODE.id, united_data);*/
+                        deleteBlockIncomer(TARGET_NODE.id, SOURCE_NODE.id);
+                        deleteBlockOutcomer(SOURCE_NODE.id, TARGET_NODE.id);
                     }
                 }
             });
             setEdges((oldEdges) => applyEdgeChanges(changes, oldEdges));
             console.log('rre');
+            console.log(nodes);
         },
         [setEdges, nodes],
     );
 
     const onConnect = useCallback(
-        (params) => {
-            console.log("Connection parameters:", params);
-            const sourceNodeId = params.source;
-            const sourceNode = nodes.find(node => node.id === sourceNodeId);
-            if (!sourceNode) {
-                //console.error("Source node not found:", sourceNodeId);
-                return;
+        ({ source, target }) => {
+            const sourceNode = nodes.find(node => node.id === source);
+            const targetNode = nodes.find(node => node.id === target);
+            if (sourceNode && targetNode) {
+                setEdges(prevEdges => addEdge({ source, target }, prevEdges));
+                setRightSideNode({ id: target, type: targetNode.type });
             }
-            //console.log("Source Node ID:", sourceNodeId);
-            //console.log("Source Node Data:", sourceNode.data.parameters);
-
-
-            const targetNodeId = params.target;
-            const targetNode = nodes.find(node => node.id === targetNodeId);
-            if (!targetNode) {
-                //console.error("Target node not found:", targetNodeId);
-                return;
-            }
-
-            //console.log("Target Node ID:", targetNodeId, targetNode.id, get_incomers_node(targetNode));
-            //console.log("Target Node Data:", targetNode.data);
-
-
-
-            setEdges((prevEdges) => addEdge(params, prevEdges));
-            setEdge({ id: targetNodeId, type: targetNode.type });
-
-
         },
         [nodes]
     );
 
     useEffect(() => {
-        if (settedEdge != null) {
-            if (settedEdge.type === 'custom') {
-                let parameters_of_connected_custom_node = get_incomers_node(settedEdge);
+        if (rightSideNode != null) {
+            if (rightSideNode.type === 'custom') {
+                let parameters_of_connected_custom_node = getIncomingNodes(rightSideNode);
                 parameters_of_connected_custom_node = parameters_of_connected_custom_node.filter(item => item.type === 'parametrBlock');
                 let united_data = parameters_of_connected_custom_node.map(ee => options_lists_data[ee.id]);
                 united_data = united_data.flat();
-                //console.log('ffefe', united_data, parameters_of_connected_custom_node);
-                updateNodeDataOptions(settedEdge.id, united_data);
+                /*updateNodeDataOptions(rightSideNode.id, united_data);*/
             }
-            update_end();
-            /*else if (settedEdge.type === 'endBlock') {
-                update_end();
-            }*/
+
+            let leftNodes = getIncomingNodes(rightSideNode);
+            updateBlockIncomers(rightSideNode.id, leftNodes[0].id);
+            updateBlockOutcomers(leftNodes[0].id, rightSideNode.id);
+            
         }
 
-    }, [settedEdge, options_lists_data]);
+    }, [rightSideNode/*, options_lists_data*/]);
 
     function update_end() {
         console.log('llawkd');
@@ -287,7 +212,7 @@ export default function App() {
             return;
         }
         let newData;
-        let newid = uuidv4();
+        let newid = uuidv4().replaceAll("-", "");
         switch (type) {
             case 'custom':
                 newData = {
@@ -311,7 +236,7 @@ export default function App() {
                 newData = {
                     id: newid,
                     label: 'Блок с параметрами',
-                    function_to_update_parameters: updateOptions,
+                    /*function_to_update_parameters: updateOptions,*/
                 };
                 break;
             default:
@@ -329,7 +254,13 @@ export default function App() {
         ];
 
         setNodes((nds) => nds.concat(newNode));
-        addBlock(newNode[0].id, [], [], newNode[0].data);
+        if (type === 'parametrBlock') {
+            addParameterBlock(newNode[0].id, newNode[0].type, newNode[0].data);
+        }
+        if (type !== 'parametrBlock') {
+            addBlock(newNode[0].id, newNode[0].type, [], [], newNode[0].data);
+        }
+
     },
         [reactFlowInstance],
     );

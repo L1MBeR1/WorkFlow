@@ -1,16 +1,18 @@
 import React, { useState, useEffect, memo, useRef } from 'react';
 import { Handle, Position } from 'reactflow';
 import './ccc.css';
-import { v4 as uuidv4 } from 'uuid';
 import { useBlocks } from '../../store';
 import IntaractiveSection from './intaractiveSection';
+import { useParameterBlocksData } from '../../store';
 
 export default memo(({ data, isConnectable }) => {
     const blocks = useBlocks((state) => state.blocks);
-    const block = blocks.find(block => block.selfId === data.id);
-
+    //const updateBlock = useBlocks((state) => state.updateBlock);
+    const parameterBlocks = useParameterBlocksData((state) => state.blocks);
 
     const [input_parameters, setInputParameters] = useState([]);
+    const [output_parameters, setOutputParameters] = useState([]);
+    const [incomingParameterBlocksIds, setincomingParameterBlocksIds] = useState([]);
     const [services_functions, setServicesFunctions] = useState([]);
     const [entry_points, setEntryPoints] = useState([]);
     const [options, setOptions] = useState([
@@ -23,10 +25,8 @@ export default memo(({ data, isConnectable }) => {
     const selectRef2 = useRef(null);
     const param_ref = useRef(null);
 
-
     useEffect(() => {
-        
-        const fetchInputParameters = async () => {
+        const fetchData = async (isReturn) => {
             try {
                 const response = await fetch('http://localhost:4000/database/components/functions/parameters/by_function_id', {
                     method: 'POST',
@@ -34,36 +34,74 @@ export default memo(({ data, isConnectable }) => {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        "function_id": data.function_id,
-                        "is_return": data.is_return
+                        function_id: data.function_id,
+                        is_return: isReturn,
                     }),
                 });
-                const responseData = await response.json();
-                //console.log(responseData)
-                setInputParameters(responseData);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return await response.json();
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                throw error; // Rethrowing error if you need to handle it later or to notify a user interface.
+            }
+        };
+
+        const fetchInputParameters = async () => {
+            try {
+                const inputParams = await fetchData(false);
+                setInputParameters(inputParams);
+                const outputParams = await fetchData(true);
+                setOutputParameters(outputParams);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
         };
 
         fetchInputParameters();
-    }, [data]);
+    }, [data.function_id]); 
 
     useEffect(() => {
-        console.log('Options updated!!');
-        const def = [
+        const defaultOptions = [
             { id: '1', value: '-', type: 'string', name: '-' },
             { id: '2', value: '-', type: 'boolean', name: '-' },
             { id: '3', value: '-', type: 'number', name: '-' },
         ];
+        let loadoptions = [];
+        console.log('handled update of parameter blocks');
+        console.log(parameterBlocks);
+        parameterBlocks.forEach(block => {
+            if (incomingParameterBlocksIds.includes(block.selfId)) {
+                if (block.data){
+                    if (Array.isArray(block.data)) {
+                        console.log('awdawdawd');
+                        block.data.forEach(parameterRow => {
+                            loadoptions = [...loadoptions, parameterRow];
+                        });
+                    }
+                    else{
+                        loadoptions.push(block.data);
+                    }
+                    
+                }
+                
+            }
+        });
+        const newOptions = loadoptions ? [...defaultOptions, ...loadoptions] : defaultOptions;
+        setOptions(newOptions);
+    }, [parameterBlocks, incomingParameterBlocksIds]);
 
-        if (!data.options || !Array.isArray(data.options) || data.options.length === 0 || data.options[0] === undefined) {
-            setOptions(def);
-        } else {
-            const combinedOptions = def.concat(data.options);
-            setOptions(combinedOptions);
-        }
-    }, [data.options]);
+    useEffect(() => {
+        console.log('handled update of blocks');
+        console.log(blocks);
+        blocks.forEach(element => {
+            if (element.selfId === data.id) {
+                setincomingParameterBlocksIds(element.incomeConnections);
+            }
+        });
+
+    }, [blocks]);
 
     useEffect(() => {
         const fetchInputParameters = async () => {
@@ -111,61 +149,41 @@ export default memo(({ data, isConnectable }) => {
         fetchEntryPoints();
     }, [services_functions]);
 
+    const dodo = () => {
+        console.log('ppp', blocks, parameterBlocks);
+        
+    };
+
     useEffect(() => {
         const selectedServiceOption = selectRef.current.value;
         data.selectedService = selectedServiceOption;
         const selectedEntryOption = selectRef2.current.value;
         data.selectedEntry = selectedEntryOption;
-        //console.log(data);
 
     }, [data, entry_points]);
 
     const handleServiceChange = (event) => {
         const selectedOption = event.target.value;
-        // const selectedOption = event.target.innerText;
         data.selectedService = selectedOption;
-        //console.log(data);
     };
 
     const handleEntryChange = (event) => {
         const selectedOption = event.target.value;
-        // const selectedOption = event.target.innerText;
         data.selectedEntry = selectedOption;
-        //console.log(data);
     };
 
-
-    const changeSelect = (e) => {
-        const selectedValue = e.target.value;
-        const dataId = e.target.dataset.id;
-        const selectedOption = e.target.options[e.target.selectedIndex];
-
-        const def = [
-            { id: '1', value: '-', type: 'string', name: '-' },
-            { id: '2', value: '-', type: 'boolean', name: '-' },
-            { id: '3', value: '-', type: 'number', name: '-' }
-        ];
-
-        if (!data.options || !Array.isArray(data.options) || data.options.length === 0 || data.options[0] === undefined) {
-            setOptions(def);
-
-
-        } else {
-            const combinedOptions = def.concat(data.options);
-            setOptions(combinedOptions);
-        }
-    };
-
-    const filterOptionsByType = (options, itemType) => {
-        let a;
-        a = options.filter(option => option !== undefined);
-        a = a.filter(option => option.type === itemType);
-        return a;
+    const filterOptionsByType = (options, type) => {
+        return options
+            .filter(option => option !== undefined)
+            .filter(option => option.type === type);
     };
 
     return (
         <>
             <div className='component-Function-Block'>
+                <button onClick={dodo}>
+
+                </button>
                 <Handle
                     className='HandleComponent'
                     type="target"
@@ -177,9 +195,9 @@ export default memo(({ data, isConnectable }) => {
                 </header>
                 <hr></hr>
                 <div className='parameters-Box'>
-                        {/* <p className='h'>Входные параметры</p> */}
-                        {input_parameters.length !=0 &&(
-                            <IntaractiveSection sectionName='Входные параметры' visible='true' >
+                    {/* <p className='h'>Входные параметры</p> */}
+                    {input_parameters.length != 0 && (
+                        <IntaractiveSection sectionName='Входные параметры' visible='true' >
                             <header className='parameter-Header'>
                                 <div className='parameter-Header_name'>Название</div>
                                 <div className='parameter-Header_type'>Тип</div>
@@ -191,24 +209,23 @@ export default memo(({ data, isConnectable }) => {
                                     <div key={index} className='parameter'>
                                         <div className='fucn_parameter_name'>{item.Название}</div>
                                         <div className='fucn_parameter_type'>{item.type}</div>
-                                        <select data-id={index} onClick={changeSelect} className='fucn_parameter_value'>
+                                        <select data-id={index} /*onClick={updateOptions}*/ className='fucn_parameter_value'>
                                             {filterOptionsByType(options, item.type).map(option => (
                                                 <option data-id={option.id} key={option.id} value={option.value}>
                                                     {option.name} ({option.value})
                                                 </option>
                                             ))}
                                         </select>
-                                        {/* <div data-id={index} className='func_parameter_value' > {data.options[selectedOptions[index]].value} </div> */}
                                     </div>
                                 ))}
                             </div>
                         </IntaractiveSection>
-                        )}
-                        
+                    )}
+
 
 
                     <IntaractiveSection sectionName='Сервис' >
-                    <div className='parameter-Container'>
+                        <div className='parameter-Container'>
                             <header>Название сервиса</header>
 
                             <div className='parameter-Select'>
@@ -225,11 +242,11 @@ export default memo(({ data, isConnectable }) => {
                         </div>
                     </IntaractiveSection>
                     <IntaractiveSection sectionName='Uri' >
-                    <div className='parameter-Container'>
-                        <header>Точка входа</header>
+                        <div className='parameter-Container'>
+                            <header>Точка входа</header>
                             <div className='parameter-Select'>
                                 <div className="custom-select">
-                                    <select className='select'ref={selectRef2} onChange={handleEntryChange}>
+                                    <select className='select' ref={selectRef2} onChange={handleEntryChange}>
                                         {entry_points.map((item, index) => (
                                             <option key={index} value={index}>
                                                 {item.uri}
@@ -251,19 +268,3 @@ export default memo(({ data, isConnectable }) => {
         </>
     );
 });
-
-
-/*
-{Object.entries(item).map(([key, value]) => (
-    <p key={key}>
-        <strong>{key}:</strong> {value}
-        <input type="text" name={key} id="" />
-    </p>
-))}
-*/
-
-/*{options.map(option => (
-    <option key={option.value} value={option.value}>
-        {option.label}
-    </option>
-))}*/
