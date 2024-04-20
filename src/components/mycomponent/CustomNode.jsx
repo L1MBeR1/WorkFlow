@@ -1,10 +1,11 @@
 import React, { useState, useEffect, memo, useRef } from 'react';
 import { Handle, Position } from 'reactflow';
 import './ccc.css';
+import { ReactComponent as Arrow } from './arrow.svg';
 import { useBlocks } from '../../store';
 import IntaractiveSection from './intaractiveSection';
 import { useParameterBlocksData } from '../../store';
-import CustomSelect from './CustomSelectParametrs';
+import CustomSelect from './CustomSelectWindow.jsx';
 
 export default memo(({ data, isConnectable }) => {
     const blocks = useBlocks((state) => state.blocks);
@@ -210,7 +211,7 @@ export default memo(({ data, isConnectable }) => {
 
     const handleToggleSelect = (e) => {
         const boundingRect = e.target.getBoundingClientRect();
-        //   console.log(e)
+        //console.log(e)
         setSelectCoords({ x: e.target.offsetLeft, y: e.target.offsetTop + e.target.clientHeight + 5 });
         setIsOpen(!isOpen);
 
@@ -244,7 +245,7 @@ export default memo(({ data, isConnectable }) => {
 
 
 
-            <div className='component-Function-Block' ref={parentRef} tabIndex="0" onBlur={closeSelector} >
+            <div className='component-Function-Block' ref={parentRef} tabIndex="0" onBlur={closeSelector} onClick={closeSelector}>
                 <Handle
                     className='HandleComponent'
                     type="target"
@@ -320,9 +321,24 @@ export default memo(({ data, isConnectable }) => {
                             </div>
                         </div>
                     </IntaractiveSection>
+                    <IntaractiveSection sectionName='Выходные параметры'>
+                        <div className='parameter-Container'>
+                            <div className='output-parameters'>
+                            {output_parameters.map((item, index) => (
+                                    <div key={index} className='output-parameter'>
+                                        <div className='output-parameter-name'>{item.Название}</div>
+                                        <div className='output-parameter-type'>{item.type}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </IntaractiveSection>
                 </div>
-                <div onClick={handleToggleSelect} style={{ border: '1px solid black', padding: '10px', width: '200px' }}>
-                    Нажмите для открытия селекта
+                <div className="cc" onClick={handleToggleSelect} >
+                    <div className='cc-title'>Выберите</div>
+
+                    <div className='Arrow'><Arrow className='svg' style={{ transform: isOpen ? 'scaleY(-1)' : 'scaleY(1)' }}></Arrow></div>
+                    
                 </div>
                 <CustomSelect isOpen={isOpen} options={['Option 1', 'Option 2', 'Option 3']} onSelect={handleSelect} selectCoords={selectCoords} />
                 <Handle

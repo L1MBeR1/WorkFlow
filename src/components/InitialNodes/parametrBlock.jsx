@@ -71,7 +71,7 @@ export default memo(({ data, isConnectable }) => {
     return (
         <>
             <div>
-                <div className='parametrNode'>
+                <div className='parametrNode'tabIndex="0" >
                     <div>
                         {data.label}
                     </div>
