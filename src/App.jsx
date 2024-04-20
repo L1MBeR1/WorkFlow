@@ -50,23 +50,18 @@ export default function App() {
 
     const [options_lists_data, setOptions] = useState([]);
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
-    const [nodes, setNodes, onNodesChange] = useNodesState(/*initialNodes*/[]);
+    const [nodes, setNodes, onNodesChange] = useNodesState([]);
+
+    /*
+        TODO: сделать удаление узла из списка узлов blocks и parameterBlocks
+        при его удалении с холста
+    
+    **/
+    
 
 
-    const [edges, setEdges] = useEdgesState(/*initialEdges*/[]);
-    //const [selectedNodeId, setSelectedNodeId] = useState(null);
+    const [edges, setEdges] = useEdgesState([]);
     const [rightSideNode, setRightSideNode] = useState(null);
-
-
-
-    /*const updateOptions = (id, newData) => {
-        setOptions(prevState => ({
-            ...prevState,
-            [id]: newData
-        }));
-        setSelectedNodeId([id, Math.random()]);
-    };*/
-
 
     const getOutgoingNodes = useCallback((node) => {
         const outgoingNodes = getOutgoers(node, nodes, edges);
@@ -78,30 +73,6 @@ export default function App() {
         return incomingNodes;
     }, [nodes, edges]);
 
-    /*useEffect(() => {
-        if (!selectedNodeId) return;
-
-        const selectedNode = nodes.find(node => node.id === selectedNodeId[0]);
-        const connectedCustomNodes = getOutgoingNodes(selectedNode);
-
-        connectedCustomNodes.forEach(node => {
-            const parameters = getIncomingNodes(node)
-                .filter(item => item.type === 'parametrBlock');
-            const options = parameters.map(node => options_lists_data[node.id])
-                .flat();
-
-            //updateNodeDataOptions(node.id, options);
-        });
-    }, [selectedNodeId, options_lists_data]);*/
-
-
-    /*const updateNodeDataOptions = (nodeId, options) => {
-        setNodes((prevNodes) =>
-            prevNodes.map((node) =>
-                node.id === nodeId ? { ...node, data: { ...node.data, options: options } } : node
-            )
-        );
-    };*/
 
     const onEdgesChange = useCallback(
         (changes) => {
@@ -121,9 +92,10 @@ export default function App() {
                         let united_data = parameters_of_connected_custom_node
                             .map(ee => options_lists_data[ee.id])
                             .flat();
-                        /*updateNodeDataOptions(TARGET_NODE.id, united_data);*/
+                            
                         deleteBlockIncomer(TARGET_NODE.id, SOURCE_NODE.id);
                         deleteBlockOutcomer(SOURCE_NODE.id, TARGET_NODE.id);
+
                     }
                 }
             });
@@ -150,13 +122,13 @@ export default function App() {
 
     useEffect(() => {
         if (rightSideNode != null) {
-            if (rightSideNode.type === 'custom') {
+            /*if (rightSideNode.type === 'custom') {
                 let parameters_of_connected_custom_node = getIncomingNodes(rightSideNode);
                 parameters_of_connected_custom_node = parameters_of_connected_custom_node.filter(item => item.type === 'parametrBlock');
                 let united_data = parameters_of_connected_custom_node.map(ee => options_lists_data[ee.id]);
                 united_data = united_data.flat();
-                /*updateNodeDataOptions(rightSideNode.id, united_data);*/
-            }
+                //updateNodeDataOptions(rightSideNode.id, united_data);
+            }*/
 
             let leftNodes = getIncomingNodes(rightSideNode);
             leftNodes.forEach(element => {
@@ -165,37 +137,6 @@ export default function App() {
             });
         }
     }, [rightSideNode/*, options_lists_data*/]);
-
-    function update_end() {
-        console.log('llawkd');
-
-        /*nodes.forEach(element => {
-            if (element.type !== 'endBlock') return;
-            function f(incomer) {
-                if (incomer.length === 0) return;
-                if (incomer.type === 'custom') {
-                    data_chain.push(incomer.data);
-                }
-                let incomers = get_incomers_node(incomer);
-                incomers.forEach(incomer => {
-                    f(incomer);
-                });
-            }
-            let data_chain = [];
-            let incomers = get_incomers_node(element);
-            incomers.forEach(incomer => {
-                f(incomer);
-            });
-            //console.log('CD - ', data_chain);
-            let lab = [];
-            data_chain.forEach(element => {
-                lab.push(element.id);
-            });
-            updateNodeDataLabel(element.id, lab);
-        });*/
-
-        console.log('llawkd2');
-    }
 
     const onDragOver = useCallback((event) => {
         event.preventDefault();

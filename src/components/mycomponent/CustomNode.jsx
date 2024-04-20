@@ -8,13 +8,14 @@ import CustomSelect from './CustomSelectParametrs';
 
 export default memo(({ data, isConnectable }) => {
     const blocks = useBlocks((state) => state.blocks);
-    //const updateBlock = useBlocks((state) => state.updateBlock);
     const parameterBlocks = useParameterBlocksData((state) => state.blocks);
-
 
 
     const [input_parameters, setInputParameters] = useState([]);
     const [output_parameters, setOutputParameters] = useState([]);
+    const [parameters_from_left_nodes, setLeftNodesParameters] = useState([]);
+
+
     const [incomingParameterBlocksIds, setincomingParameterBlocksIds] = useState([]);
     const [services_functions, setServicesFunctions] = useState([]);
     const [entry_points, setEntryPoints] = useState([]);
@@ -27,6 +28,11 @@ export default memo(({ data, isConnectable }) => {
     const selectRef = useRef(null);
     const selectRef2 = useRef(null);
     const param_ref = useRef(null);
+
+    /*
+        TODO: проверить/сделать сохранение параметров функции в blocks.data
+        , чтобы данные показывались в блоках справа 
+    */ 
 
     useEffect(() => {
         const fetchData = async (isReturn) => {
@@ -47,11 +53,11 @@ export default memo(({ data, isConnectable }) => {
                 return await response.json();
             } catch (error) {
                 console.error('Error fetching data:', error);
-                throw error; // Rethrowing error if you need to handle it later or to notify a user interface.
+                throw error;
             }
         };
 
-        const fetchInputParameters = async () => {
+        const fetchParameters = async () => {
             try {
                 const inputParams = await fetchData(false);
                 setInputParameters(inputParams);
@@ -62,8 +68,8 @@ export default memo(({ data, isConnectable }) => {
             }
         };
 
-        fetchInputParameters();
-    }, [data.function_id]); 
+        fetchParameters();
+    }, [data.function_id]);
 
     useEffect(() => {
         const defaultOptions = [
@@ -76,19 +82,17 @@ export default memo(({ data, isConnectable }) => {
         console.log(parameterBlocks);
         parameterBlocks.forEach(block => {
             if (incomingParameterBlocksIds.includes(block.selfId)) {
-                if (block.data){
+                if (block.data) {
                     if (Array.isArray(block.data)) {
                         console.log('awdawdawd', block.data);
                         block.data.forEach(parameterRow => {
                             loadoptions = [...loadoptions, parameterRow];
                         });
                     }
-                    else{
+                    else {
                         loadoptions.push(block.data);
                     }
-                    
                 }
-                
             }
         });
         const newOptions = loadoptions ? [...defaultOptions, ...loadoptions] : defaultOptions;
@@ -98,11 +102,36 @@ export default memo(({ data, isConnectable }) => {
     useEffect(() => {
         console.log('handled update of blocks');
         console.log(blocks);
+
+
+
+
+        let left_ids = [];
+        const get_left = (id) => {
+            blocks.forEach(element => {
+                if (
+                    element.type === 'custom' &&
+                    element.outcomeConnections.includes(id)
+                ) {
+                    left_ids.push(element.selfId);
+                    get_left(element.selfId)
+                }
+            });
+        }
+        get_left(data.id);
+
+        let tmpParameters = [];
         blocks.forEach(element => {
             if (element.selfId === data.id) {
                 setincomingParameterBlocksIds(element.incomeConnections);
             }
+            if (left_ids.includes(element.selfId)) {
+                tmpParameters = [...tmpParameters, element.data];
+            }
+            setLeftNodesParameters(tmpParameters);
         });
+
+
 
     }, [blocks]);
 
@@ -178,26 +207,43 @@ export default memo(({ data, isConnectable }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState(null);
     const [selectCoords, setSelectCoords] = useState({ x: 0, y: 0 });
-  
+
     const handleToggleSelect = (e) => {
-      const boundingRect = e.target.getBoundingClientRect();
-    //   console.log(e)
-      setSelectCoords({ x: e.target.offsetLeft, y: e.target.offsetTop +e.target.clientHeight+5});
-      setIsOpen(!isOpen);
+        const boundingRect = e.target.getBoundingClientRect();
+        //   console.log(e)
+        setSelectCoords({ x: e.target.offsetLeft, y: e.target.offsetTop + e.target.clientHeight + 5 });
+        setIsOpen(!isOpen);
 
     };
     const closeSelector = () => {
-        if (isOpen){
+        if (isOpen) {
             setIsOpen(false)
         }
     }
     const handleSelect = (option) => {
-      setSelectedOption(option);
+        setSelectedOption(option);
     };
-    
-      const parentRef = useRef(null);
+
+    const printOutputParamsToConsole = () => {
+        console.log('ВСЕ БЛОКИ');
+        console.log(blocks);
+
+
+        console.log('ВЫХОДНЫЕ ПАРАМЕТРЫ');
+        console.log(output_parameters); //TODO: использовать в компоненте
+
+        console.log('ПАРАМЕТРЫ С ВХОЯДЩИХ УЗЛОВ');
+        console.log(parameters_from_left_nodes);
+
+    }
+
+    const parentRef = useRef(null);
     return (
         <>
+            <button onClick={printOutputParamsToConsole}> Выходные параметры в консоли </button>
+
+
+
             <div className='component-Function-Block' ref={parentRef} tabIndex="0" onBlur={closeSelector} >
                 <Handle
                     className='HandleComponent'
@@ -210,9 +256,9 @@ export default memo(({ data, isConnectable }) => {
                 </header>
                 <hr></hr>
                 <div className='parameters-Box'>
-                        {/* <p className='h'>Входные параметры</p> */}
-                        {input_parameters.length !==0 &&(
-                            <IntaractiveSection sectionName='Входные параметры' visible='true' >
+                    {/* <p className='h'>Входные параметры</p> */}
+                    {input_parameters.length !== 0 && (
+                        <IntaractiveSection sectionName='Входные параметры' visible='true' >
                             <header className='parameter-Header'>
                                 <div className='parameter-Header_name'>Название</div>
                                 <div className='parameter-Header_type'>Тип</div>
@@ -231,7 +277,7 @@ export default memo(({ data, isConnectable }) => {
                                                 </option>
                                             ))}
                                         </select>
-                                        
+
                                         {/* <div data-id={index} className='func_parameter_value' > {data.options[selectedOptions[index]].value} </div> */}
                                     </div>
                                 ))}
@@ -277,9 +323,9 @@ export default memo(({ data, isConnectable }) => {
                 </div>
                 <div onClick={handleToggleSelect} style={{ border: '1px solid black', padding: '10px', width: '200px' }}>
                     Нажмите для открытия селекта
-                    </div>
-                    <CustomSelect isOpen={isOpen} options={['Option 1', 'Option 2', 'Option 3']} onSelect={handleSelect} selectCoords={selectCoords} />
-                            <Handle
+                </div>
+                <CustomSelect isOpen={isOpen} options={['Option 1', 'Option 2', 'Option 3']} onSelect={handleSelect} selectCoords={selectCoords} />
+                <Handle
                     className='HandleComponent'
                     type="source"
                     position={Position.Right}
