@@ -8,11 +8,8 @@ const CheckBox =()=>{
     return(
         <div className="custom-CheckBox" onClick={setState}>
             <div className="custom-CheckBox-content">
-                <div>
-                </div>
-                <div className="custom-CheckBox-circle">
-                </div>
-                <div>
+            <div className='custom-CheckBox-on' style={{ transform: `translateX(${checked ? '-50%' : '5%'})` }}>
+                <div className="custom-CheckBox-circle"></div>
                 </div>
             </div>
 

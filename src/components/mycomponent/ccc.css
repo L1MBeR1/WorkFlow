@@ -222,14 +222,15 @@ height: 10px;
 .custom-select{
     display: flex;
     flex-direction: row;
-    width: fit-content;
+    box-sizing: border-box;
+    width: 100%;
     justify-content: space-between;
     align-content: center;
     border-radius: 5px;
     gap:20px;
     padding: 5px 8px;
     border: 1px solid #ccc;
-
+    
     font-size: 10px;
 }
 .custom-select-title{
@@ -243,12 +244,13 @@ height: 10px;
     position: 'absolute';
    display: flex;
    flex-direction: column;
-   padding: 5px 4px;
+   /* padding: 5px 4px; */
  
    border-radius: 5px;
    border: 1px solid #ccc;
    background-color: white;
    min-width: 100px;
+   min-height: 20px;
    z-index: 10;
 
    font-size: 11px;
@@ -256,6 +258,7 @@ height: 10px;
 .custom-select-item{
     border-radius: 5px;
     padding: 5px 8px;
+    font-size: 10px;
     &:hover{
         background-color: #ebebeb;
     }
