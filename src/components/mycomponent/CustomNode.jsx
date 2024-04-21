@@ -173,6 +173,7 @@ export default memo(({ data, isConnectable }) => {
                     });
                     const responseData = await response.json();
                     setEntryPoints(responseData);
+                    console.log('RESP', responseData);
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -190,15 +191,15 @@ export default memo(({ data, isConnectable }) => {
 
     // }, [data, entry_points]);
 
-    // const handleServiceChange = (event) => {
-    //     const selectedOption = event.target.value;
-    //     data.selectedService = selectedOption;
-    // };
+    const handleServiceChange = (event) => {
+        const selectedOption = event.target.value;
+        data.selectedService = selectedOption;
+    };
 
-    // const handleEntryChange = (event) => {
-    //     const selectedOption = event.target.value;
-    //     data.selectedEntry = selectedOption;
-    // };
+    const handleEntryChange = (event) => {
+        const selectedOption = event.target.value;
+        data.selectedEntry = selectedOption;
+    };
 
     const filterOptionsByType = (options, type) => {
         return options
@@ -253,7 +254,7 @@ export default memo(({ data, isConnectable }) => {
                                         <div className='fucn_parameter_name'>{item.Название}</div>
                                         <div className='fucn_parameter_type'>{item.type}</div>
 
-                                        {/* <CustomSelect options={options}></CustomSelect> */}
+                                        <CustomSelect options={options}></CustomSelect>
 
                                         {/* <div data-id={index} className='func_parameter_value' > {data.options[selectedOptions[index]].value} </div> */}
                                     </div>
