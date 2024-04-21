@@ -182,23 +182,23 @@ export default memo(({ data, isConnectable }) => {
         fetchEntryPoints();
     }, [services_functions]);
 
-    useEffect(() => {
-        const selectedServiceOption = selectRef.current.value;
-        data.selectedService = selectedServiceOption;
-        const selectedEntryOption = selectRef2.current.value;
-        data.selectedEntry = selectedEntryOption;
+    // useEffect(() => {
+    //     const selectedServiceOption = selectRef.current.value;
+    //     data.selectedService = selectedServiceOption;
+    //     const selectedEntryOption = selectRef2.current.value;
+    //     data.selectedEntry = selectedEntryOption;
 
-    }, [data, entry_points]);
+    // }, [data, entry_points]);
 
-    const handleServiceChange = (event) => {
-        const selectedOption = event.target.value;
-        data.selectedService = selectedOption;
-    };
+    // const handleServiceChange = (event) => {
+    //     const selectedOption = event.target.value;
+    //     data.selectedService = selectedOption;
+    // };
 
-    const handleEntryChange = (event) => {
-        const selectedOption = event.target.value;
-        data.selectedEntry = selectedOption;
-    };
+    // const handleEntryChange = (event) => {
+    //     const selectedOption = event.target.value;
+    //     data.selectedEntry = selectedOption;
+    // };
 
     const filterOptionsByType = (options, type) => {
         return options
@@ -253,7 +253,7 @@ export default memo(({ data, isConnectable }) => {
                                         <div className='fucn_parameter_name'>{item.Название}</div>
                                         <div className='fucn_parameter_type'>{item.type}</div>
 
-                                        <CustomSelect options={options}></CustomSelect>
+                                        {/* <CustomSelect options={options}></CustomSelect> */}
 
                                         {/* <div data-id={index} className='func_parameter_value' > {data.options[selectedOptions[index]].value} </div> */}
                                     </div>

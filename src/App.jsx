@@ -5,6 +5,8 @@ import CustomNode from './components/mycomponent/CustomNode';
 import StartNode from './components/InitialNodes/startBlock';
 import EndNode from './components/InitialNodes/endBlock';
 import ParametrBlock from './components/InitialNodes/parametrBlock';
+import ResultBlock from './components/InitialNodes/resultBlock';
+
 import HeaderPanel from './headerPanel/panel';
 
 import { v4 as uuidv4 } from 'uuid';
@@ -36,6 +38,7 @@ const nodeTypes = {
     startBlock: StartNode,
     endBlock: EndNode,
     parametrBlock: ParametrBlock,
+    resultBlock:ResultBlock,
 };
 
 export default function App() {
@@ -183,6 +186,12 @@ export default function App() {
                     id: newid,
                     label: 'Блок с параметрами',
                     /*function_to_update_parameters: updateOptions,*/
+                };
+                break;
+            case 'resultBlock':
+                newData = {
+                    id: newid,
+                    label: 'Блок с результатами',
                 };
                 break;
             default:

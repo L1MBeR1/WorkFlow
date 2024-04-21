@@ -5,7 +5,7 @@ const CustomSelect = (props) => {
   const [value, setValue] = useState("Выберите");
   const [isOpen, setIsOpen] = useState(false);
   const [selectCoords, setSelectCoords] = useState({ x: 0, y: 0 });
-  console.log(props.options)
+  //console.log(props.options)
   const handleToggleSelect = (e) => {
     setSelectCoords({ x: e.target.offsetLeft, y: e.target.offsetTop + e.target.clientHeight + 5 });
     setIsOpen(!isOpen);
