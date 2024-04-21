@@ -33,7 +33,7 @@ export default memo(({ data, isConnectable }) => {
     /*
         TODO: проверить/сделать сохранение параметров функции в blocks.data
         , чтобы данные показывались в блоках справа 
-    */ 
+    */
 
     useEffect(() => {
         const fetchData = async (isReturn) => {
@@ -173,7 +173,7 @@ export default memo(({ data, isConnectable }) => {
                     });
                     const responseData = await response.json();
                     setEntryPoints(responseData);
-                    console.log('RESP', responseData);
+                    // console.log('RESP', responseData);
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -191,21 +191,21 @@ export default memo(({ data, isConnectable }) => {
 
     // }, [data, entry_points]);
 
-    const handleServiceChange = (event) => {
+    /*const handleServiceChange = (event) => {
         const selectedOption = event.target.value;
         data.selectedService = selectedOption;
-    };
+    };*/
 
-    const handleEntryChange = (event) => {
+    /*const handleEntryChange = (event) => {
         const selectedOption = event.target.value;
         data.selectedEntry = selectedOption;
-    };
+    };*/
 
-    const filterOptionsByType = (options, type) => {
+    /*const filterOptionsByType = (options, type) => {
         return options
             .filter(option => option !== undefined)
             .filter(option => option.type === type);
-    };
+    };*/
 
     const printOutputParamsToConsole = () => {
         console.log('ВСЕ БЛОКИ');
@@ -220,7 +220,7 @@ export default memo(({ data, isConnectable }) => {
 
     }
 
-    
+
     return (
         <>
             <button onClick={printOutputParamsToConsole}> Выходные параметры в консоли </button>
@@ -254,7 +254,14 @@ export default memo(({ data, isConnectable }) => {
                                         <div className='fucn_parameter_name'>{item.Название}</div>
                                         <div className='fucn_parameter_type'>{item.type}</div>
                                         <div className='func_parameter_value'>
-                                            <CustomSelect options={options} type='parameters'></CustomSelect>
+                                            <CustomSelect
+                                                options={options}
+                                                blockId={data.id}
+                                                funcParamName={item.Название}
+                                                funcParamType={item.type}
+                                                type='parameters'>
+
+                                            </CustomSelect>
                                         </div>
                                         {/* <div data-id={index} className='func_parameter_value' > {data.options[selectedOptions[index]].value} </div> */}
                                     </div>
@@ -270,7 +277,7 @@ export default memo(({ data, isConnectable }) => {
                             <header>Название сервиса</header>
 
                             <div className='parameter-Select'>
-                                <CustomSelect options={services_functions} type='services'></CustomSelect>
+                                <CustomSelect options={services_functions} blockId={data.id} type='services'></CustomSelect>
                                 {/* <div className="custom-select">
                                      <select className='select' ref={selectRef} onChange={handleServiceChange}>
                                         {services_functions.map((item, index) => (
@@ -287,7 +294,7 @@ export default memo(({ data, isConnectable }) => {
                         <div className='parameter-Container'>
                             <header>Точка входа</header>
                             <div className='parameter-Select'>
-                            <CustomSelect options={entry_points} type='uri'></CustomSelect>
+                                <CustomSelect options={entry_points} type='uri'></CustomSelect>
                                 {/* <div className="custom-select">
                                     <select className='select' ref={selectRef2} onChange={handleEntryChange}>
                                         {entry_points.map((item, index) => (
@@ -303,7 +310,7 @@ export default memo(({ data, isConnectable }) => {
                     <IntaractiveSection sectionName='Выходные параметры'>
                         <div className='parameter-Container'>
                             <div className='output-parameters'>
-                            {output_parameters.map((item, index) => (
+                                {output_parameters.map((item, index) => (
                                     <div key={index} className='output-parameter'>
                                         <div className='output-parameter-name'>{item.Название}</div>
                                         <div className='output-parameter-type'>{item.type}</div>
@@ -314,14 +321,14 @@ export default memo(({ data, isConnectable }) => {
                     </IntaractiveSection>
                 </div>
 
-                
+
                 <Handle
                     className='HandleComponent'
                     type="source"
                     position={Position.Right}
                     isConnectable={isConnectable}
                 />
-            </div>
+            </div >
         </>
     );
 });

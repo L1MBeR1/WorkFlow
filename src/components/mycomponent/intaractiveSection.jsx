@@ -18,6 +18,8 @@ const IntaractiveSection = (props) => {
         setIsVisible(!isVisible);
         console.log(contentHeight)
     };
+
+    
     
     return (
         <div className="Section">

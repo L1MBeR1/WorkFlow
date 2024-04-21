@@ -162,6 +162,7 @@ export default function App() {
         }
         let newData;
         let newid = uuidv4().replaceAll("-", "");
+        // let newid = blocks.length + 1;
         switch (type) {
             case 'custom':
                 newData = {
@@ -184,7 +185,7 @@ export default function App() {
             case 'parametrBlock':
                 newData = {
                     id: newid,
-                    label: 'Блок с параметрами',
+                    label: 'Блок с параметрами ' + newid,
                     /*function_to_update_parameters: updateOptions,*/
                 };
                 break;
