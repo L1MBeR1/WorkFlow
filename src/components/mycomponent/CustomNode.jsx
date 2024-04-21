@@ -1,11 +1,11 @@
 import React, { useState, useEffect, memo, useRef } from 'react';
 import { Handle, Position } from 'reactflow';
 import './ccc.css';
-import { ReactComponent as Arrow } from './arrow.svg';
+
 import { useBlocks } from '../../store';
 import IntaractiveSection from './intaractiveSection';
 import { useParameterBlocksData } from '../../store';
-import CustomSelect from './CustomSelectWindow.jsx';
+import CustomSelect from './CustomSelect.jsx';
 
 export default memo(({ data, isConnectable }) => {
     const blocks = useBlocks((state) => state.blocks);
@@ -21,13 +21,13 @@ export default memo(({ data, isConnectable }) => {
     const [services_functions, setServicesFunctions] = useState([]);
     const [entry_points, setEntryPoints] = useState([]);
     const [options, setOptions] = useState([
-        { id: '1', value: '-', type: 'string', name: '-' },
-        { id: '2', value: '-', type: 'boolean', name: '-' },
-        { id: '3', value: '-', type: 'number', name: '-' },
+        // { id: '1', value: '-', type: 'string', name: '-' },
+        // { id: '2', value: '-', type: 'boolean', name: '-' },
+        // { id: '3', value: '-', type: 'number', name: '-' },
     ]);
 
-    const selectRef = useRef(null);
-    const selectRef2 = useRef(null);
+    // const selectRef = useRef(null);
+    // const selectRef2 = useRef(null);
     const param_ref = useRef(null);
 
     /*
@@ -74,9 +74,9 @@ export default memo(({ data, isConnectable }) => {
 
     useEffect(() => {
         const defaultOptions = [
-            { id: '1', value: '-', type: 'string', name: '-' },
-            { id: '2', value: '-', type: 'boolean', name: '-' },
-            { id: '3', value: '-', type: 'number', name: '-' },
+            // { id: '1', value: '-', type: 'string', name: '-' },
+            // { id: '2', value: '-', type: 'boolean', name: '-' },
+            // { id: '3', value: '-', type: 'number', name: '-' },
         ];
         let loadoptions = [];
         console.log('handled update of parameter blocks');
@@ -85,7 +85,7 @@ export default memo(({ data, isConnectable }) => {
             if (incomingParameterBlocksIds.includes(block.selfId)) {
                 if (block.data) {
                     if (Array.isArray(block.data)) {
-                        console.log('awdawdawd', block.data);
+                        console.log('awdawdawd', block);
                         block.data.forEach(parameterRow => {
                             loadoptions = [...loadoptions, parameterRow];
                         });
@@ -205,25 +205,6 @@ export default memo(({ data, isConnectable }) => {
             .filter(option => option !== undefined)
             .filter(option => option.type === type);
     };
-    const [isOpen, setIsOpen] = useState(false);
-    const [selectedOption, setSelectedOption] = useState(null);
-    const [selectCoords, setSelectCoords] = useState({ x: 0, y: 0 });
-
-    const handleToggleSelect = (e) => {
-        const boundingRect = e.target.getBoundingClientRect();
-        //console.log(e)
-        setSelectCoords({ x: e.target.offsetLeft, y: e.target.offsetTop + e.target.clientHeight + 5 });
-        setIsOpen(!isOpen);
-
-    };
-    const closeSelector = () => {
-        if (isOpen) {
-            setIsOpen(false)
-        }
-    }
-    const handleSelect = (option) => {
-        setSelectedOption(option);
-    };
 
     const printOutputParamsToConsole = () => {
         console.log('ВСЕ БЛОКИ');
@@ -238,14 +219,14 @@ export default memo(({ data, isConnectable }) => {
 
     }
 
-    const parentRef = useRef(null);
+    
     return (
         <>
             <button onClick={printOutputParamsToConsole}> Выходные параметры в консоли </button>
 
 
 
-            <div className='component-Function-Block' ref={parentRef} tabIndex="0" onBlur={closeSelector} onClick={closeSelector}>
+            <div className='component-Function-Block' >
                 <Handle
                     className='HandleComponent'
                     type="target"
@@ -271,13 +252,8 @@ export default memo(({ data, isConnectable }) => {
                                     <div key={index} className='parameter'>
                                         <div className='fucn_parameter_name'>{item.Название}</div>
                                         <div className='fucn_parameter_type'>{item.type}</div>
-                                        <select data-id={index} /*onClick={updateOptions}*/ className='fucn_parameter_value'>
-                                            {filterOptionsByType(options, item.type).map(option => (
-                                                <option data-id={option.id} key={option.id} value={option.value}>
-                                                    {option.name} ({option.value})
-                                                </option>
-                                            ))}
-                                        </select>
+
+                                        <CustomSelect options={options}></CustomSelect>
 
                                         {/* <div data-id={index} className='func_parameter_value' > {data.options[selectedOptions[index]].value} </div> */}
                                     </div>
@@ -294,13 +270,13 @@ export default memo(({ data, isConnectable }) => {
 
                             <div className='parameter-Select'>
                                 <div className="custom-select">
-                                    <select className='select' ref={selectRef} onChange={handleServiceChange}>
+                                    {/* <select className='select' ref={selectRef} onChange={handleServiceChange}>
                                         {services_functions.map((item, index) => (
                                             <option key={index} value={index}>
                                                 {item.Название}
                                             </option>
                                         ))}
-                                    </select>
+                                    </select> */}
                                 </div>
                             </div>
                         </div>
@@ -309,7 +285,8 @@ export default memo(({ data, isConnectable }) => {
                         <div className='parameter-Container'>
                             <header>Точка входа</header>
                             <div className='parameter-Select'>
-                                <div className="custom-select">
+                            <CustomSelect options={entry_points}></CustomSelect>
+                                {/* <div className="custom-select">
                                     <select className='select' ref={selectRef2} onChange={handleEntryChange}>
                                         {entry_points.map((item, index) => (
                                             <option key={index} value={index}>
@@ -317,7 +294,7 @@ export default memo(({ data, isConnectable }) => {
                                             </option>
                                         ))}
                                     </select>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                     </IntaractiveSection>
@@ -334,13 +311,8 @@ export default memo(({ data, isConnectable }) => {
                         </div>
                     </IntaractiveSection>
                 </div>
-                <div className="cc" onClick={handleToggleSelect} >
-                    <div className='cc-title'>Выберите</div>
 
-                    <div className='Arrow'><Arrow className='svg' style={{ transform: isOpen ? 'scaleY(-1)' : 'scaleY(1)' }}></Arrow></div>
-                    
-                </div>
-                <CustomSelect isOpen={isOpen} options={['Option 1', 'Option 2', 'Option 3']} onSelect={handleSelect} selectCoords={selectCoords} />
+                
                 <Handle
                     className='HandleComponent'
                     type="source"
