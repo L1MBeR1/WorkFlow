@@ -78,7 +78,8 @@ export default memo(({ data, isConnectable }) => {
             // { id: '2', value: '-', type: 'boolean', name: '-' },
             // { id: '3', value: '-', type: 'number', name: '-' },
         ];
-        let loadoptions = [];
+        /*let loadoptions = [];
+        let testing_loadoptions = [];
         console.log('handled update of parameter blocks');
         console.log(parameterBlocks);
         parameterBlocks.forEach(block => {
@@ -89,15 +90,43 @@ export default memo(({ data, isConnectable }) => {
                         block.data.forEach(parameterRow => {
                             loadoptions = [...loadoptions, parameterRow];
                         });
+                        
                     }
                     else {
                         loadoptions.push(block.data);
                     }
                 }
             }
+        });*/
+        let loadoptions = [];
+        let testing_loadoptions = [];
+        console.log('handled update of parameter blocks');
+        console.log(parameterBlocks);
+        parameterBlocks.forEach(block => {
+            if (incomingParameterBlocksIds.includes(block.selfId)) {
+                if (block.data) {
+                    if (Array.isArray(block.data)) {
+                        console.log('awdawdawd', block);
+
+                        let tmpParameters = [];
+                        block.data.forEach(parameterRow => {
+                            tmpParameters = [...tmpParameters, parameterRow];
+                        });
+                        testing_loadoptions[block.label] = tmpParameters;
+                    } else {
+
+                        testing_loadoptions[block.label] = [block.data];
+                    }
+                }
+            }
         });
-        const newOptions = loadoptions ? [...defaultOptions, ...loadoptions] : defaultOptions;
-        setOptions(newOptions);
+
+        const newOptions = testing_loadoptions ? [...defaultOptions, ...testing_loadoptions] : defaultOptions;
+        console.log('new', newOptions);
+        console.log('new2', testing_loadoptions);
+        
+        // setOptions(newOptions);
+        setOptions(testing_loadoptions);
     }, [parameterBlocks, incomingParameterBlocksIds]);
 
     useEffect(() => {
@@ -209,7 +238,7 @@ export default memo(({ data, isConnectable }) => {
 
     const printOutputParamsToConsole = () => {
         console.log('ВСЕ БЛОКИ');
-        console.log(blocks);
+        console.log(blocks, parameterBlocks);
 
 
         console.log('ВЫХОДНЫЕ ПАРАМЕТРЫ');

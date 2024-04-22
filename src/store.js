@@ -80,10 +80,11 @@ export const useParameterBlocksData = create(set => ({
     blocks: [],
     loading: false,
     error: null,
-    add: (id, type, data) => set(state => {
+    add: (id, type, label, data) => set(state => {
         const newblock = {
             selfId: id,
             type: type,
+            label: label,
             data: data,
         };
 
@@ -93,6 +94,16 @@ export const useParameterBlocksData = create(set => ({
         const updatedBlocks = state.blocks.map((block) => {
             if (block.selfId === id) {
                 return { ...block, data: newData };
+            }
+            return block;
+        });
+
+        return { blocks: updatedBlocks };
+    }),
+    updateLabel: (id, newLabel) => set(state => {
+        const updatedBlocks = state.blocks.map(block => {
+            if (block.selfId === id) {
+                return { ...block, label: newLabel };
             }
             return block;
         });

@@ -212,7 +212,7 @@ export default function App() {
         setNodes((nds) => nds.concat(newNode));
         console.log('spawned with id ', newid);
         if (type === 'parametrBlock') {
-            addParameterBlock(newNode[0].id, newNode[0].type, newNode[0].data);
+            addParameterBlock(newNode[0].id, newNode[0].type, newNode[0].data.label, newNode[0].data);
         }
         if (type !== 'parametrBlock') {
             addBlock(newNode[0].id, newNode[0].type, [], [], newNode[0].data);

@@ -5,13 +5,32 @@ import { useBlocks } from '../../store';
 
 const CustomSelect = (props) => {
     const blocks = useBlocks((state) => state.blocks);
-    const [value, setValue] = useState("Выберите");
+    const [selectedOption, setValue] = useState({
+        value: "Выберите",
+        id: null,
+        type: null,
+    });
     const [isOpen, setIsOpen] = useState(false);
     const [selectCoords, setSelectCoords] = useState({ x: 0, y: 0 });
     // console.log(props.options);
-    if (((props.options.length === 0) && !(value === "Выберите"))) {
-        setValue("Выберите")
+    /*if (((props.options.length === 0) && !(selectedOption.value === "Выберите"))) {
+        setValue({
+            value: "Выберите",
+            id: null,
+            type: null,
+        })
+    }*/
+    if (
+        (Object.values(props.options).flatMap(options => options).length === 0) &&
+        !(selectedOption.value === "Выберите")
+    ) {
+        setValue({
+            value: "Выберите",
+            id: null,
+            type: null,
+        });
     }
+
     const handleToggleSelect = (e) => {
         setSelectCoords({ x: e.target.offsetLeft, y: e.target.offsetTop + e.target.clientHeight + 5 });
         setIsOpen(!isOpen);
@@ -23,12 +42,48 @@ const CustomSelect = (props) => {
         }
     };
 
+    /*useEffect(() => {
+        const selectedOptionId = selectedOption.id;
+        const isParameterType = props.type === 'parameters';
+        const isSelectedOptionNotNull = selectedOptionId !== null;
+        const selectedOptionFromProps = props.options.find(option => option.id === selectedOptionId);
+
+        if (isParameterType && isSelectedOptionNotNull && selectedOptionFromProps) {
+            const updatedValue = {
+                value: selectedOptionFromProps.name,
+                id: selectedOptionFromProps.id,
+                type: selectedOptionFromProps.type,
+            };
+
+            const isDifferentType = selectedOptionFromProps.type !== selectedOption.type;
+
+            setValue(isDifferentType ? { value: "Выберите", id: null, type: null } : updatedValue);
+        }
+    }, [props.options]);*/
+
     useEffect(() => {
-        console.log('props.options changed', props.options);
+        const selectedOptionId = selectedOption.id;
+        const isParameterType = props.type === 'parameters';
+        const isSelectedOptionNotNull = selectedOptionId !== null;
 
-        //props.options = {...props.options, funcParamName: props.funcParamName, funcParamType: props.funcParamType};
+        // Ищем выбранный объект в массиве options
+        const selectedOptionFromProps = Object.values(props.options)
+            .flatMap(options => options)
+            .find(option => option.id === selectedOptionId);
 
+        if (isParameterType && isSelectedOptionNotNull && selectedOptionFromProps) {
+            const updatedValue = {
+                value: selectedOptionFromProps.name,
+                id: selectedOptionFromProps.id,
+                type: selectedOptionFromProps.type,
+            };
+
+            const isDifferentType = selectedOptionFromProps.type !== selectedOption.type;
+
+            setValue(isDifferentType ? { value: "Выберите", id: null, type: null } : updatedValue);
+        }
     }, [props.options]);
+
 
     const handleSelect = (item) => {
         const currentBlock = blocks.find(block => block.selfId === props.blockId);
@@ -60,65 +115,94 @@ const CustomSelect = (props) => {
                 funcParamType: props.funcParamType
             }];
         }
+        console.log('item', item);
 
-        setValue(item.name);
+        setValue({
+            "value": item.name,
+            "id": item.id,
+            type: item.type,
+        });
     };
 
 
-
-    /*FIXME: надо добавить фильтр по типу (item.type)
-    
     const filterOptionsByType = (options, type) => {
         return options
             .filter(option => option !== undefined)
             .filter(option => option.type === type);
-    };*/
+    };
 
-    /*FIXME: нужен ивент для обнуления параметров, 
-        если удален конкретный блок с параметрами
-        
-     */
+
 
     return (
         <div className="custom-select" onClick={handleToggleSelect} tabIndex="0" onBlur={closeSelector}>
-            <div className='custom-select-title'>{value}</div>
+            <div className='custom-select-title'>{selectedOption.value}</div>
             <div className='Arrow'><Arrow className='svg' style={{ transform: isOpen ? 'scaleY(-1)' : 'scaleY(1)' }}></Arrow></div>
-            <div className='custom-select-content' style={{ display: isOpen ? 'flex' : 'none', position: 'absolute', top: selectCoords.y, left: selectCoords.x }}>
+            {/* <div className='custom-select-content' style={{ display: isOpen ? 'flex' : 'none', position: 'absolute', top: selectCoords.y, left: selectCoords.x }}>
                 {props.type === 'parameters' && (
-                    props.options.map((item, index) => (
+                    filterOptionsByType(props.options, props.funcParamType).map((item, index) => (
                         <div key={index} className='custom-select-item' onClick={() => handleSelect(item)}>
-                            {/* TODO: В прошлых списках использовалось локальное состояние "options" 
-                                для хранения выбранных параметров вместо локальной переменной "item":
-
-                                <select data-id={index} onClick={changeSelect} className='fucn_parameter_value'>
-                                    {filterOptionsByType(options, item.type).map(option => (
-                                        <option data-id={option.id} key={option.id} value={option.value}>
-                                            {option.name} ({option.value})
-                                        </option>
-                                    ))}
-                                </select>
-
-                                В том случае данные обновлялись автоматически при обновлении состояния блока,
-                            
-                            */}
                             {item.name}
                         </div>
                     ))
+                )} */}
+            <div className='custom-select-content' style={{ display: isOpen ? 'flex' : 'none', position: 'absolute', top: selectCoords.y, left: selectCoords.x }}>
+                {/* {props.type === 'parameters' && filterOptionsByType(props.options, props.funcParamType).length > 0 ? (
+                    filterOptionsByType(props.options, props.funcParamType).map((item, index) => (
+                        <div key={index} className='custom-select-item' onClick={() => handleSelect(item)}>
+                            {item.name}
+                        </div>
+                    ))
+                ) : (
+                    
+                    <div className='not-clickable-text'>Нет данных</div>
+                )} */}
+                {/* {props.type === 'parameters' && Object.entries(props.options).flatMap(([label, options]) => options).filter(item => item.type === props.funcParamType).length > 0 ? (
+                    Object.entries(props.options).flatMap(([label, options]) => options).filter(item => item.type === props.funcParamType).map((item, index) => (
+                        <div key={index} className='custom-select-item' onClick={() => handleSelect(item)}>
+                            {label} - {item.name}
+                        </div>
+                    ))
+                ) : (//FIXME: не стильно
+                    <div className='not-clickable-text'>Нет данных</div>
+                )} */}
+                {props.type === 'parameters' ? (
+                    <>
+                        {Object.entries(props.options)
+                            .flatMap(([label, options]) => options)
+                            .filter(item => item.type === props.funcParamType)
+                            .map((item, index) => (
+                                <div key={index} className='custom-select-item' onClick={() => handleSelect(item)}>
+                                    {Object.keys(props.options).find(key => props.options[key].includes(item))} - {item.name}
+                                </div>
+                            ))}
+                        {Object.entries(props.options)
+                            .flatMap(([label, options]) => options)
+                            .filter(item => item.type === props.funcParamType)
+                            .length === 0 && <div className='not-clickable-text'>Нет данных</div>}
+                    </>
+                ) : (
+                    <div className='not-clickable-text'>Нет данных</div>
                 )}
+
+
+
+
+
                 {props.type === 'services' && (
-                    props.options.map((item, index) => (
+                    Object.values(props.options).flatMap(options => options).map((item, index) => (
                         <div key={index} className='custom-select-item' onClick={() => handleSelect(item.Название)}>
                             {item.Название}
                         </div>
                     ))
                 )}
                 {props.type === 'uri' && (
-                    props.options.map((item, index) => (
+                    Object.values(props.options).flatMap(options => options).map((item, index) => (
                         <div key={index} className='custom-select-item' onClick={() => handleSelect(item.uri)}>
                             {item.uri}
                         </div>
                     ))
                 )}
+
                 {/* props.options.map((item, index) => (
                     <div key={index} className='custom-select-item' onClick={() => handleSelect(item)}> {item.name || item.uri}</div>
                 )) */}

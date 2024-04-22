@@ -7,7 +7,13 @@ import { v4 as uuidv4 } from 'uuid';
 
 export default memo(({ data, isConnectable }) => {
     const updateParameterBlock = useParameterBlocksData((state) => state.update);
+    const updateParameterBlockLabel = useParameterBlocksData((state) => state.updateLabel);
     const [parameters, setParameters] = useState([{ id: uuidv4(), name: '', type: 'string', value: '' }]);
+    const [header, setHeader] = useState(data.label);
+
+    
+
+
 
     const addParameter = () => {
         //paramID = `${uuidv4()}`;
@@ -67,17 +73,24 @@ export default memo(({ data, isConnectable }) => {
         //data.parameters = updatedParameters;
     };
 
+    const handleBlur = (e) => {
+        setHeader(e.target.textContent);
+        updateParameterBlockLabel(data.id, e.target.textContent)
+        console.log('setted', e.target.textContent);
+        
+    };
 
     return (
         <>
             <div>
                 <div className='parametrNode'tabIndex="0" >
-                    <div>
-                        {data.label}
+                    {/* FIXME: текст выделяется только ПКМ*/}
+                    <div contentEditable={true} onBlur={handleBlur}>
+                        {header}
                     </div>
                     <hr></hr>
                     <header >
-                        <div className='header-name'>Название</div>
+                        <div   className='header-name'>Название</div>
                         <div className='header-type'>Тип</div>
                         <div className='header-value'>Значение</div>
                     </header>
