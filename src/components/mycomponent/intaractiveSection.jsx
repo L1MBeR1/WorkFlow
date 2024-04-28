@@ -23,14 +23,17 @@ const IntaractiveSection = (props) => {
     
     return (
         <div className="Section">
-            
-            <div className="Trigger" onClick={handleComponentClick}>
-            <div className='Arrow'>
-                        <ComArrow className='svg' style={{ transform: isVisible ? 'scaleY(-1)' : 'scaleY(1)' }}></ComArrow>
-                </div>
-                <p>{props.sectionName}</p>
+            <header className='Section-header'>
+                <div className="Trigger" onClick={handleComponentClick}>
+                    <div className='Arrow'>
+                    <ComArrow className='svg' style={{ transform: isVisible ? 'scaleY(-1)' : 'scaleY(1)' }}></ComArrow>
+                    </div>
+                    <p>{props.sectionName}</p>
 
-            </div>
+                </div>
+                
+                {props.button && <div className='Section-button'>{props.button}</div>}
+            </header>
             <div
                 className='section-content'
                 style={{ height: isVisible ? contentHeight : 0 }}

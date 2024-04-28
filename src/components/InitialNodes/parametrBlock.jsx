@@ -90,7 +90,11 @@ export default memo(({ data, isConnectable }) => {
                         {header}
                     </div>
                     <hr></hr>
-                    <IntaractiveSection sectionName='Параметры' visible='true'>
+                    <IntaractiveSection sectionName='Параметры' visible='true'
+                     button={
+                     <div className='addButton' onClick={addParameter}>
+                     +
+                    </div>}>
                         <header >
                             <div   className='header-name'>Название</div>
                             <div className='header-type'>Тип</div>
@@ -117,10 +121,6 @@ export default memo(({ data, isConnectable }) => {
                             ))}
                         </div>
                     </IntaractiveSection>
-                    
-                    <div className='addButton' onClick={addParameter}>
-                        +
-                    </div>
                 </div>
 
                 <Handle
