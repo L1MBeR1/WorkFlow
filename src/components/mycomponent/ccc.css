@@ -1,33 +1,37 @@
 .component-Function-Block {
-    background-color: white;
+    background-color: rgb(247, 246, 248);
     padding: 15px;
-    border: 1px #f0f0f0 solid;
+    outline: 1px #f0f0f0 solid;
     border-radius: 10px;
     max-width: 350px;
     font-size: 14px;
     font-family: "Roboto", sans-serif;
     font-weight: 400;
     font-style: normal;
-    box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.075);
+    box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.1);
+    /* box-shadow: rgba(67, 71, 85, 0.27) 0px 0px 0.25em, rgba(90, 125, 188, 0.05) 0px 0.25em 1em; */
 
 }
-
-.component-Function-Block:focus {
-    border: 1px #1e31db solid;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 6px 20px 0 rgba(0, 0, 0, 0.08);
-
-    .react-flow__handle {
-        transform: scale(1.2) translate(-0%, -45%);
-    }
-}
-
 .component-Function-Block:hover {
+    outline: 1px #cecece solid;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 6px 20px 0 rgba(0, 0, 0, 0.08);
 
     .HandleComponent {
+        transition:transform 0.4s ease;
         transform: scale(1.8) translate(-0%, -25%);
     }
 }
+.component-Function-Block:focus {
+    outline: 1px #1e31db solid;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 6px 20px 0 rgba(0, 0, 0, 0.08);
+
+    .react-flow__handle {
+        transition:transform 0.4s ease;
+        transform: scale(1.4) translate(-0%, -45%);
+    }
+}
+
+
 
 .react-flow__handle {
     background-color: #1e31db !important;
@@ -256,8 +260,8 @@
     gap: 20px;
     padding: 5px 8px;
     border: 1px solid #ccc;
-    /* cursor: context-menu; */
-    cursor: wait;
+    cursor: pointer;
+    /* cursor: wait; */
     /*BUG: поменять на cursor: context-menu*/
     font-size: 10px;
 }

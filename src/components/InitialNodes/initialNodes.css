@@ -1,5 +1,5 @@
 .node {
-    background-color: white;
+    background-color: rgb(247, 246, 248);
     padding: 15px;
     border: 1px #f0f0f0 solid;
     border-radius: 10px;
@@ -10,6 +10,13 @@
     font-style: normal;
     box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.075);
 }
+.node:hover{
+    outline: 1px #cecece solid;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 6px 20px 0 rgba(0, 0, 0, 0.08);
+    .HandleComponent {
+        transform: scale(1.8) translate(-0%, -25%);
+    }
+}
 .node:focus{
     border: 1px #1e31db solid;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 6px 20px 0 rgba(0, 0, 0, 0.08);
@@ -17,12 +24,7 @@
         transform: scale(1.2) translate(-0%, -45%);
     } 
 }
-.node:hover{
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 6px 20px 0 rgba(0, 0, 0, 0.08);
-    .HandleComponent {
-        transform: scale(1.8) translate(-0%, -25%);
-    }
-}
+
 .HandleComponent {
     background: #1e31db;
 
@@ -56,10 +58,11 @@
     display: flex;
     color: #ffffff;
     justify-content: center;
-    padding: 5px 5px;
+    /* padding: 5px 5px; */
     font-size: 12px;
+    width: 40px; 
 
-    background-color: rgb(46, 77, 161);
+    background-color: #1e31db;
     border-radius: 20px;
 }
 
@@ -122,15 +125,22 @@ header {
     font-size: 12px;
 }
 .delete_button{
+    display: flex;
+    justify-items: center;
+    align-items: center;
     cursor: pointer;
     width: 12px;
     height: 12px;
+    margin-top: -2px;
 }
 
 .delete_img{
 stroke:gray;
   width: 100%;
   height: auto;
+  &:hover{
+    stroke: red;
+  }
 }
 .custom-CheckBox{
     background-color: #ccc;
