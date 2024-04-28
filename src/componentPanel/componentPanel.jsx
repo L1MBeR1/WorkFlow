@@ -102,6 +102,7 @@ const ComponentPanel = () => {
               <InitialNode name={"Конечный блок"} type={"endBlock"}></InitialNode>
               <InitialNode name={"Блок с параметрами"} type={"parametrBlock"}></InitialNode>
               <InitialNode name={"Блок с результатами"} type={"resultBlock"}></InitialNode>
+              <InitialNode name={"Тестовый блок"} type={"resultBlock"}></InitialNode>
             </div>
           )}
           {panelMode === 'Components' && (

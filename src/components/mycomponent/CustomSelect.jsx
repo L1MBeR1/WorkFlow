@@ -170,7 +170,7 @@ const CustomSelect = (props) => {
                 ) : (//FIXME: не стильно
                     <div className='not-clickable-text'>Нет данных</div>
                 )} */}
-                {props.type === 'parameters' ? (
+                {props.type === 'parameters' && (
                     <>
                         {/* {Object.entries(props.options)
                             .flatMap(([label, options]) => options)
@@ -211,9 +211,11 @@ const CustomSelect = (props) => {
                             .filter(item => item.type === props.funcParamType)
                             .length === 0 && <div className='not-clickable-text'>Нет данных</div>} */}
                     </>
-                ) : (
-                    <div className='not-clickable-text'>Нет данных</div>
-                )}
+                ) 
+                // : (
+                //     <div className='not-clickable-text'>Нет данных</div>
+                // )
+                }
 
 
 
