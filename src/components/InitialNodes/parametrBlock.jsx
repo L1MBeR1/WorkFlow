@@ -83,10 +83,12 @@ export default memo(({ data, isConnectable }) => {
 
     return (
         <>
-            <div>
-                <div className='node'tabIndex="0" >
+            <div className='node' tabIndex="0">
+                <div  >
                     {/* FIXME: текст выделяется только ПКМ*/}
-                    <div contentEditable={true} onBlur={handleBlur}>
+                    <div 
+                    // contentEditable={true} 
+                    onBlur={handleBlur}>
                         {header}
                     </div>
                     <hr></hr>
@@ -121,6 +123,7 @@ export default memo(({ data, isConnectable }) => {
                             ))}
                         </div>
                     </IntaractiveSection>
+                    
                 </div>
 
                 <Handle

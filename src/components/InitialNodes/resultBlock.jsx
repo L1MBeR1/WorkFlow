@@ -112,14 +112,14 @@ export default memo(({ data, isConnectable }) => {
 
     return (
         <>
-            <div >
+            <div className='node' tabIndex="0">
                 <Handle
                     className='HandleComponent'
                     type="target"
                     position={Position.Left}
                     isConnectable={isConnectable}
                 />
-                <div className='node result-block' tabIndex="0">
+                <div >
                     {data.label}
                     <hr></hr>
                     <div className='result-block-content'>

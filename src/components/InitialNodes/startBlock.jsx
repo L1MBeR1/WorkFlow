@@ -4,8 +4,8 @@ import './initialNodes.css';
 export default memo(({ data, isConnectable }) => {
     return (
       <>
-        <div >
         <div className='node'tabIndex="0">
+        <div >
             {data.label}
         </div>
 

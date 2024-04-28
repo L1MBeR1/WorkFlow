@@ -14,6 +14,7 @@
     outline: 1px #cecece solid;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 6px 20px 0 rgba(0, 0, 0, 0.08);
     .HandleComponent {
+        transition:transform 0.4s ease;
         transform: scale(1.8) translate(-0%, -25%);
     }
 }
@@ -21,6 +22,7 @@
     border: 1px #1e31db solid;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 6px 20px 0 rgba(0, 0, 0, 0.08);
     .react-flow__handle{
+        transition:transform 0.4s ease;
         transform: scale(1.2) translate(-0%, -45%);
     } 
 }
@@ -71,7 +73,7 @@ header {
     color: grey;
     display: flex;
     flex-direction: row;
-    padding-bottom: 5px;
+    /* padding-bottom: 5px; */
     justify-content: stretch;
 }
 

@@ -6,6 +6,7 @@ import StartNode from './components/InitialNodes/startBlock';
 import EndNode from './components/InitialNodes/endBlock';
 import ParametrBlock from './components/InitialNodes/parametrBlock';
 import ResultBlock from './components/InitialNodes/resultBlock';
+import CodeBlock from './components/InitialNodes/codeBlock';
 
 import HeaderPanel from './headerPanel/panel';
 
@@ -39,6 +40,7 @@ const nodeTypes = {
     endBlock: EndNode,
     parametrBlock: ParametrBlock,
     resultBlock:ResultBlock,
+    codeBlock:CodeBlock,
 };
 
 export default function App() {
@@ -193,6 +195,12 @@ export default function App() {
                 newData = {
                     id: newid,
                     label: 'Блок с результатами',
+                };
+                break;
+            case 'codeBlock':
+                newData = {
+                    id: newid,
+                    label: 'Блок с кодом',
                 };
                 break;
             default:
