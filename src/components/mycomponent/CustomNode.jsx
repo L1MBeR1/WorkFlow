@@ -6,12 +6,14 @@ import { useBlocks } from '../../store';
 import IntaractiveSection from './intaractiveSection';
 import { useParameterBlocksData } from '../../store';
 import CustomSelect from './CustomSelect.jsx';
+import e from 'cors';
 
 export default memo(({ data, isConnectable }) => {
     const blocks = useBlocks((state) => state.blocks);
+    const updateBlock = useBlocks((state) => state.updateBlock); 
     const parameterBlocks = useParameterBlocksData((state) => state.blocks);
 
-
+    
     const [input_parameters, setInputParameters] = useState([]);
     const [output_parameters, setOutputParameters] = useState([]);
     const [parameters_from_left_nodes, setLeftNodesParameters] = useState([]);
@@ -100,13 +102,13 @@ export default memo(({ data, isConnectable }) => {
         });*/
         let loadoptions = [];
         let testing_loadoptions = [];
-        console.log('handled update of parameter blocks');
-        console.log(parameterBlocks);
+        // console.log('handled update of parameter blocks');
+        // console.log(parameterBlocks);
         parameterBlocks.forEach(block => {
             if (incomingParameterBlocksIds.includes(block.selfId)) {
                 if (block.data) {
                     if (Array.isArray(block.data)) {
-                        console.log('awdawdawd', block);
+                        // console.log('awdawdawd', block);
 
                         let tmpParameters = [];
                         block.data.forEach(parameterRow => {
@@ -121,15 +123,111 @@ export default memo(({ data, isConnectable }) => {
             }
         });
 
+        // let left_data_by_label = [];
+        // const get_left = (id) => {
+        //     blocks.forEach(element => {
+        //         if (
+        //             element.type === 'custom' &&
+        //             element.outcomeConnections.includes(id)
+        //         ) {
+        //             // let tmpParameters = [];
+        //             // element.data.parameters.forEach(parameterRow => {
+        //             //     tmpParameters = [...tmpParameters, parameterRow];
+        //             // });
+        //             console.log('ЧТототут', element.data.parameters);
+        //             testing_loadoptions[element.data.label] = element.data.parameters;
+
+
+        //             left_data_by_label.push(element.selfId);
+        //             get_left(element.selfId)
+        //         }
+        //     });
+        // }
+        // get_left(data.id);
+
+        // console.log('handled update of blocks');
+        // console.log(blocks);
+
+        let left_ids = [];
+        const get_left = (id) => {
+            blocks.forEach(element => {
+                if (
+                    element.type === 'custom' &&
+                    element.outcomeConnections.includes(id)
+                ) {
+                    // console.log('ЧТототут', element.selfId);
+                    left_ids.push(element.selfId);
+                    get_left(element.selfId)
+                }
+            });
+        }
+        get_left(data.id);
+
+        let tmpParameters = [];
+        blocks.forEach(element => {
+            if (element.selfId === data.id) {
+                setincomingParameterBlocksIds(element.incomeConnections);
+            }
+            if (left_ids.includes(element.selfId)) {
+                tmpParameters = [...tmpParameters, element.data];
+            }
+            setLeftNodesParameters(tmpParameters);
+        });
+        /////////////////
+        //
+        //
+        //
+        let tmpParametersMerged = [];
+        let wasIds = [];
+        tmpParameters.forEach(parameters => {
+
+
+            parameters.parameters.forEach(parameterRow => {
+                console.log('PARAMS3', parameterRow);
+                if (!wasIds.includes(parameterRow.id)) {
+                    wasIds.push(parameterRow.id);
+                    tmpParametersMerged.push(parameterRow);
+                    testing_loadoptions[parameters.label] = parameterRow;
+                }
+            })
+
+        });
+
+        tmpParametersMerged.forEach(element => {
+            console.log('e', element);
+            //testing_loadoptions[element.label] = element.parameters;
+        });
+
+
+        const keys = Object.keys(testing_loadoptions);
+        keys.forEach(key => {
+            if (!Array.isArray(testing_loadoptions[key])) {
+                console.log(`${key} is not an array`);
+                testing_loadoptions[key] = [testing_loadoptions[key]];
+            }
+        });
+        /*if (!Array.isArray(testing_loadoptions)) {
+            console.log('notarray');
+            testing_loadoptions = [testing_loadoptions];
+        }*/
+
+        console.log('UUU', testing_loadoptions);
+        console.log('GGG', tmpParameters);
+        console.log('HHH', tmpParametersMerged);
+
         const newOptions = testing_loadoptions ? [...defaultOptions, ...testing_loadoptions] : defaultOptions;
-        console.log('new', newOptions);
-        console.log('new2', testing_loadoptions);
-        
+        // console.log('new', newOptions);
+        // console.log('new2', testing_loadoptions);
+
         // setOptions(newOptions);
         setOptions(testing_loadoptions);
-    }, [parameterBlocks, incomingParameterBlocksIds]);
 
-    useEffect(() => {
+        //updateBlock(data.id, { ...data, parameters: testing_loadoptions });
+        
+        // console.log('FINALOPTIONS', testing_loadoptions);
+    }, [parameterBlocks, incomingParameterBlocksIds, blocks]);
+
+    /*useEffect(() => {
         console.log('handled update of blocks');
         console.log(blocks);
 
@@ -143,6 +241,7 @@ export default memo(({ data, isConnectable }) => {
                     element.type === 'custom' &&
                     element.outcomeConnections.includes(id)
                 ) {
+                    console.log('ЧТототут', element.selfId);
                     left_ids.push(element.selfId);
                     get_left(element.selfId)
                 }
@@ -161,9 +260,11 @@ export default memo(({ data, isConnectable }) => {
             setLeftNodesParameters(tmpParameters);
         });
 
+        console.log('TTT', options, tmpParameters);
 
+        setOptions([...options, ...tmpParameters]);
 
-    }, [blocks]);
+    }, [blocks]);*/
 
     useEffect(() => {
         const fetchInputParameters = async () => {

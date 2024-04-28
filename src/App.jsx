@@ -103,10 +103,10 @@ export default function App() {
                 }
             });
             setEdges((oldEdges) => applyEdgeChanges(changes, oldEdges));
-            console.log('rre');
-            console.log(nodes);
-            console.log('rre');
-            console.log(parameterBlocks);
+            // console.log('rre');
+            // console.log(nodes);
+            // console.log('rre');
+            // console.log(parameterBlocks);
         },
         [setEdges, nodes],
     );

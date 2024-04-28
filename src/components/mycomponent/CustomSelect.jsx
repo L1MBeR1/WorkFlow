@@ -82,7 +82,6 @@ const CustomSelect = (props) => {
 
             setValue(isDifferentType ? { value: "Выберите", id: null, type: null } : updatedValue);
         }
-        console.log(props)
     }, [props.options]);
 
 
@@ -116,7 +115,7 @@ const CustomSelect = (props) => {
                 funcParamType: props.funcParamType
             }];
         }
-        console.log('item', item);
+        //console.log('item', item);
 
         setValue({
             "value": item.name,
