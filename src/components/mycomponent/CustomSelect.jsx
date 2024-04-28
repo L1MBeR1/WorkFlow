@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ReactComponent as Arrow } from './arrow.svg';
 import { useBlocks } from '../../store';
-
+import IntaractiveSection from './intaractiveSection';
 
 const CustomSelect = (props) => {
     const blocks = useBlocks((state) => state.blocks);
@@ -82,6 +82,7 @@ const CustomSelect = (props) => {
 
             setValue(isDifferentType ? { value: "Выберите", id: null, type: null } : updatedValue);
         }
+        console.log(props)
     }, [props.options]);
 
 
@@ -122,6 +123,7 @@ const CustomSelect = (props) => {
             "id": item.id,
             type: item.type,
         });
+        setIsOpen(!isOpen)
     };
 
 
@@ -134,9 +136,12 @@ const CustomSelect = (props) => {
 
 
     return (
-        <div className="custom-select" onClick={handleToggleSelect} tabIndex="0" onBlur={closeSelector}>
+        <div  tabIndex="0" onBlur={closeSelector}>
+            <div className="custom-select"onClick={handleToggleSelect}  >
             <div className='custom-select-title'>{selectedOption.value}</div>
             <div className='Arrow'><Arrow className='svg' style={{ transform: isOpen ? 'scaleY(-1)' : 'scaleY(1)' }}></Arrow></div>
+            </div>
+            
             {/* <div className='custom-select-content' style={{ display: isOpen ? 'flex' : 'none', position: 'absolute', top: selectCoords.y, left: selectCoords.x }}>
                 {props.type === 'parameters' && (
                     filterOptionsByType(props.options, props.funcParamType).map((item, index) => (
@@ -167,18 +172,44 @@ const CustomSelect = (props) => {
                 )} */}
                 {props.type === 'parameters' ? (
                     <>
-                        {Object.entries(props.options)
+                        {/* {Object.entries(props.options)
                             .flatMap(([label, options]) => options)
                             .filter(item => item.type === props.funcParamType)
                             .map((item, index) => (
                                 <div key={index} className='custom-select-item' onClick={() => handleSelect(item)}>
                                     {Object.keys(props.options).find(key => props.options[key].includes(item))} - {item.name}
                                 </div>
-                            ))}
-                        {Object.entries(props.options)
+                            ))} */}
+                            {
+                                Object.keys(props.options).length === 0 ? (
+                                    <div  className='not-clickable-text'>Нет данных</div>
+                                ) : (
+                                    Object.keys(props.options).map(key => (
+                                    <IntaractiveSection key={key} sectionName={key}>
+                                        {
+                                        props.options[key].map(item => (
+                                            (item.name && item.name !== '') && 
+                                            <div key={item.id} className='custom-select-item' onClick={() => handleSelect(item)}>
+                                                <div className='custom-select-item-name'>
+                                                    {item.name}
+                                                </div>
+                                                <div>
+                                                    -
+                                                </div>
+                                                <div className='custom-select-item-value'>
+                                                '{item.value}'
+                                                </div>
+                                            </div>
+                                        ))
+                                        }
+                                    </IntaractiveSection>
+                                    ))
+                                )
+                                }
+                        {/* {Object.entries(props.options)
                             .flatMap(([label, options]) => options)
                             .filter(item => item.type === props.funcParamType)
-                            .length === 0 && <div className='not-clickable-text'>Нет данных</div>}
+                            .length === 0 && <div className='not-clickable-text'>Нет данных</div>} */}
                     </>
                 ) : (
                     <div className='not-clickable-text'>Нет данных</div>

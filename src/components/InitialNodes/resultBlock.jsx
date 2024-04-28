@@ -3,7 +3,7 @@ import { Handle, Position } from 'reactflow';
 import CustomCheckBox from './CustomCheckBox.jsx';
 import './initialNodes.css';
 import { useBlocks } from '../../store'; 
-
+import IntaractiveSection from '../mycomponent/intaractiveSection.jsx';
 export default memo(({ data, isConnectable }) => {
     const blocks = useBlocks((state) => state.blocks);
     const [textdata, settextdata] = useState([]);
@@ -99,12 +99,15 @@ export default memo(({ data, isConnectable }) => {
                     {data.label}
                     <hr></hr>
                     <div className='result-block-content'>
-                        <CustomCheckBox></CustomCheckBox>
+                        {/* <CustomCheckBox></CustomCheckBox> */}
+                        <IntaractiveSection >
+
+                        </IntaractiveSection>
                     </div>
                 </div >
 
 
-                <div className='Поле-для-параметров'>
+                {/* <div className='Поле-для-параметров'>
                     <textarea
                         ref={textfield_reference}
                         name="generated-specification"
@@ -116,7 +119,7 @@ export default memo(({ data, isConnectable }) => {
                     >
 
                     </textarea>
-                </div>
+                </div> */}
 
             </div>
         </>

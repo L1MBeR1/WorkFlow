@@ -90,7 +90,7 @@ export default memo(({ data, isConnectable }) => {
                         {header}
                     </div>
                     <hr></hr>
-                    <IntaractiveSection sectionName='Параметры'>
+                    <IntaractiveSection sectionName='Параметры' visible='true'>
                         <header >
                             <div   className='header-name'>Название</div>
                             <div className='header-type'>Тип</div>
