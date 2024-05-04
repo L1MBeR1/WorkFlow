@@ -7,13 +7,14 @@ import IntaractiveSection from './intaractiveSection';
 import { useParameterBlocksData } from '../../store';
 import CustomSelect from './CustomSelect.jsx';
 import e from 'cors';
+import { type } from '@testing-library/user-event/dist/type/index.js';
 
 export default memo(({ data, isConnectable }) => {
     const blocks = useBlocks((state) => state.blocks);
-    const updateBlock = useBlocks((state) => state.updateBlock); 
+    const updateBlock = useBlocks((state) => state.updateBlock);
     const parameterBlocks = useParameterBlocksData((state) => state.blocks);
 
-    
+
     const [input_parameters, setInputParameters] = useState([]);
     const [output_parameters, setOutputParameters] = useState([]);
     const [parameters_from_left_nodes, setLeftNodesParameters] = useState([]);
@@ -66,6 +67,7 @@ export default memo(({ data, isConnectable }) => {
                 setInputParameters(inputParams);
                 const outputParams = await fetchData(true);
                 setOutputParameters(outputParams);
+                data.output_parameters = outputParams;
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -163,68 +165,46 @@ export default memo(({ data, isConnectable }) => {
         }
         get_left(data.id);
 
-        let tmpParameters = [];
+        let tmpParameters = {};
         blocks.forEach(element => {
             if (element.selfId === data.id) {
                 setincomingParameterBlocksIds(element.incomeConnections);
             }
             if (left_ids.includes(element.selfId)) {
-                tmpParameters = [...tmpParameters, element.data];
+                console.log('element.output_parameters', element.data.output_parameters);
+                let tmp = element.data.output_parameters;
+                let tmp2 = [];
+                tmp.forEach(el => {
+                    el = {
+                        id: el.id,
+                        type: el.type,
+                        value: '---',
+                        name: el.Название,
+                    }
+                    tmp2.push(el);
+                });
+                tmpParameters = {
+                    ...tmpParameters,
+                    [element.data.label]: tmp2
+                };
             }
             setLeftNodesParameters(tmpParameters);
         });
-        /////////////////
-        //
-        //
-        //
-        let tmpParametersMerged = [];
-        let wasIds = [];
-        tmpParameters.forEach(parameters => {
 
+        /*testing_loadoptions.forEach(element => {
+            tmpParameters = [
+            ...tmpParameters,
+            element
+        ];
+        });*/
 
-            parameters.parameters.forEach(parameterRow => {
-                console.log('PARAMS3', parameterRow);
-                if (!wasIds.includes(parameterRow.id)) {
-                    wasIds.push(parameterRow.id);
-                    tmpParametersMerged.push(parameterRow);
-                    testing_loadoptions[parameters.label] = parameterRow;
-                }
-            })
+        console.log('FINALOPTIONS', tmpParameters, testing_loadoptions);
+        let combinedObj = Object.assign(tmpParameters, testing_loadoptions);
 
-        });
-
-        tmpParametersMerged.forEach(element => {
-            console.log('e', element);
-            //testing_loadoptions[element.label] = element.parameters;
-        });
-
-
-        const keys = Object.keys(testing_loadoptions);
-        keys.forEach(key => {
-            if (!Array.isArray(testing_loadoptions[key])) {
-                console.log(`${key} is not an array`);
-                testing_loadoptions[key] = [testing_loadoptions[key]];
-            }
-        });
-        /*if (!Array.isArray(testing_loadoptions)) {
-            console.log('notarray');
-            testing_loadoptions = [testing_loadoptions];
-        }*/
-
-        console.log('UUU', testing_loadoptions);
-        console.log('GGG', tmpParameters);
-        console.log('HHH', tmpParametersMerged);
-
-        const newOptions = testing_loadoptions ? [...defaultOptions, ...testing_loadoptions] : defaultOptions;
-        // console.log('new', newOptions);
-        // console.log('new2', testing_loadoptions);
-
-        // setOptions(newOptions);
-        setOptions(testing_loadoptions);
+        console.log(combinedObj);
+        setOptions(combinedObj);
 
         //updateBlock(data.id, { ...data, parameters: testing_loadoptions });
-        
-        // console.log('FINALOPTIONS', testing_loadoptions);
     }, [parameterBlocks, incomingParameterBlocksIds, blocks]);
 
     /*useEffect(() => {

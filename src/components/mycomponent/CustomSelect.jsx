@@ -12,7 +12,7 @@ const CustomSelect = (props) => {
     });
     const [isOpen, setIsOpen] = useState(false);
     const [selectCoords, setSelectCoords] = useState({ x: 0, y: 0 });
-    // console.log(props.options);
+    // console.log('PO', props.options);
     /*if (((props.options.length === 0) && !(selectedOption.value === "Выберите"))) {
         setValue({
             value: "Выберите",
