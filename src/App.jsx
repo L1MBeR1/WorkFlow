@@ -1,4 +1,5 @@
 import ComponentPanel from './componentPanel/componentPanel';
+import ResultPanel from './components/ResultPanel/ResultPanel';
 import './css/app.css';
 import CustomNode from './components/mycomponent/CustomNode';
 
@@ -256,7 +257,9 @@ export default function App() {
                     <Background variant="dots" color="#1e31db" gap={15} size={1} />
                 </ReactFlow>
             </div>
+            <ResultPanel></ResultPanel>
             </div>
+            
         </div>
     );
 }

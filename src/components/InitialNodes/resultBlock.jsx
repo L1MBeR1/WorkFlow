@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState, useRef } from 'react';
 import { Handle, Position } from 'reactflow';
-import CustomCheckBox from './CustomCheckBox.jsx';
+import CustomSelect from '../mycomponent/CustomSelect.jsx';
 import './initialNodes.css';
 import { useBlocks } from '../../store'; 
 import IntaractiveSection from '../mycomponent/intaractiveSection.jsx';
@@ -150,9 +150,7 @@ export default memo(({ data, isConnectable }) => {
                                             <option value="number">Number</option>
                                             <option value="boolean">Boolean</option>
                                         </select>
-                                        <input placeholder="Значение" 
-                                        // onChange={(e) => handleValueChange(parameter.id, e.target.value)}
-                                        ></input>
+                                       
                                     </div>
                                     <div className='delete_button' onClick={() => handleDeleteParameter(parameter.id)}>
                                         <Trash className='delete_img' />

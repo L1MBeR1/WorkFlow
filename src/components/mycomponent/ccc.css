@@ -256,9 +256,9 @@
 
 .custom-select {
     display: flex;
-    /* overflow: hidden;
-    white-space: nowrap;
-    text-overflow:clip; */
+    overflow: hidden;
+    /* white-space: nowrap;
+    text-overflow:clip; */ 
     flex-direction: row;
     box-sizing: border-box;
     width: 102px;
@@ -272,6 +272,7 @@
     /* cursor: wait; */
     /*BUG: поменять на cursor: context-menu*/
     font-size: 10px;
+    width: 100%;
 }
 
 .custom-select:hover {
@@ -284,6 +285,7 @@
     text-overflow:ellipsis;
     width: 80px;
     pointer-events: none;
+    width: 100%;
 }
 
 .custom-select .Arrow {
@@ -292,7 +294,7 @@
 }
 
 .custom-select-content {
-    position: 'absolute';
+    position: absolute;
     display: flex;
     flex-direction: column;
     /* padding: 5px 4px; */
@@ -302,7 +304,7 @@
     background-color: white;
     /* width: 100px; */
     width: auto;
-    min-width: 100px;
+    min-width: 150px;
 
     z-index: 10;
 
@@ -334,4 +336,7 @@
     margin-top: .5px;
     color: #494949;
     font-size: 9px;
+}
+.func_parameter_value{
+    width: 105px;
 }

@@ -116,12 +116,27 @@ const CustomSelect = (props) => {
             }];
         }
         //console.log('item', item);
-
-        setValue({
-            "value": item.name,
-            "id": item.id,
-            type: item.type,
-        });
+        if (props.type ==='parameters'){
+            setValue({
+                "value": item.name,
+                "id": item.id,
+                type: item.type,
+            });
+        }
+        if (props.type ==='services'){
+            setValue({
+                "value": item.Название,
+                "id": item.id,
+                type: item.type,
+            });
+        }
+        if (props.type ==='uri'){
+            setValue({
+                "value": item.uri,
+                "id": item.id,
+                type: item.type,
+            });
+        }
         setIsOpen(!isOpen)
     };
 
@@ -192,12 +207,7 @@ const CustomSelect = (props) => {
                                                 <div className='custom-select-item-name'>
                                                     {item.name}
                                                 </div>
-                                                <div>
-                                                    -
-                                                </div>
-                                                <div className='custom-select-item-value'>
-                                                '{item.value}'
-                                                </div>
+                                            
                                             </div>
                                         ))
                                         }
@@ -222,14 +232,14 @@ const CustomSelect = (props) => {
 
                 {props.type === 'services' && (
                     Object.values(props.options).flatMap(options => options).map((item, index) => (
-                        <div key={index} className='custom-select-item' onClick={() => handleSelect(item.Название)}>
+                        <div key={index} className='custom-select-item' onClick={() => handleSelect(item)}>
                             {item.Название}
                         </div>
                     ))
                 )}
                 {props.type === 'uri' && (
                     Object.values(props.options).flatMap(options => options).map((item, index) => (
-                        <div key={index} className='custom-select-item' onClick={() => handleSelect(item.uri)}>
+                        <div key={index} className='custom-select-item' onClick={() => handleSelect(item)}>
                             {item.uri}
                         </div>
                     ))
