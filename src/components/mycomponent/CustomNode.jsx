@@ -248,7 +248,7 @@ export default memo(({ data, isConnectable }) => {
                         <div className='parameter-Container'>
                             <header>Точка входа</header>
                             <div className='parameter-Select'>
-                                <CustomSelect options={entry_points} type='uri'></CustomSelect>
+                                <CustomSelect options={entry_points} blockId={data.id} type='uri'></CustomSelect>
                                 {/* <div className="custom-select">
                                     <select className='select' ref={selectRef2} onChange={handleEntryChange}>
                                         {entry_points.map((item, index) => (
