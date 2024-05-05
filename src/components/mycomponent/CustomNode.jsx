@@ -11,32 +11,21 @@ import { type } from '@testing-library/user-event/dist/type/index.js';
 
 export default memo(({ data, isConnectable }) => {
     const blocks = useBlocks((state) => state.blocks);
-    const updateBlock = useBlocks((state) => state.updateBlock);
+    // const updateBlock = useBlocks((state) => state.updateBlock);
     const parameterBlocks = useParameterBlocksData((state) => state.blocks);
 
 
     const [input_parameters, setInputParameters] = useState([]);
     const [output_parameters, setOutputParameters] = useState([]);
-    const [parameters_from_left_nodes, setLeftNodesParameters] = useState([]);
+    // const [parameters_from_left_nodes, setLeftNodesParameters] = useState([]);
 
 
     const [incomingParameterBlocksIds, setincomingParameterBlocksIds] = useState([]);
     const [services_functions, setServicesFunctions] = useState([]);
     const [entry_points, setEntryPoints] = useState([]);
-    const [options, setOptions] = useState([
-        // { id: '1', value: '-', type: 'string', name: '-' },
-        // { id: '2', value: '-', type: 'boolean', name: '-' },
-        // { id: '3', value: '-', type: 'number', name: '-' },
-    ]);
+    const [options, setOptions] = useState([]);
 
-    // const selectRef = useRef(null);
-    // const selectRef2 = useRef(null);
     const param_ref = useRef(null);
-
-    /*
-        TODO: проверить/сделать сохранение параметров функции в blocks.data
-        , чтобы данные показывались в блоках справа 
-    */
 
     useEffect(() => {
         const fetchData = async (isReturn) => {
@@ -76,79 +65,21 @@ export default memo(({ data, isConnectable }) => {
         fetchParameters();
     }, [data.function_id]);
 
+
+    // TODO: Переписать
     useEffect(() => {
-        const defaultOptions = [
-            // { id: '1', value: '-', type: 'string', name: '-' },
-            // { id: '2', value: '-', type: 'boolean', name: '-' },
-            // { id: '3', value: '-', type: 'number', name: '-' },
-        ];
-        /*let loadoptions = [];
-        let testing_loadoptions = [];
-        console.log('handled update of parameter blocks');
-        console.log(parameterBlocks);
-        parameterBlocks.forEach(block => {
-            if (incomingParameterBlocksIds.includes(block.selfId)) {
-                if (block.data) {
-                    if (Array.isArray(block.data)) {
-                        console.log('awdawdawd', block);
-                        block.data.forEach(parameterRow => {
-                            loadoptions = [...loadoptions, parameterRow];
-                        });
-                        
-                    }
-                    else {
-                        loadoptions.push(block.data);
-                    }
-                }
-            }
-        });*/
-        let loadoptions = [];
-        let testing_loadoptions = [];
-        // console.log('handled update of parameter blocks');
-        // console.log(parameterBlocks);
-        parameterBlocks.forEach(block => {
-            if (incomingParameterBlocksIds.includes(block.selfId)) {
-                if (block.data) {
-                    if (Array.isArray(block.data)) {
-                        // console.log('awdawdawd', block);
+        const incomingParameters = parameterBlocks
+            .filter(block => incomingParameterBlocksIds.includes(block.selfId))
+            .reduce((acc, block) => {
+                const parameters = Array.isArray(block.data)
+                    ? block.data
+                    : [block.data];
 
-                        let tmpParameters = [];
-                        block.data.forEach(parameterRow => {
-                            tmpParameters = [...tmpParameters, parameterRow];
-                        });
-                        testing_loadoptions[block.label] = tmpParameters;
-                    } else {
-
-                        testing_loadoptions[block.label] = [block.data];
-                    }
-                }
-            }
-        });
-
-        // let left_data_by_label = [];
-        // const get_left = (id) => {
-        //     blocks.forEach(element => {
-        //         if (
-        //             element.type === 'custom' &&
-        //             element.outcomeConnections.includes(id)
-        //         ) {
-        //             // let tmpParameters = [];
-        //             // element.data.parameters.forEach(parameterRow => {
-        //             //     tmpParameters = [...tmpParameters, parameterRow];
-        //             // });
-        //             console.log('ЧТототут', element.data.parameters);
-        //             testing_loadoptions[element.data.label] = element.data.parameters;
-
-
-        //             left_data_by_label.push(element.selfId);
-        //             get_left(element.selfId)
-        //         }
-        //     });
-        // }
-        // get_left(data.id);
-
-        // console.log('handled update of blocks');
-        // console.log(blocks);
+                return {
+                    ...acc,
+                    [block.label]: parameters,
+                };
+            }, {});
 
         let left_ids = [];
         const get_left = (id) => {
@@ -157,7 +88,6 @@ export default memo(({ data, isConnectable }) => {
                     element.type === 'custom' &&
                     element.outcomeConnections.includes(id)
                 ) {
-                    // console.log('ЧТототут', element.selfId);
                     left_ids.push(element.selfId);
                     get_left(element.selfId)
                 }
@@ -165,86 +95,26 @@ export default memo(({ data, isConnectable }) => {
         }
         get_left(data.id);
 
-        let tmpParameters = {};
-        blocks.forEach(element => {
-            if (element.selfId === data.id) {
-                setincomingParameterBlocksIds(element.incomeConnections);
+        let outputParams = {};
+        blocks.forEach(block => {
+            if (block.selfId === data.id) {
+                setincomingParameterBlocksIds(block.incomeConnections);
             }
-            if (left_ids.includes(element.selfId)) {
-                console.log('element.output_parameters', element.data.output_parameters);
-                let tmp = element.data.output_parameters;
-                let tmp2 = [];
-                tmp.forEach(el => {
-                    el = {
-                        id: el.id,
-                        type: el.type,
-                        value: '---',
-                        name: el.Название,
-                    }
-                    tmp2.push(el);
-                });
-                tmpParameters = {
-                    ...tmpParameters,
-                    [element.data.label]: tmp2
-                };
+            if (left_ids.includes(block.selfId)) {
+                outputParams[block.data.label] = block.data.output_parameters.map(param => ({
+                    id: param.id,
+                    type: param.type,
+                    value: '---',
+                    name: param.Название,
+                }));
             }
-            setLeftNodesParameters(tmpParameters);
         });
 
-        /*testing_loadoptions.forEach(element => {
-            tmpParameters = [
-            ...tmpParameters,
-            element
-        ];
-        });*/
-
-        console.log('FINALOPTIONS', tmpParameters, testing_loadoptions);
-        let combinedObj = Object.assign(tmpParameters, testing_loadoptions);
-
-        console.log(combinedObj);
+        // setLeftNodesParameters(outputParams);
+        let combinedObj = Object.assign(outputParams, incomingParameters);
         setOptions(combinedObj);
-
-        //updateBlock(data.id, { ...data, parameters: testing_loadoptions });
     }, [parameterBlocks, incomingParameterBlocksIds, blocks]);
 
-    /*useEffect(() => {
-        console.log('handled update of blocks');
-        console.log(blocks);
-
-
-
-
-        let left_ids = [];
-        const get_left = (id) => {
-            blocks.forEach(element => {
-                if (
-                    element.type === 'custom' &&
-                    element.outcomeConnections.includes(id)
-                ) {
-                    console.log('ЧТототут', element.selfId);
-                    left_ids.push(element.selfId);
-                    get_left(element.selfId)
-                }
-            });
-        }
-        get_left(data.id);
-
-        let tmpParameters = [];
-        blocks.forEach(element => {
-            if (element.selfId === data.id) {
-                setincomingParameterBlocksIds(element.incomeConnections);
-            }
-            if (left_ids.includes(element.selfId)) {
-                tmpParameters = [...tmpParameters, element.data];
-            }
-            setLeftNodesParameters(tmpParameters);
-        });
-
-        console.log('TTT', options, tmpParameters);
-
-        setOptions([...options, ...tmpParameters]);
-
-    }, [blocks]);*/
 
     useEffect(() => {
         const fetchInputParameters = async () => {
@@ -283,7 +153,6 @@ export default memo(({ data, isConnectable }) => {
                     });
                     const responseData = await response.json();
                     setEntryPoints(responseData);
-                    // console.log('RESP', responseData);
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -293,47 +162,22 @@ export default memo(({ data, isConnectable }) => {
         fetchEntryPoints();
     }, [services_functions]);
 
-    // useEffect(() => {
-    //     const selectedServiceOption = selectRef.current.value;
-    //     data.selectedService = selectedServiceOption;
-    //     const selectedEntryOption = selectRef2.current.value;
-    //     data.selectedEntry = selectedEntryOption;
-
-    // }, [data, entry_points]);
-
-    /*const handleServiceChange = (event) => {
-        const selectedOption = event.target.value;
-        data.selectedService = selectedOption;
-    };*/
-
-    /*const handleEntryChange = (event) => {
-        const selectedOption = event.target.value;
-        data.selectedEntry = selectedOption;
-    };*/
-
-    /*const filterOptionsByType = (options, type) => {
-        return options
-            .filter(option => option !== undefined)
-            .filter(option => option.type === type);
-    };*/
-
     const printOutputParamsToConsole = () => {
-        console.log('ВСЕ БЛОКИ');
-        console.log(blocks, parameterBlocks);
+        // console.log('ВСЕ БЛОКИ');
+        // console.log(blocks, parameterBlocks);
 
+        // console.log('ВЫХОДНЫЕ ПАРАМЕТРЫ');
+        // console.log(output_parameters); 
 
-        console.log('ВЫХОДНЫЕ ПАРАМЕТРЫ');
-        console.log(output_parameters); //TODO: использовать в компоненте
-
-        console.log('ПАРАМЕТРЫ С ВХОЯДЩИХ УЗЛОВ');
-        console.log(parameters_from_left_nodes);
+        // console.log('ПАРАМЕТРЫ С ВХОЯДЩИХ УЗЛОВ');
+        // console.log(parameters_from_left_nodes);
 
     }
 
 
     return (
         <>
-            <button onClick={printOutputParamsToConsole}> Выходные параметры в консоли </button>
+            {/* <button onClick={printOutputParamsToConsole}> Выходные параметры в консоли </button> */}
 
 
 
