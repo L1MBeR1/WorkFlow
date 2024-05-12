@@ -13,8 +13,9 @@ import HeaderPanel from './headerPanel/panel';
 
 import { v4 as uuidv4 } from 'uuid';
 
-import { useBlocks } from './store';
-import { useParameterBlocksData } from './store';
+
+import { useBlocks } from './stores/store';
+import { useParameterBlocksData } from './stores/store';
 
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -45,6 +46,7 @@ const nodeTypes = {
 };
 
 export default function App() {
+    let lastId = 0;
     const blocks = useBlocks((state) => state.blocks);
     const addBlock = useBlocks((state) => state.addBlock);
     const addParameterBlock = useParameterBlocksData((state) => state.add);
@@ -137,6 +139,7 @@ export default function App() {
             }*/
 
             let leftNodes = getIncomingNodes(rightSideNode);
+            console.log('LEFT', leftNodes);
             leftNodes.forEach(element => {
                 updateBlockIncomers(rightSideNode.id, element.id);
                 updateBlockOutcomers(element.id, rightSideNode.id);
@@ -152,7 +155,7 @@ export default function App() {
     const onDrop = useCallback((event) => {
         event.preventDefault();
 
-        const { type, function_name, function_id, component_id } = JSON.parse(event.dataTransfer.getData('application/reactflow'));
+        const { id, type, function_name, function_id, component_id } = JSON.parse(event.dataTransfer.getData('application/reactflow'));
 
         const position = reactFlowInstance.screenToFlowPosition({
             x: event.clientX,
@@ -164,13 +167,13 @@ export default function App() {
             return;
         }
         let newData;
-        let newid = uuidv4().replaceAll("-", "");
-        // let newid = blocks.length + 1;
+        // let newid = uuidv4().replaceAll("-", "");
+        let newid = `${lastId++}`;
         switch (type) {
             case 'custom':
                 newData = {
                     id: newid,
-                    label: `${function_name}`,
+                    label: `${function_name} ` + newid,
                     function_id: function_id,
                     is_return: false,
                     component_id: component_id

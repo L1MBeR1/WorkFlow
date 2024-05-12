@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ReactComponent as Arrow } from './arrow.svg';
-import { useBlocks } from '../../store';
+import { useBlocks } from '../../stores/store';
 import IntaractiveSection from './intaractiveSection';
 
 const CustomSelect = (props) => {
@@ -12,7 +12,7 @@ const CustomSelect = (props) => {
     });
     const [isOpen, setIsOpen] = useState(false);
     const [selectCoords, setSelectCoords] = useState({ x: 0, y: 0 });
-    console.log('PO', props.options);
+    // console.log('PO', props.options);
     /*if (((props.options.length === 0) && !(selectedOption.value === "Выберите"))) {
         setValue({
             value: "Выберите",

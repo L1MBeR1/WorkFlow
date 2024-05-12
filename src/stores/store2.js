@@ -1,3 +1,12 @@
+/**
+ * Должен был содержать все блоки и связи, 
+ * но не используется в данной версии.
+ * 
+ * 
+ * 
+ */
+
+
 import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
 import produce from 'immer';
@@ -10,7 +19,6 @@ const useBlockManager = create((set) => ({
 
     // Методы менеджера блоков
 
-    // Создание нового блока
     /**
      * Создание нового блока.
      *
@@ -38,7 +46,6 @@ const useBlockManager = create((set) => ({
                 blocks: { ...state.blocks, [id]: newBlock },
             };
         });
-        // TODO: offline Инициализация массивов для соединений
         set((state) => {
             return {
                 connections: { ...state.connections, [id]: {

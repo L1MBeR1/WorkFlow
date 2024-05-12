@@ -29,7 +29,7 @@ export const useBlocks = create(set => ({
 
         return { blocks: updatedBlocks };
     }),
-    updateBlockIncomers: (id, newIncomerId) => set((state) => {
+    /*updateBlockIncomers: (id, newIncomerId) => set((state) => {
         const updatedBlocks = state.blocks.map((block) => {
             if (block.selfId === id) {
                 return { ...block, incomeConnections: [...block.incomeConnections, newIncomerId] };
@@ -38,7 +38,22 @@ export const useBlocks = create(set => ({
         });
 
         return { blocks: updatedBlocks };
+    }),*/
+    updateBlockIncomers: (id, newIncomerId) => set((state) => {
+        const updatedBlocks = state.blocks.map((block) => {
+            if (block.selfId === id) {
+                const updatedIncomeConnections = [...block.incomeConnections];
+                if (!updatedIncomeConnections.includes(newIncomerId)) {
+                    updatedIncomeConnections.push(newIncomerId);
+                }
+                return { ...block, incomeConnections: updatedIncomeConnections };
+            }
+            return block;
+        });
+    
+        return { blocks: updatedBlocks };
     }),
+    
 
     deleteBlockIncomer: (id, incomerToRemoveId) => set((state) => {
         const updatedBlocks = state.blocks.map((block) => {
@@ -53,7 +68,7 @@ export const useBlocks = create(set => ({
     }),
 
 
-    updateBlockOutcomers: (id, newOutcomerId) => set((state) => {
+    /*updateBlockOutcomers: (id, newOutcomerId) => set((state) => {
         const updatedBlocks = state.blocks.map((block) => {
             if (block.selfId === id) {
                 return { ...block, outcomeConnections: [...block.outcomeConnections, newOutcomerId] };
@@ -62,7 +77,24 @@ export const useBlocks = create(set => ({
         });
 
         return { blocks: updatedBlocks };
+    }),*/
+    updateBlockOutcomers: (id, newOutcomerId) => set((state) => {
+        const updatedBlocks = state.blocks.map((block) => {
+            if (block.selfId === id) {
+                const updatedOutcomeConnections = [...block.outcomeConnections];
+                if (!updatedOutcomeConnections.includes(newOutcomerId)) {
+                    updatedOutcomeConnections.push(newOutcomerId);
+                }
+                return { ...block, outcomeConnections: updatedOutcomeConnections };
+            }
+            return block;
+        });
+    
+        return { blocks: updatedBlocks };
     }),
+    
+
+
     deleteBlockOutcomer: (id, outcomerToRemoveId) => set((state) => {
         const updatedBlocks = state.blocks.map((block) => {
             if (block.selfId === id) {

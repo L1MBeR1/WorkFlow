@@ -2,9 +2,9 @@ import React, { useState, useEffect, memo, useRef } from 'react';
 import { Handle, Position } from 'reactflow';
 import './ccc.css';
 
-import { useBlocks } from '../../store';
+import { useBlocks } from '../../stores/store.js';
 import IntaractiveSection from './intaractiveSection';
-import { useParameterBlocksData } from '../../store';
+import { useParameterBlocksData } from '../../stores/store.js';
 import CustomSelect from './CustomSelect.jsx';
 import e from 'cors';
 import { type } from '@testing-library/user-event/dist/type/index.js';
@@ -89,7 +89,7 @@ export default memo(({ data, isConnectable }) => {
                     element.outcomeConnections.includes(id)
                 ) {
                     left_ids.push(element.selfId);
-                    get_left(element.selfId)
+                    //get_left(element.selfId)
                 }
             });
         }

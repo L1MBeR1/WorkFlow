@@ -1,5 +1,5 @@
 import React from 'react';
-import ResultPanelStatus from '../storages/storeResult';
+import ResultPanelStatus from '../stores/storeResult';
 
 const TestButton=(props)=>{
     const { setIsOpen } = ResultPanelStatus();

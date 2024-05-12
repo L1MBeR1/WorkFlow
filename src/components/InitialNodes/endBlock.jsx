@@ -1,6 +1,6 @@
 import React, { memo, useRef, useEffect } from 'react';
 import { Handle, Position } from 'reactflow';
-import { useBlocks } from '../../store';
+import { useBlocks } from '../../stores/store';
 
 
 export default memo(({ data, isConnectable }) => {
@@ -28,11 +28,12 @@ export default memo(({ data, isConnectable }) => {
                 />
 
                 <div ref={labelRef} >
-                    {blocks.map((block, index) => (
+                    END
+                    {/* {blocks.map((block, index) => (
                         <option key={index} value={index}>
                             {block.selfId}
                         </option>
-                    ))}
+                    ))} */}
                 </div>
 
             </div>

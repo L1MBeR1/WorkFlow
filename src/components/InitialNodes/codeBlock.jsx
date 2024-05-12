@@ -1,6 +1,6 @@
 import React, { memo, useRef, useEffect,useState } from 'react';
 import { Handle, Position } from 'reactflow';
-import { useBlocks } from '../../store';
+import { useBlocks } from '../../stores/store';
 import { ReactComponent as Trash } from './trash.svg';
 import { v4 as uuidv4 } from 'uuid';
 import IntaractiveSection from '../mycomponent/intaractiveSection';

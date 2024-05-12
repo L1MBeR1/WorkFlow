@@ -12,15 +12,15 @@ const ComponentPanel = () => {
   const [panelMode, setPanelMode] = useState('Initial');
 
 
-  var componentAndFuncs=[]
+  var componentAndFuncs = []
 
-	const toggleVisibility = () => {
-		setIsVisible(!isVisible);
-	};
+  const toggleVisibility = () => {
+    setIsVisible(!isVisible);
+  };
   const togglePanelSection = (section) => {
     if (section === 'Initial') {
       setPanelMode('Initial');
-    } else if (section === 'Components'){
+    } else if (section === 'Components') {
       setPanelMode('Components');
     }
   };
@@ -35,7 +35,7 @@ const ComponentPanel = () => {
       });
       const responseData = await response.json();
       // console.log(responseData)
-      setFunctionsData(responseData); 
+      setFunctionsData(responseData);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -60,35 +60,35 @@ const ComponentPanel = () => {
     const combinedArray = [];
 
     components.forEach(component => {
-        const componentFunctions = functions.filter(func => func.id_of_component === component.id);
+      const componentFunctions = functions.filter(func => func.id_of_component === component.id);
 
-        const combinedComponent = {
-            id: component.id,
-            Название: component.Название,
-            Описание: component.Описание,
-            functions: componentFunctions.map(func => ({
-                id: func.id,
-                name: func.name
-            }))
-        };
+      const combinedComponent = {
+        id: component.id,
+        Название: component.Название,
+        Описание: component.Описание,
+        functions: componentFunctions.map(func => ({
+          id: func.id,
+          name: func.name
+        }))
+      };
 
-        combinedArray.push(combinedComponent);
+      combinedArray.push(combinedComponent);
     });
     return combinedArray;
-}
-	useEffect(() => {
-		fetchComponentsData();
+  }
+  useEffect(() => {
+    fetchComponentsData();
     fetchFunctionsData();
-	}, []);
+  }, []);
 
-  componentAndFuncs=combineComponentsAndFunctions(componentsData,functionsData);
+  componentAndFuncs = combineComponentsAndFunctions(componentsData, functionsData);
   // console.log(componentAndFuncs)
   return (
     <div className={`panelDiv ${isVisible ? 'visible' : 'hidden'}`}>
       <div className="panel">
         <div className="content">
           <div className="panelHeader">
-            <div className={`section ${panelMode === 'Initial' && 'active'}`}onClick={() => togglePanelSection('Initial')}>
+            <div className={`section ${panelMode === 'Initial' && 'active'}`} onClick={() => togglePanelSection('Initial')}>
               <p >Начальные блоки</p>
             </div>
             <div className={`section ${panelMode === 'Components' && 'active'}`} onClick={() => togglePanelSection('Components')}>
@@ -97,7 +97,7 @@ const ComponentPanel = () => {
           </div>
           <hr />
           {panelMode === 'Initial' && (
-             <div className="initialNodes animateContent">
+            <div className="initialNodes animateContent">
               <InitialNode name={"Начальный блок"} type={"startBlock"}></InitialNode>
               <InitialNode name={"Конечный блок"} type={"endBlock"}></InitialNode>
               <InitialNode name={"Блок с параметрами"} type={"parametrBlock"}></InitialNode>
@@ -106,21 +106,21 @@ const ComponentPanel = () => {
             </div>
           )}
           {panelMode === 'Components' && (
-          <div className="components animateContent">
-          {componentAndFuncs.map(component => (
-              <Component key={component.id} compName={component.Название} compDescripton={component.Описание}>
+            <div className="components animateContent">
+              {componentAndFuncs.map(component => (
+                <Component key={component.id} compName={component.Название} compDescripton={component.Описание}>
                   {component.functions.map(func => (
-                      <ComponentFunc 
-                          key={func.id} 
-                          name={func.name}
-                          function_id={func.id}
-                          component_id={component.id}
-                      />
+                    <ComponentFunc
+                      key={func.id}
+                      name={func.name}
+                      function_id={func.id}
+                      component_id={component.id}
+                    />
                   ))}
-              </Component>
-              
+                </Component>
+
               ))}
-          </div>
+            </div>
           )}
         </div>
       </div>

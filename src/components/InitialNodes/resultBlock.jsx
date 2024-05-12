@@ -2,7 +2,7 @@ import React, { memo, useEffect, useState, useRef } from 'react';
 import { Handle, Position } from 'reactflow';
 import CustomSelect from '../mycomponent/CustomSelect.jsx';
 import './initialNodes.css';
-import { useBlocks } from '../../store';
+import { useBlocks } from '../../stores/store.js';
 import IntaractiveSection from '../mycomponent/intaractiveSection.jsx';
 import { v4 as uuidv4 } from 'uuid';
 import { ReactComponent as Trash } from './trash.svg';
@@ -53,7 +53,7 @@ export default memo(({ data, isConnectable }) => {
                     element.outcomeConnections.includes(id)
                 ) {
                     left_ids.push(element.selfId);
-                    get_left(element.selfId)
+                    //get_left(element.selfId)
                 }
             });
         }

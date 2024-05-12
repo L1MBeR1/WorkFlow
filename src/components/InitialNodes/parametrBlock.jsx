@@ -2,7 +2,7 @@ import React, { memo, useState } from 'react';
 import { Handle, Position } from 'reactflow';
 import { ReactComponent as Trash } from './trash.svg';
 import './initialNodes.css';
-import { useParameterBlocksData } from '../../store';
+import { useParameterBlocksData } from '../../stores/store';
 import { v4 as uuidv4 } from 'uuid';
 import IntaractiveSection from '../mycomponent/intaractiveSection';
 
