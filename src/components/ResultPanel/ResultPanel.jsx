@@ -61,6 +61,8 @@ const ResultPanel = () => {
 
         queue.forEach(blockId => {
             let block = blocks.find((block) => block.selfId === blockId);
+            
+            // заполнение списка service_data
             if (block.type === 'custom') {
                 let serviceSample = fillServiceSample({
                     id: block.data.function_id,
@@ -68,15 +70,33 @@ const ResultPanel = () => {
                     entry_pointID: block.data.parameters[0].uri_id
                 });
                 specification_json.service_data.push(serviceSample);
+
+
+
+                block = fillBlock({
+                    id: block.selfId, // или block.data.function_id
+                    type: block.type,
+                    inputs: block.incomeConnections,
+                    outputs: block.outcomeConnections,
+                    specification: {
+                        componentID: block.data.component_id,
+                        functionID: block.data.function_id
+                    },
+                    transition: {
+                        "type": "jump",
+                        "blockID": block.outcomeConnections[0] // должен быть только один выход
+                    }
+                });
+                specification_json.blocks.push(block);
             }
-            block = fillBlock({
-                id: block.data.function_id,
-                type: block.type,
-                inputs: block.incomeConnections,
-                outputs: block.outcomeConnections,
-            });
-            specification_json.blocks.push(block);
+            
         });
+        specification_json.blocks.push(
+            fillBlock({
+                id: blocks.find(block => block.type === 'endBlock').selfId,
+                type: 'end_block',
+            })
+        )
 
         specification_json.blocks.push(
             fillBlock({
