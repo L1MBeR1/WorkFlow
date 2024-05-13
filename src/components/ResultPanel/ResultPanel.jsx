@@ -2,6 +2,7 @@
 import React, { useState, useEffect, memo, useRef } from 'react';
 import './ResultPanel.css';
 import { useBlocks } from '../../stores/store';
+import { useParameterBlocksData } from '../../stores/store';
 import ResultPanelStatus from '../../stores/storeResult';
 import { ReactComponent as Close } from './close.svg';
 import CodeContainer from '../CodeContainer';
@@ -10,6 +11,7 @@ import CodeContainer from '../CodeContainer';
 
 const ResultPanel = () => {
     const blocks = useBlocks((state) => state.blocks);
+    const parameterBlocks = useParameterBlocksData((state) => state.blocks);
     const { isOpen, setIsOpen } = ResultPanelStatus();
     const [specificationContent, setSpecificationContent] = useState();
 
@@ -17,28 +19,56 @@ const ResultPanel = () => {
 
     };
 
+    const getSingleParameterBlock = () => {
+        let parameterBlock = [];
+        parameterBlocks.forEach(element => {
+            parameterBlock = [...parameterBlock, ...element.data];
+        });
+        return parameterBlock;
+    };
+
     const makeSpecification = (queue) => {
+        let parameterBlock = getSingleParameterBlock();
+
         let specification_json = {
             service_data: [],
             blocks: [],
             result: []
         };
 
-        function fillBlock({ id = null, type = null, specification = {}, inputs = [], outputs = [], transition = {} }) {
-            let block_json = {
-                id: id,
-                type_of_block: type,
-                specification: specification,
-                inputs: inputs,
-                outputs: outputs,
-                transition: transition
-            }
+        function fillServiceSample({id = null, serviceID = null, entry_pointID = null}){
+            let block_json = Object.assign({},
+                id && { id },
+                serviceID && { serviceID },
+                entry_pointID && { entry_pointID }
+            );
+
             return block_json;
         }
 
+        function fillBlock({ id = null, type = null, specification = {}, inputs = [], outputs = [], transition = {} }) {
+            let block_json = Object.assign({},
+                id && { id },
+                type && { type_of_block: type },
+                Object.keys(specification).length && { specification },
+                inputs.length && { inputs },
+                outputs.length && { outputs },
+                Object.keys(transition).length && { transition }
+            );
+
+            return block_json;
+        }
 
         queue.forEach(blockId => {
             let block = blocks.find((block) => block.selfId === blockId);
+            if (block.type === 'custom') {
+                let serviceSample = fillServiceSample({
+                    id: block.data.function_id,
+                    serviceID: block.data.parameters[0].service_id,
+                    entry_pointID: block.data.parameters[0].uri_id
+                });
+                specification_json.service_data.push(serviceSample);
+            }
             block = fillBlock({
                 id: block.data.function_id,
                 type: block.type,
@@ -48,11 +78,22 @@ const ResultPanel = () => {
             specification_json.blocks.push(block);
         });
 
+        specification_json.blocks.push(
+            fillBlock({
+                id: (Math.max(...queue.map(Number))) + 1,
+                type: 'parameters_block',
+                outputs: parameterBlock,
+            })
+        );
+
         setSpecificationContent(JSON.stringify(specification_json, null, 2));
     };
 
     useEffect(() => {
-        console.log('Open');
+        /*if (!isOpen) {
+            return 0;
+        }*/
+
         /*if (blocks.length > 0) {
             let endBlock = blocks.find((block) => block.type === 'endBlock');
             if (endBlock) {
@@ -103,9 +144,7 @@ const ResultPanel = () => {
         }
 
         traverseBlocks(endBlock);
-        // console.log(blocksQueue);
         makeSpecification(blocksQueue);
-
 
     }, [blocks, isOpen]);
 
