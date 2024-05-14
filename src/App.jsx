@@ -8,6 +8,7 @@ import EndNode from './components/InitialNodes/endBlock';
 import ParametrBlock from './components/InitialNodes/parametrBlock';
 import ResultBlock from './components/InitialNodes/resultBlock';
 import CodeBlock from './components/InitialNodes/codeBlock';
+import ConditionBlock from './components/InitialNodes/ConditionBlock';
 
 import HeaderPanel from './headerPanel/panel';
 
@@ -41,8 +42,9 @@ const nodeTypes = {
     startBlock: StartNode,
     endBlock: EndNode,
     parametrBlock: ParametrBlock,
-    resultBlock:ResultBlock,
-    codeBlock:CodeBlock,
+    resultBlock: ResultBlock,
+    codeBlock: CodeBlock,
+    conditionBlock: ConditionBlock,
 };
 
 export default function App() {
@@ -51,7 +53,7 @@ export default function App() {
     const addBlock = useBlocks((state) => state.addBlock);
     const addParameterBlock = useParameterBlocksData((state) => state.add);
     const parameterBlocks = useParameterBlocksData((state) => state.blocks);
-    const updateBlockIncomers = useBlocks((state) => state.updateBlockIncomers); 
+    const updateBlockIncomers = useBlocks((state) => state.updateBlockIncomers);
     const updateBlockOutcomers = useBlocks((state) => state.updateBlockOutcomers);
     const deleteBlockIncomer = useBlocks((state) => state.deleteBlockIncomer);
     const deleteBlockOutcomer = useBlocks((state) => state.deleteBlockOutcomer);
@@ -65,7 +67,7 @@ export default function App() {
         при его удалении с холста
     
     **/
-    
+
 
 
     const [edges, setEdges] = useEdgesState([]);
@@ -100,7 +102,7 @@ export default function App() {
                         let united_data = parameters_of_connected_custom_node
                             .map(ee => options_lists_data[ee.id])
                             .flat();
-                            
+
                         deleteBlockIncomer(TARGET_NODE.id, SOURCE_NODE.id);
                         deleteBlockOutcomer(SOURCE_NODE.id, TARGET_NODE.id);
 
@@ -207,6 +209,12 @@ export default function App() {
                     label: 'Блок с кодом',
                 };
                 break;
+            case 'conditionBlock':
+                newData = {
+                    id: newid,
+                    label: 'Условный блок ' + newid,
+                };
+                break;
             default:
                 newData = { label: `${type} node` };
                 break;
@@ -239,30 +247,30 @@ export default function App() {
         <div className="App">
             <HeaderPanel></HeaderPanel>
             <div className='reactFlowDiv'>
-            <ComponentPanel></ComponentPanel>
-            <div className="mainCanvas" >
-                <ReactFlow
-                    nodes={nodes}
-                    edges={edges}
-                    onNodesChange={onNodesChange}
-                    onEdgesChange={onEdgesChange}
-                    onConnect={onConnect}
-                    onInit={setReactFlowInstance}
-                    onDrop={onDrop}
-                    onDragOver={onDragOver}
-                    fitView
-                    nodeTypes={nodeTypes}
-                >
+                <ComponentPanel></ComponentPanel>
+                <div className="mainCanvas" >
+                    <ReactFlow
+                        nodes={nodes}
+                        edges={edges}
+                        onNodesChange={onNodesChange}
+                        onEdgesChange={onEdgesChange}
+                        onConnect={onConnect}
+                        onInit={setReactFlowInstance}
+                        onDrop={onDrop}
+                        onDragOver={onDragOver}
+                        fitView
+                        nodeTypes={nodeTypes}
+                    >
 
-                    <Controls position="bottom-right" />
+                        <Controls position="bottom-right" />
 
-                    {/* <MiniMap /> */}
-                    <Background variant="dots" color="#1e31db" gap={15} size={1} />
-                </ReactFlow>
+                        {/* <MiniMap /> */}
+                        <Background variant="dots" color="#1e31db" gap={15} size={1} />
+                    </ReactFlow>
+                </div>
+                <ResultPanel></ResultPanel>
             </div>
-            <ResultPanel></ResultPanel>
-            </div>
-            
+
         </div>
     );
 }

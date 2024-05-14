@@ -22,12 +22,17 @@ const ResultPanel = () => {
     const getSingleParameterBlock = () => {
         let parameterBlock = [];
         parameterBlocks.forEach(element => {
-            parameterBlock = [...parameterBlock, ...element.data];
+            console.log('ELEMENT', element);
+            if (element.data && element.data.length > 0) {
+
+                parameterBlock = [...parameterBlock, ...element.data];
+            }
         });
         return parameterBlock;
     };
 
     const makeSpecification = (queue) => {
+        console.log('queue', queue);
         let parameterBlock = getSingleParameterBlock();
 
         let specification_json = {
@@ -36,7 +41,7 @@ const ResultPanel = () => {
             result: []
         };
 
-        function fillServiceSample({id = null, serviceID = null, entry_pointID = null}){
+        function fillServiceSample({ id = null, serviceID = null, entry_pointID = null }) {
             let block_json = Object.assign({},
                 id && { id },
                 serviceID && { serviceID },
@@ -61,15 +66,30 @@ const ResultPanel = () => {
 
         queue.forEach(blockId => {
             let block = blocks.find((block) => block.selfId === blockId);
-            
+
             // заполнение списка service_data
             if (block.type === 'custom') {
-                let serviceSample = fillServiceSample({
-                    id: block.data.function_id,
-                    serviceID: block.data.parameters[0].service_id,
-                    entry_pointID: block.data.parameters[0].uri_id
-                });
-                specification_json.service_data.push(serviceSample);
+                if (block.data) {
+                    if (block.data.parameters) {
+                        if (block.data.parameters[0]) {
+
+
+                            let serviceSample = fillServiceSample({
+                                id: block.data.function_id,
+                                serviceID: block.data.parameters[0].service_id ?
+                                    block.data.parameters[0].service_id : null,
+                                entry_pointID: block.data.parameters[0].uri_id ?
+                                    block.data.parameters[0].uri_id : null
+                            });
+                            specification_json.service_data.push(serviceSample);
+
+                        }
+                    }
+
+
+
+                }
+
 
 
 
@@ -84,12 +104,30 @@ const ResultPanel = () => {
                     },
                     transition: {
                         "type": "jump",
-                        "blockID": block.outcomeConnections[0] // должен быть только один выход
+                        "blockID": block.outcomeConnections // должен быть только один выход
                     }
                 });
                 specification_json.blocks.push(block);
             }
-            
+            else if (block.type === 'conditionBlock') {
+                block = fillBlock({
+                    id: block.selfId, // или block.data.function_id
+                    type: block.type,
+                    inputs: block.incomeConnections,
+                    outputs: block.outcomeConnections,
+                    specification: {
+                        componentID: block.data.component_id,
+                        functionID: block.data.function_id
+                    },
+                    transition: {
+                        "type": "condition",
+                        "blockID_true": block.data.true, // должен быть только один выход
+                        "blockID_false": block.data.false, // должен быть только один выход
+                    }
+                });
+                specification_json.blocks.push(block);
+            }
+
         });
         specification_json.blocks.push(
             fillBlock({
@@ -145,7 +183,7 @@ const ResultPanel = () => {
         let blocksQueue = [];
         function traverseBlocks(block) {
             console.log('type', block);
-            if (block.type === 'custom' || block.type === 'endBlock') {
+            if (block.type === 'custom' || block.type === 'endBlock' || block.type === 'conditionBlock') {
                 block.incomeConnections.forEach(incomerId => {
                     const incomerBlock = blocks.find(({ selfId }) => selfId === incomerId);
                     if (incomerBlock) {

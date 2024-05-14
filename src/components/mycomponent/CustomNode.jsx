@@ -166,6 +166,8 @@ export default memo(({ data, isConnectable }) => {
         // console.log('ВСЕ БЛОКИ');
         // console.log(blocks, parameterBlocks);
 
+        console.log('BLOCK' + data.id, blocks.find(block => block.selfId === data.id));
+
         // console.log('ВЫХОДНЫЕ ПАРАМЕТРЫ');
         // console.log(output_parameters); 
 
@@ -177,7 +179,7 @@ export default memo(({ data, isConnectable }) => {
 
     return (
         <>
-            {/* <button onClick={printOutputParamsToConsole}> Выходные параметры в консоли </button> */}
+            <button onClick={printOutputParamsToConsole}> Выходные параметры в консоли </button>
 
 
 
