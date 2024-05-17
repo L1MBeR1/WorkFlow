@@ -52,22 +52,15 @@ export default function App() {
     const blocks = useBlocks((state) => state.blocks);
     const addBlock = useBlocks((state) => state.addBlock);
     const addParameterBlock = useParameterBlocksData((state) => state.add);
-    const parameterBlocks = useParameterBlocksData((state) => state.blocks);
+    // const parameterBlocks = useParameterBlocksData((state) => state.blocks);
     const updateBlockIncomers = useBlocks((state) => state.updateBlockIncomers);
     const updateBlockOutcomers = useBlocks((state) => state.updateBlockOutcomers);
     const deleteBlockIncomer = useBlocks((state) => state.deleteBlockIncomer);
     const deleteBlockOutcomer = useBlocks((state) => state.deleteBlockOutcomer);
 
-    const [options_lists_data, setOptions] = useState([]);
+    // const [options_lists_data, setOptions] = useState([]);
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
     const [nodes, setNodes, onNodesChange] = useNodesState([]);
-
-    /*
-        TODO: сделать удаление узла из списка узлов blocks и parameterBlocks
-        при его удалении с холста
-    
-    **/
-
 
 
     const [edges, setEdges] = useEdgesState([]);
@@ -97,23 +90,12 @@ export default function App() {
                     SOURCE_NODE = nodes.find(node => node.id === left_node_id);
                     TARGET_NODE = nodes.find(node => node.id === right_node_id);
                     if (type === 'remove') {
-                        let parameters_of_connected_custom_node = getIncomingNodes(TARGET_NODE)
-                            .filter(ee => ee.id !== left_node_id); // Исключаем left_node_id из parameters_of_connected_custom_node
-                        let united_data = parameters_of_connected_custom_node
-                            .map(ee => options_lists_data[ee.id])
-                            .flat();
-
                         deleteBlockIncomer(TARGET_NODE.id, SOURCE_NODE.id);
                         deleteBlockOutcomer(SOURCE_NODE.id, TARGET_NODE.id);
-
                     }
                 }
             });
             setEdges((oldEdges) => applyEdgeChanges(changes, oldEdges));
-            // console.log('rre');
-            // console.log(nodes);
-            // console.log('rre');
-            // console.log(parameterBlocks);
         },
         [setEdges, nodes],
     );
@@ -132,22 +114,13 @@ export default function App() {
 
     useEffect(() => {
         if (rightSideNode != null) {
-            /*if (rightSideNode.type === 'custom') {
-                let parameters_of_connected_custom_node = getIncomingNodes(rightSideNode);
-                parameters_of_connected_custom_node = parameters_of_connected_custom_node.filter(item => item.type === 'parametrBlock');
-                let united_data = parameters_of_connected_custom_node.map(ee => options_lists_data[ee.id]);
-                united_data = united_data.flat();
-                //updateNodeDataOptions(rightSideNode.id, united_data);
-            }*/
-
             let leftNodes = getIncomingNodes(rightSideNode);
-            console.log('LEFT', leftNodes);
             leftNodes.forEach(element => {
                 updateBlockIncomers(rightSideNode.id, element.id);
                 updateBlockOutcomers(element.id, rightSideNode.id);
             });
         }
-    }, [rightSideNode/*, options_lists_data*/]);
+    }, [rightSideNode]);
 
     const onDragOver = useCallback((event) => {
         event.preventDefault();
@@ -169,7 +142,6 @@ export default function App() {
             return;
         }
         let newData;
-        // let newid = uuidv4().replaceAll("-", "");
         let newid = `${lastId++}`;
         switch (type) {
             case 'custom':
@@ -230,7 +202,6 @@ export default function App() {
         ];
 
         setNodes((nds) => nds.concat(newNode));
-        console.log('spawned with id ', newid);
         if (type === 'parametrBlock') {
             addParameterBlock(newNode[0].id, newNode[0].type, newNode[0].data.label, newNode[0].data);
         }
@@ -238,10 +209,12 @@ export default function App() {
             addBlock(newNode[0].id, newNode[0].type, [], [], newNode[0].data);
         }
 
-    },
-        [reactFlowInstance],
-    );
+    },[reactFlowInstance],);
 
+
+    const printToConsole = () => {
+        console.log(blocks);
+    }
 
     return (
         <div className="App">
@@ -268,6 +241,7 @@ export default function App() {
                         <Background variant="dots" color="#1e31db" gap={15} size={1} />
                     </ReactFlow>
                 </div>
+                <button onClick={printToConsole}> Выходные параметры в консоли </button>
                 <ResultPanel></ResultPanel>
             </div>
 

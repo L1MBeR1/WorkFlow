@@ -2,7 +2,7 @@ const pool = require("../database");
 
 async function select_all_components() {
 	const query = `
-					SELECT DISTINCT c.id, c.name as "Название", c.description as "Описание"
+					SELECT DISTINCT c.id, c.name as "name", c.description as "description"
 					FROM services.service s
 					JOIN semantic_annotation.compon_by_service cbs
 					ON cbs.service_id = s.id
@@ -42,7 +42,7 @@ async function select_all_functions() {
 
 async function select_component_functions_by_component_id(component_id) {
 	const query = `
-					SELECT cf.id, cf.name as "Название"
+					SELECT cf.id, cf.name as "name"
 					FROM components.component_function cf
 					JOIN components.components c
 					ON c.id = cf.id_of_component
@@ -60,7 +60,7 @@ async function select_component_functions_by_component_id(component_id) {
 
 async function select_services_by_component_id(component_id) {
 	const query = `
-					SELECT s.id, s.uri as "Ссылка", s.token, s.name as "Название"
+					SELECT s.id, s.uri as "uri", s.token, s.name as "name"
                     FROM services.service s
                     JOIN semantic_annotation.compon_by_service cbs
                     ON cbs.service_id = s.id
@@ -83,7 +83,7 @@ async function select_component_function_parameters_by_function_id(
 	is_return
 ) {
 	const query = `
-					SELECT cfp.id, cfp.name as "Название", t.type
+					SELECT cfp.id, cfp.name as "name", t.type
                     FROM components.component_function_parameter cfp
                     JOIN components.component_function cf
                     ON cf.id = cfp.id_of_component_function

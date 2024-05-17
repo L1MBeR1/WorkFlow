@@ -16,7 +16,7 @@ const Component = (props) => {
 
     const handleComponentClick = () => {
         setIsVisible(!isVisible);
-        console.log(contentHeight)
+        // console.log(contentHeight)
     };
     
     return (

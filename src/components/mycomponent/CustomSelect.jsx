@@ -85,18 +85,55 @@ const CustomSelect = (props) => {
     }, [props.options]);
 
 
-    const handleSelect = (item) => {
+    const handleSelect = (item) => { //TODO: Что-то сделать с этим
+        // const currentBlockIndex = blocks.findIndex(block => block.selfId === props.blockId);
+
+        // if (currentBlockIndex !== -1) {
+        //     let variableKey;
+        //     if (props.type === 'uri') {
+        //         variableKey = 'uri_id';
+        //     } else if (props.type === 'services') {
+        //         variableKey = 'service_id';
+        //     } else if (props.type === 'parameters') {
+        //         const currentBlock = blocks[currentBlockIndex];
+        //         if (currentBlock.data.parameters) {
+        //             if (currentBlock.data.parameters.inputs) {
+        //                 console.log('aaa');
+        //                 currentBlock.data.parameters.inputs[item.id] = [item];
+        //             } else {
+        //                 console.log('bbb', props.funcParamName);
+        //                 currentBlock.data.parameters = {
+        //                     ...currentBlock.data.parameters,
+        //                     inputs: {
+        //                         [item.id]: [item],
+        //                     }
+        //                 };
+        //             }
+        //         }
+        //     }
+        // }
+
         const currentBlock = blocks.find(block => block.selfId === props.blockId);
+
+
         let variableKey;
+        let propToSave;
         if (props.type === 'uri') {
             variableKey = 'uri_id';
+            propToSave = item.id;
         } else if (props.type === 'services') {
             variableKey = 'service_id';
+            propToSave = item.id;
+        } else if (props.type === 'parameters') {
+            variableKey = props.funcParamName;
+            propToSave = item;
         }
 
 
-        if (currentBlock.data.parameters) {
-            const existingParameterIndex = currentBlock.data.parameters.findIndex(param => param.paramName === props.funcParamName);
+        if (currentBlock.data.parameters && props.type !== 'parameters') {
+            const existingParameterIndex = currentBlock.data.parameters.findIndex(
+                param => param.paramName === props.funcParamName
+            );
 
 
             if (existingParameterIndex !== -1) {
@@ -104,26 +141,19 @@ const CustomSelect = (props) => {
                 currentBlock.data.parameters[existingParameterIndex] = {
                     ...currentBlock.data.parameters[existingParameterIndex],
                     // ...item,
-                    [variableKey]: item.id,
-                    //funcParamName: props.funcParamName,
-                    //funcParamType: props.funcParamType
+                    [variableKey]: propToSave,
                 };
             } else {
                 // Если параметра с таким именем нет, добавляем новый параметр
                 currentBlock.data.parameters.push({
                     // ...item,
-                    [variableKey]: item.id,
-                    //funcParamName: props.funcParamName,
-                    //funcParamType: props.funcParamType
+                    [variableKey]: propToSave,
                 });
             }
         } else {
             // Если параметров нет, создаем новый массив с одним параметром
             currentBlock.data.parameters = [{
-                // ...item,
-                [variableKey]: item.id,
-                //funcParamName: props.funcParamName,
-                //funcParamType: props.funcParamType
+                [variableKey]: propToSave,
             }];
         }
         //console.log('item', item);
@@ -136,7 +166,7 @@ const CustomSelect = (props) => {
         }
         if (props.type === 'services') {
             setValue({
-                "value": item.Название,
+                "value": item.name,
                 "id": item.id,
                 type: item.type,
             });
@@ -152,7 +182,7 @@ const CustomSelect = (props) => {
     };
 
 
-    const filterOptionsByType = (options, type) => {
+    const filterOptionsByType = (options, type) => { //TODO: Использовать
         return options
             .filter(option => option !== undefined)
             .filter(option => option.type === type);
@@ -192,7 +222,7 @@ const CustomSelect = (props) => {
                             {label} - {item.name}
                         </div>
                     ))
-                ) : (//FIXME: не стильно
+                ) : (
                     <div className='not-clickable-text'>Нет данных</div>
                 )} */}
                 {props.type === 'parameters' && (
@@ -244,7 +274,7 @@ const CustomSelect = (props) => {
                 {props.type === 'services' && (
                     Object.values(props.options).flatMap(options => options).map((item, index) => (
                         <div key={index} className='custom-select-item' onClick={() => handleSelect(item)}>
-                            {item.Название}
+                            {item.name}
                         </div>
                     ))
                 )}

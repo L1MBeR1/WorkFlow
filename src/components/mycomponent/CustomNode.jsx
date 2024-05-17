@@ -66,54 +66,54 @@ export default memo(({ data, isConnectable }) => {
     }, [data.function_id]);
 
 
-    // TODO: Переписать
     useEffect(() => {
-        const incomingParameters = parameterBlocks
-            .filter(block => incomingParameterBlocksIds.includes(block.selfId))
-            .reduce((acc, block) => {
-                const parameters = Array.isArray(block.data)
-                    ? block.data
-                    : [block.data];
+        const getIncomingParameters = (parameterBlocks, incomingParameterBlocksIds) => {
+            return parameterBlocks
+                .filter(block => incomingParameterBlocksIds.includes(block.selfId))
+                .reduce((acc, block) => {
+                    const parameters = Array.isArray(block.data) ? block.data : [block.data];
+                    return {
+                        ...acc,
+                        [block.label]: parameters,
+                    };
+                }, {});
+        };
 
-                return {
-                    ...acc,
-                    [block.label]: parameters,
-                };
-            }, {});
+        const findLeftIds = (blocks, id) => {
+            return blocks
+                .filter(block => block.type === 'custom' && block.outcomeConnections.includes(id))
+                .map(block => block.selfId);
+        };
 
-        let left_ids = [];
-        const get_left = (id) => {
-            blocks.forEach(element => {
-                if (
-                    element.type === 'custom' &&
-                    element.outcomeConnections.includes(id)
-                ) {
-                    left_ids.push(element.selfId);
-                    //get_left(element.selfId)
+        const getOutputParameters = (blocks, leftIds) => {
+            return blocks.reduce((acc, block) => {
+                if (leftIds.includes(block.selfId)) {
+                    acc[block.data.label] = block.data.output_parameters.map(param => ({
+                        id: param.id,
+                        type: param.type,
+                        value: '---',
+                        name: param.name,
+                    }));
                 }
-            });
-        }
-        get_left(data.id);
+                return acc;
+            }, {});
+        };
 
-        let outputParams = {};
+        const incomingParameters = getIncomingParameters(parameterBlocks, incomingParameterBlocksIds);
+        const leftIds = findLeftIds(blocks, data.id);
+
         blocks.forEach(block => {
             if (block.selfId === data.id) {
                 setincomingParameterBlocksIds(block.incomeConnections);
             }
-            if (left_ids.includes(block.selfId)) {
-                outputParams[block.data.label] = block.data.output_parameters.map(param => ({
-                    id: param.id,
-                    type: param.type,
-                    value: '---',
-                    name: param.Название,
-                }));
-            }
         });
 
-        // setLeftNodesParameters(outputParams);
-        let combinedObj = Object.assign(outputParams, incomingParameters);
+        const outputParameters = getOutputParameters(blocks, leftIds);
+        const combinedObj = { ...outputParameters, ...incomingParameters };
+
         setOptions(combinedObj);
     }, [parameterBlocks, incomingParameterBlocksIds, blocks]);
+
 
 
     useEffect(() => {
@@ -163,26 +163,13 @@ export default memo(({ data, isConnectable }) => {
     }, [services_functions]);
 
     const printOutputParamsToConsole = () => {
-        // console.log('ВСЕ БЛОКИ');
-        // console.log(blocks, parameterBlocks);
-
         console.log('BLOCK' + data.id, blocks.find(block => block.selfId === data.id));
-
-        // console.log('ВЫХОДНЫЕ ПАРАМЕТРЫ');
-        // console.log(output_parameters); 
-
-        // console.log('ПАРАМЕТРЫ С ВХОЯДЩИХ УЗЛОВ');
-        // console.log(parameters_from_left_nodes);
-
     }
 
 
     return (
         <>
             <button onClick={printOutputParamsToConsole}> Выходные параметры в консоли </button>
-
-
-
             <div className='component-Function-Block' tabIndex='0'>
                 <Handle
                     className='HandleComponent'
@@ -195,54 +182,39 @@ export default memo(({ data, isConnectable }) => {
                 </header>
                 <hr></hr>
                 <div className='parameters-Box'>
-                    {/* <p className='h'>Входные параметры</p> */}
                     {input_parameters.length !== 0 && (
                         <IntaractiveSection sectionName='Входные параметры' visible='true' >
                             <header className='parameter-Header'>
                                 <div className='parameter-Header_name'>Название</div>
                                 <div className='parameter-Header_type'>Тип</div>
                                 <div className='parameter-Header_type'>Параметр</div>
-                                {/* <div className='parameter-Header_type'>Значение</div> */}
                             </header>
                             <div ref={param_ref} className='parametrs'>
                                 {input_parameters.map((item, index) => (
                                     <div key={index} className='parameter'>
-                                        <div className='fucn_parameter_name'>{item.Название}</div>
+                                        <div className='fucn_parameter_name'>{item.name}</div>
                                         <div className='fucn_parameter_type'>{item.type}</div>
                                         <div className='func_parameter_value'>
                                             <CustomSelect
                                                 options={options}
                                                 blockId={data.id}
-                                                funcParamName={item.Название}
+                                                funcParamName={item.name}
                                                 funcParamType={item.type}
                                                 type='parameters'>
 
                                             </CustomSelect>
                                         </div>
-                                        {/* <div data-id={index} className='func_parameter_value' > {data.options[selectedOptions[index]].value} </div> */}
                                     </div>
                                 ))}
                             </div>
                         </IntaractiveSection>
                     )}
-
-
-
                     <IntaractiveSection sectionName='Сервис' >
                         <div className='parameter-Container'>
                             <header>Название сервиса</header>
 
                             <div className='parameter-Select'>
                                 <CustomSelect options={services_functions} blockId={data.id} type='services'></CustomSelect>
-                                {/* <div className="custom-select">
-                                     <select className='select' ref={selectRef} onChange={handleServiceChange}>
-                                        {services_functions.map((item, index) => (
-                                            <option key={index} value={index}>
-                                                {item.Название}
-                                            </option>
-                                        ))}
-                                    </select> 
-                                </div> */}
                             </div>
                         </div>
                     </IntaractiveSection>
@@ -251,15 +223,6 @@ export default memo(({ data, isConnectable }) => {
                             <header>Точка входа</header>
                             <div className='parameter-Select'>
                                 <CustomSelect options={entry_points} blockId={data.id} type='uri'></CustomSelect>
-                                {/* <div className="custom-select">
-                                    <select className='select' ref={selectRef2} onChange={handleEntryChange}>
-                                        {entry_points.map((item, index) => (
-                                            <option key={index} value={index}>
-                                                {item.uri}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div> */}
                             </div>
                         </div>
                     </IntaractiveSection>
@@ -268,7 +231,7 @@ export default memo(({ data, isConnectable }) => {
                             <div className='output-parameters'>
                                 {output_parameters.map((item, index) => (
                                     <div key={index} className='output-parameter'>
-                                        <div className='output-parameter-name'>{item.Название}</div>
+                                        <div className='output-parameter-name'>{item.name}</div>
                                         <div className='output-parameter-type'>{item.type}</div>
                                     </div>
                                 ))}
@@ -276,8 +239,6 @@ export default memo(({ data, isConnectable }) => {
                         </div>
                     </IntaractiveSection>
                 </div>
-
-
                 <Handle
                     className='HandleComponent'
                     type="source"

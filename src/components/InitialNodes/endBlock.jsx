@@ -11,7 +11,7 @@ export default memo(({ data, isConnectable }) => {
 
     useEffect(() => {
         //labelRef.current.innerHTML = blocks;  //data.label;
-        console.log(blocks);
+        // console.log(blocks);
         
 
     }, [blocks]);

@@ -270,7 +270,6 @@
     border: 1px solid #ccc;
     cursor: pointer;
     /* cursor: wait; */
-    /*BUG: поменять на cursor: context-menu*/
     font-size: 10px;
     width: 100%;
 }

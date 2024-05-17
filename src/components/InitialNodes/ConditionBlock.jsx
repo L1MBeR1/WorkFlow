@@ -3,6 +3,8 @@ import { Handle, Position } from 'reactflow';
 import './initialNodes.css';
 import { useBlocks } from '../../stores/store';
 
+
+
 const ConditionBlock = ({ data, isConnectable }) => {
     const blocks = useBlocks((state) => state.blocks);
     const [condition, setCondition] = useState('');
@@ -17,13 +19,19 @@ const ConditionBlock = ({ data, isConnectable }) => {
     }, [blocks.find(block => block.selfId === data.id).outcomeConnections]);
 
     const handleOptionChange = (id, newText) => {
-        console.log('Cond', id, newText);
         if (id === 'true') {
             data.true = newText;
         } else if (id === 'false') {
             data.false = newText;
         }
     };
+
+    useEffect(() => {
+        if (options.length > 0) {
+            handleOptionChange('true', options[0]);
+            handleOptionChange('false', options[0]);
+        }
+    }, [options]);
 
     return (
         <div className='condition-block'>
@@ -32,25 +40,14 @@ const ConditionBlock = ({ data, isConnectable }) => {
                 <input type='text' value={condition} onChange={handleConditionChange} />
             </div>
             <div className='options-list'>
-                {options.length > 0 ?
-                    // options.map((option, index) => (
-                    //     <div key={index} className='option-item'>
-                    //         <label>Вариант {option}:</label>
-                    //         <select
-                    //             value={option.text}
-                    //             onChange={(e) => handleOptionChange(option, e.target.value)}
-                    //         >
-                    //             {options.map((opt, ind) => (
-                    //                 <option key={ind} value={opt}>{opt}</option>
-                    //             ))}
-                    //         </select>
-                    //     </div>
-                    // ))
+                {
+                options.length > 0 ? (
                     <>
                         <div className='selector-true'>
-                            <div key={1} className='option-item'>
+                            <div className='option-item'>
                                 <label>Вариант если TRUE:</label>
                                 <select
+                                    defaultValue={options[0]}
                                     onChange={(e) => handleOptionChange('true', e.target.value)}
                                 >
                                     {options.map((opt, ind) => (
@@ -60,9 +57,10 @@ const ConditionBlock = ({ data, isConnectable }) => {
                             </div>
                         </div>
                         <div className='selector-false'>
-                            <div key={2} className='option-item'>
+                            <div className='option-item'>
                                 <label>Вариант если FALSE:</label>
                                 <select
+                                    defaultValue={options[0]}
                                     onChange={(e) => handleOptionChange('false', e.target.value)}
                                 >
                                     {options.map((opt, ind) => (
@@ -72,29 +70,20 @@ const ConditionBlock = ({ data, isConnectable }) => {
                             </div>
                         </div>
                     </>
-
-
-
-                    :
-                    <div>None</div>
-                }
+                ) : (
+                    <div>Подключите узлы</div>
+                )}
             </div>
         </div>
     );
 };
 
 export default memo(({ data, isConnectable }) => {
-    const [header, setHeader] = useState(data.label);
-
-    /*const handleBlur = (e) => {
-                setHeader(e.target.textContent);
-    };*/
-
     return (
         <>
             <div className='node' tabIndex="0">
                 <div>
-                    <div>{header}</div>
+                    <div>{data.label}</div>
                 </div>
 
                 <ConditionBlock data={data} isConnectable={isConnectable} />

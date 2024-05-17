@@ -11,8 +11,8 @@ const ComponentPanel = () => {
   const [functionsData, setFunctionsData] = useState([]);
   const [panelMode, setPanelMode] = useState('Initial');
 
-
-  var componentAndFuncs = []
+  // Было var --> componentAndFuncs
+  let componentAndFuncs = []
 
   const toggleVisibility = () => {
     setIsVisible(!isVisible);
@@ -50,7 +50,7 @@ const ComponentPanel = () => {
         body: JSON.stringify({}),
       });
       const responseData = await response.json();
-      console.log(responseData)
+      // console.log(responseData)
       setComponentsData(responseData);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -64,8 +64,8 @@ const ComponentPanel = () => {
 
       const combinedComponent = {
         id: component.id,
-        Название: component.Название,
-        Описание: component.Описание,
+        name: component.name,
+        description: component.description,
         functions: componentFunctions.map(func => ({
           id: func.id,
           name: func.name
@@ -109,7 +109,7 @@ const ComponentPanel = () => {
           {panelMode === 'Components' && (
             <div className="components animateContent">
               {componentAndFuncs.map(component => (
-                <Component key={component.id} compName={component.Название} compDescripton={component.Описание}>
+                <Component key={component.id} compName={component.name} compDescripton={component.description}>
                   {component.functions.map(func => (
                     <ComponentFunc
                       key={func.id}

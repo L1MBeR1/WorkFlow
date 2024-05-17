@@ -69,7 +69,7 @@ export default memo(({ data, isConnectable }) => {
                     id: param.id,
                     type: param.type,
                     value: '---',
-                    name: param.Название,
+                    name: param.name,
                 }));
             }
         });
@@ -78,8 +78,8 @@ export default memo(({ data, isConnectable }) => {
     }, [incomingParameterBlocksIds, blocks]);
 
     useEffect(() => {
-        console.log('handled update of blocks');
-        console.log(blocks);
+        // console.log('handled update of blocks');
+        // console.log(blocks);
 
         let left_ids = [];
         const get_left = (id) => {
