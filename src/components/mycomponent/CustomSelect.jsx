@@ -85,101 +85,66 @@ const CustomSelect = (props) => {
     }, [props.options]);
 
 
-    const handleSelect = (item) => { //TODO: Что-то сделать с этим
-        // const currentBlockIndex = blocks.findIndex(block => block.selfId === props.blockId);
+    const handleSelect = (item) => {
+        const currentBlockIndex = blocks.findIndex(block => block.selfId === props.blockId);
 
-        // if (currentBlockIndex !== -1) {
-        //     let variableKey;
-        //     if (props.type === 'uri') {
-        //         variableKey = 'uri_id';
-        //     } else if (props.type === 'services') {
-        //         variableKey = 'service_id';
-        //     } else if (props.type === 'parameters') {
-        //         const currentBlock = blocks[currentBlockIndex];
-        //         if (currentBlock.data.parameters) {
-        //             if (currentBlock.data.parameters.inputs) {
-        //                 console.log('aaa');
-        //                 currentBlock.data.parameters.inputs[item.id] = [item];
-        //             } else {
-        //                 console.log('bbb', props.funcParamName);
-        //                 currentBlock.data.parameters = {
-        //                     ...currentBlock.data.parameters,
-        //                     inputs: {
-        //                         [item.id]: [item],
-        //                     }
-        //                 };
-        //             }
-        //         }
-        //     }
-        // }
+        if (currentBlockIndex !== -1) {
+            const currentBlock = blocks[currentBlockIndex];
+            let variableKey;
+            let propToSave;
 
-        const currentBlock = blocks.find(block => block.selfId === props.blockId);
+            if (props.type === 'uri') {
+                variableKey = 'uri_id';
+                propToSave = item.id;
+            } else if (props.type === 'services') {
+                variableKey = 'service_id';
+                propToSave = item.id;
+            } else if (props.type === 'parameters') {
+                variableKey = props.funcParamName;
+                propToSave = item;
+            }
 
-
-        let variableKey;
-        let propToSave;
-        if (props.type === 'uri') {
-            variableKey = 'uri_id';
-            propToSave = item.id;
-        } else if (props.type === 'services') {
-            variableKey = 'service_id';
-            propToSave = item.id;
-        } else if (props.type === 'parameters') {
-            variableKey = props.funcParamName;
-            propToSave = item;
-        }
-
-
-        if (currentBlock.data.parameters && props.type !== 'parameters') {
-            const existingParameterIndex = currentBlock.data.parameters.findIndex(
-                param => param.paramName === props.funcParamName
-            );
-
-
-            if (existingParameterIndex !== -1) {
-                // Если параметр с таким именем уже существует, обновляем его
-                currentBlock.data.parameters[existingParameterIndex] = {
-                    ...currentBlock.data.parameters[existingParameterIndex],
-                    // ...item,
-                    [variableKey]: propToSave,
+            if (!currentBlock.data.parameters) {
+                currentBlock.data = {
+                    ...currentBlock.data,
+                    parameters: {},
                 };
+            }
+
+            if (props.type === 'parameters') {
+                if (!currentBlock.data.parameters.inputs) {
+                    currentBlock.data.parameters.inputs = {};
+                }
+
+                currentBlock.data.parameters.inputs[variableKey] = propToSave;
             } else {
-                // Если параметра с таким именем нет, добавляем новый параметр
-                currentBlock.data.parameters.push({
-                    // ...item,
-                    [variableKey]: propToSave,
+                currentBlock.data.parameters[variableKey] = propToSave;
+            }
+
+            if (props.type === 'parameters') {
+                setValue({
+                    value: item.name,
+                    id: item.id,
+                    type: item.type,
+                });
+            } else if (props.type === 'services') {
+                setValue({
+                    value: item.name,
+                    id: item.id,
+                    type: item.type,
+                });
+            } else if (props.type === 'uri') {
+                setValue({
+                    value: item.uri,
+                    id: item.id,
+                    type: item.type,
                 });
             }
-        } else {
-            // Если параметров нет, создаем новый массив с одним параметром
-            currentBlock.data.parameters = [{
-                [variableKey]: propToSave,
-            }];
+
+            setIsOpen(!isOpen);
         }
-        //console.log('item', item);
-        if (props.type === 'parameters') {
-            setValue({
-                "value": item.name,
-                "id": item.id,
-                type: item.type,
-            });
-        }
-        if (props.type === 'services') {
-            setValue({
-                "value": item.name,
-                "id": item.id,
-                type: item.type,
-            });
-        }
-        if (props.type === 'uri') {
-            setValue({
-                "value": item.uri,
-                "id": item.id,
-                type: item.type,
-            });
-        }
-        setIsOpen(!isOpen)
     };
+
 
 
     const filterOptionsByType = (options, type) => { //TODO: Использовать

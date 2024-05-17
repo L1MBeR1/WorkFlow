@@ -81,15 +81,15 @@ const ResultPanel = () => {
                 const blockSpec = fillBlock({
                     id: block.selfId,
                     type: block.type,
-                    inputs: block.incomeConnections
+                    //inputs: block.incomeConnections
                 });
                 specification_json.blocks.push(blockSpec);
             } else if (block.type === 'codeBlock') {
                 const blockSpec = fillBlock({
                     id: block.selfId,
                     type: block.type,
-                    inputs: block.incomeConnections,
-                    outputs: block.outcomeConnections,
+                    //inputs: block.incomeConnections,
+                    //outputs: block.outcomeConnections,
                     code: block.data.code,
                 });
                 specification_json.blocks.push(blockSpec);
@@ -101,8 +101,8 @@ const ResultPanel = () => {
                         componentID: block.data.component_id,
                         functionID: block.data.function_id,
                     },
-                    inputs: block.incomeConnections,
-                    outputs: block.outcomeConnections,
+                    inputs: block.data.parameters && block.data.parameters.inputs ? block.data.parameters.inputs : [],
+                    outputs: block.data.output_parameters ? block.data.output_parameters : [],
                     transition,
                 });
                 specification_json.blocks.push(blockSpec);

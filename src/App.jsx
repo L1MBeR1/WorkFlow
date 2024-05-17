@@ -241,7 +241,7 @@ export default function App() {
                         <Background variant="dots" color="#1e31db" gap={15} size={1} />
                     </ReactFlow>
                 </div>
-                <button onClick={printToConsole}> Выходные параметры в консоли </button>
+                {/* <button onClick={printToConsole}> Выходные параметры в консоли </button> */}
                 <ResultPanel></ResultPanel>
             </div>
 
