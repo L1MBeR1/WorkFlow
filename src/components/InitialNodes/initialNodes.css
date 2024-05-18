@@ -1,9 +1,9 @@
 .node {
     background-color: rgb(247, 246, 248);
     padding: 15px;
-    border: 1px #f0f0f0 solid;
+    outline: 1px #d6d6d6 solid;
     border-radius: 10px;
-
+    min-width: 200px;
     font-size: 14px;
     font-family: "Roboto", sans-serif;
     font-weight: 400;
@@ -12,14 +12,14 @@
 }
 .node:hover{
     outline: 1px #cecece solid;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 6px 20px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 6px 20px 0 rgba(0, 0, 0, 0.09);
     .HandleComponent {
         transition:transform 0.4s ease;
         transform: scale(1.8) translate(-0%, -25%);
     }
 }
 .node:focus{
-    border: 1px #1e31db solid;
+    outline: 1px #1e31db solid;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 6px 20px 0 rgba(0, 0, 0, 0.08);
     .react-flow__handle{
         transition:transform 0.4s ease;
@@ -176,4 +176,29 @@ stroke:gray;
     background-color: #1e31db;
     border-radius: 0 10px 10px 0 ;
     transition: transform ease 0.2s;
+}
+.condition-block{
+    display: flex;
+    flex-direction: column;
+    gap:5px;
+}
+.condition-selects{
+    padding-top: 2px;
+    display: flex;
+    flex-direction: row;
+    gap:7px;
+}
+.condition-content{
+    display: flex;
+    flex-direction: column;
+}
+.condition-content-header{
+    display: flex;
+    flex-grow: 1;
+}
+.condition-header-item{
+    min-width: 102px;
+}
+.condition-label-else{
+    margin-top: 5px;
 }

@@ -20,6 +20,7 @@ const CustomSelect = (props) => {
             type: null,
         })
     }*/
+
     if (
         (Object.values(props.options).flatMap(options => options).length === 0) &&
         !(selectedOption.value === "Выберите")
@@ -147,10 +148,16 @@ const CustomSelect = (props) => {
 
 
 
-    const filterOptionsByType = (options, type) => { //TODO: Использовать
+    const filterOptionsByType = (options, type) => { 
+        if (type !== undefined){
         return options
-            .filter(option => option !== undefined)
-            .filter(option => option.type === type);
+        .filter(option => option !== undefined)
+        .filter(option => option.type === type);
+        }
+        else{
+            return options  
+        }
+        
     };
 
 
@@ -190,6 +197,7 @@ const CustomSelect = (props) => {
                 ) : (
                     <div className='not-clickable-text'>Нет данных</div>
                 )} */}
+                
                 {props.type === 'parameters' && (
                     <>
                         {/* {Object.entries(props.options)
@@ -207,7 +215,7 @@ const CustomSelect = (props) => {
                                 Object.keys(props.options).map(key => (
                                     <IntaractiveSection key={key} sectionName={key}>
                                         {
-                                            props.options[key].map(item => (
+                                            filterOptionsByType(props.options[key],props.funcParamType).map(item => (
                                                 (item.name && item.name !== '') &&
                                                 <div key={item.id} className='custom-select-item' onClick={() => handleSelect(item)}>
                                                     <div className='custom-select-item-name'>
@@ -247,6 +255,13 @@ const CustomSelect = (props) => {
                     Object.values(props.options).flatMap(options => options).map((item, index) => (
                         <div key={index} className='custom-select-item' onClick={() => handleSelect(item)}>
                             {item.uri}
+                        </div>
+                    ))
+                )}
+                {props.type === 'conditions' && (
+                    Object.values(props.options).flatMap(options => options).map((item, index) => (
+                        <div key={index} className='custom-select-item' onClick={() => handleSelect(item)}>
+                            {item.description}
                         </div>
                     ))
                 )}

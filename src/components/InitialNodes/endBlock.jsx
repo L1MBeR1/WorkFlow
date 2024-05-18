@@ -19,7 +19,7 @@ export default memo(({ data, isConnectable }) => {
 
     return (
         <>
-            <div div className='node'tabIndex="0">
+            <div className='node'tabIndex="0">
                 <Handle
                     className='HandleComponent'
                     type="target"
@@ -28,7 +28,7 @@ export default memo(({ data, isConnectable }) => {
                 />
 
                 <div ref={labelRef} >
-                    END
+                    Конечный блок
                     {/* {blocks.map((block, index) => (
                         <option key={index} value={index}>
                             {block.selfId}
