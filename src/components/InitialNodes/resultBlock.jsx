@@ -149,6 +149,17 @@ export default memo(({ data, isConnectable }) => {
 
 
     }, [blocks]);
+    const handleTypeChange = (paramid, newType) => {
+        console.log(parameters)
+        const updatedParameters = parameters.map(param => {
+            if (param.id === paramid) {
+                return { ...param, type: newType };
+            }
+            return param;
+        });
+        setParameters(updatedParameters);
+        /*data.function_to_update_parameters(data.id, updatedParameters);*/
+    };
 
 
 
@@ -184,19 +195,28 @@ export default memo(({ data, isConnectable }) => {
                                 {parameters.map(parameter => (
                                     <div key={parameter.id} className='parameter' >
                                         <div className='parameter_name'>
-                                            <input placeholder="Имя параметра"
+                                            <input placeholder="Имя параметра" style={{height:'100%'}}
                                             // onChange={(e) => handleNameChange(parameter.id, e.target.value)}
                                             ></input>
                                         </div>
                                         <div className='type_value'>
                                             <select
-                                            // onChange={(e) => handleTypeChange(parameter.id, e.target.value)}
+                                            onChange={(e) => handleTypeChange(parameter.id, e.target.value)}
                                             >
-                                                <option value="string">String</option>
-                                                <option value="number">Number</option>
-                                                <option value="boolean">Boolean</option>
+                                                <option value="string">string</option>
+                                                <option value="number">number</option>
+                                                <option value="boolean">boolean</option>
                                             </select>
+                                        </div>
+                                        <div className='value'>
+                                            <CustomSelect
+                                                options={options}
+                                                blockId={data.id}
+                                                funcParamType={parameter.type}
+                                                type='parameters'
+                                                >
 
+                                                </CustomSelect>
                                         </div>
                                         <div className='delete_button' onClick={() => handleDeleteParameter(parameter.id)}>
                                             <Trash className='delete_img' />

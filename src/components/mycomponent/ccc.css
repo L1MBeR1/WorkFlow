@@ -259,6 +259,7 @@
     overflow: hidden;
     /* white-space: nowrap;
     text-overflow:clip; */ 
+    flex-grow: 1;
     flex-direction: row;
     box-sizing: border-box;
     width: 102px;

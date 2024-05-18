@@ -114,17 +114,18 @@ header {
     height: 12px;
 }
 .type_value{
-    display: flex;
-    justify-content: left;
-    width: 210px;
+    height: 100%;
 }
 .type_value input{
     font-size: 12px;
+    padding: 2px 2px;
     width: 120px;
     height: 12px; 
 }
 .type_value select {
-    font-size: 12px;
+    font-size: 11px;
+    padding: 2px 2px;
+
 }
 .delete_button{
     display: flex;
@@ -201,4 +202,21 @@ stroke:gray;
 }
 .condition-label-else{
     margin-top: 5px;
+}
+.result-value{
+    flex-grow: 1;
+}
+.result-input{
+    height: 100%;
+}
+.result-parameter{
+    max-height: 20px;
+}
+
+.value{
+    width: 120px;
+    margin-right: 10px;
+}
+.value .custom-select{
+    padding: 3px 5px;
 }
