@@ -57,6 +57,7 @@ export default function App() {
     const updateBlockOutcomers = useBlocks((state) => state.updateBlockOutcomers);
     const deleteBlockIncomer = useBlocks((state) => state.deleteBlockIncomer);
     const deleteBlockOutcomer = useBlocks((state) => state.deleteBlockOutcomer);
+    const checkIfBlockExists = useBlocks((state) => state.checkIfBlockExists);
 
     // const [options_lists_data, setOptions] = useState([]);
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
@@ -131,6 +132,12 @@ export default function App() {
         event.preventDefault();
 
         const { id, type, function_name, function_id, component_id } = JSON.parse(event.dataTransfer.getData('application/reactflow'));
+        // if(checkIfBlockExists('type', 'endBlock')) {
+        //     console.log('Конечный блок уже существует');
+        // } else {
+        //     console.log('Конечный блок не существует');
+        // }
+
 
         const position = reactFlowInstance.screenToFlowPosition({
             x: event.clientX,
@@ -141,6 +148,8 @@ export default function App() {
         if (!type) {
             return;
         }
+        
+
         let newData;
         let newid = `${lastId++}`;
         switch (type) {
@@ -157,6 +166,8 @@ export default function App() {
                 newData = { label: 'Начальный блок' };
                 break;
             case 'endBlock':
+                
+                
                 newData = {
                     id: newid,
                     label: 'Конечный блок'
@@ -210,7 +221,7 @@ export default function App() {
             addBlock(newNode[0].id, newNode[0].type, [], [], newNode[0].data);
         }
 
-    },[reactFlowInstance],);
+    }, [reactFlowInstance],);
 
 
     const printToConsole = () => {

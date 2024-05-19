@@ -8,13 +8,36 @@ const ConditionBlock = ({ data, isConnectable }) => {
     const blocks = useBlocks((state) => state.blocks);
 
     const [options, setOptions] = useState([]);
+    const updateBlock = useBlocks((state) => state.updateBlock);
     const [incomingParameterBlocksIds, setincomingParameterBlocksIds] = useState([]);
     const parameterBlocks = useParameterBlocksData((state) => state.blocks);
     const [rightBlocks, setrightBlocks] = useState([]);
 
     useEffect(() => {
         setOptions(blocks.find(block => block.selfId === data.id).outcomeConnections);
+        // updateData(data.id, options);
     }, [blocks.find(block => block.selfId === data.id).outcomeConnections]);
+
+
+    // const updateData = (id, value) => {
+    //     console.log('updateData', value);
+    //     let newData;
+    //     blocks.forEach(block => {
+    //         if (block.selfId === data.id) {
+    //             if (!block.data.output_parameters) {
+    //                 block.data.output_parameters = [];
+    //             }
+    //             if (!block.data.output_parameters[id]) {
+    //                 block.data.output_parameters[id] = {};
+    //             }
+    //             newData = {
+    //                 ...block.data,
+    //                 output_parameters: value
+    //             };
+    //         }
+    //     })
+    //     updateBlock(data.id, newData);
+    // };
 
     useEffect(() => {
         const getIncomingParameters = (parameterBlocks, incomingParameterBlocksIds) => {
@@ -55,7 +78,6 @@ const ConditionBlock = ({ data, isConnectable }) => {
             }, {});
         };
         setrightBlocks(findRightBlocks(blocks, data.id))
-        console.log(findRightBlocks(blocks, data.id))
         const incomingParameters = getIncomingParameters(parameterBlocks, incomingParameterBlocksIds);
         const leftIds = findLeftIds(blocks, data.id);
 
@@ -69,6 +91,7 @@ const ConditionBlock = ({ data, isConnectable }) => {
         const combinedObj = { ...outputParameters, ...incomingParameters };
 
         setOptions(combinedObj);
+        // updateData(data.id, combinedObj);
     }, [parameterBlocks, incomingParameterBlocksIds, blocks]);
 
     const conditions = [
@@ -123,12 +146,12 @@ const ConditionBlock = ({ data, isConnectable }) => {
                         <div className='condition-header-item'>Блок для перехода</div>
                     </header>
                     <CustomSelect
-                            options={rightBlocks}
-                            blockId={data.id}
-                            type='blocks'
-                            funcParamName='blocks'
-                        >
-                        </CustomSelect>
+                        options={rightBlocks}
+                        blockId={data.id}
+                        type='blocks'
+                        funcParamName='outputIfTrue'
+                    >
+                    </CustomSelect>
                 </div>
             </div>
             <div className='condition-label-else'>
@@ -138,13 +161,13 @@ const ConditionBlock = ({ data, isConnectable }) => {
                 <header className='condition-content-header'>
                     <div className='condition-header-item'>Блок для перехода</div>
                 </header>
-                    <CustomSelect
-                        options={rightBlocks}
-                        blockId={data.id}
-                        type='blocks'
-                        funcParamName='blocks'
-                    >
-                    </CustomSelect>
+                <CustomSelect
+                    options={rightBlocks}
+                    blockId={data.id}
+                    type='blocks'
+                    funcParamName='outputIfFalse'
+                >
+                </CustomSelect>
             </div>
         </div>
     );
@@ -154,18 +177,18 @@ export default memo(({ data, isConnectable }) => {
     const blocks = useBlocks((state) => state.blocks);
 
     const printToConsole = () => {
-      
+
         console.log(blocks.find(block => block.selfId === data.id));
     }
 
     return (
         <>
             <Handle
-                    className='HandleComponent'
-                    type="target"
-                    position={Position.Left}
-                    isConnectable={isConnectable}
-                />
+                className='HandleComponent'
+                type="target"
+                position={Position.Left}
+                isConnectable={isConnectable}
+            />
             <button onClick={printToConsole}> Выходные параметры в консоли </button>
             <div className='node' tabIndex="0"
             >
@@ -176,7 +199,7 @@ export default memo(({ data, isConnectable }) => {
 
                 <ConditionBlock data={data} isConnectable={isConnectable} />
             </div>
-             <Handle
+            <Handle
                 className='HandleComponent'
                 type="source"
                 id="a"

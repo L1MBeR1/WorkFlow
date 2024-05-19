@@ -30,7 +30,22 @@ const ResultPanel = () => {
         return connectedParameterBlocks.map(block => block.data || []);
     };
 
+    const getSingleResultBlock = (queue) => {
+        let connectedBlocks = [];
 
+        blocks.forEach(element => {
+            if (element.type === 'resultBlock') {
+                connectedBlocks.push(element.data.output_parameters);
+            }
+        });
+
+        // connectedBlocks = [...new Set(connectedBlocks)];
+        // connectedBlocks = connectedBlocks.map(block => block.data || []);
+        // connectedBlocks = connectedBlocks.output_parameters;
+
+        connectedBlocks = Object.values(connectedBlocks[0]);
+        return connectedBlocks;
+    };
 
     const fillServiceSample = ({ id, serviceID, entry_pointID }) => ({
         ...(id && { id }),
@@ -38,18 +53,22 @@ const ResultPanel = () => {
         ...(entry_pointID && { entry_pointID }),
     });
 
-    const fillBlock = ({ id, type, specification, inputs, outputs, transition, code }) => ({
+    const fillBlock = ({ id, type, specification, inputs, outputs, transition, code, outputIfTrue, outputIfFalse, condition }) => ({
         ...(id && { id }),
         ...(type && { type_of_block: type }),
         ...(specification && Object.keys(specification).length && { specification }),
         ...(inputs && inputs.length && { inputs }),
         ...(outputs && outputs.length && { outputs }),
+        ...(condition && condition.length && { condition }),
+        ...(outputIfTrue && Object.keys(outputIfTrue).length && { outputIfTrue }),
+        ...(outputIfFalse && Object.keys(outputIfFalse).length && { outputIfFalse }),
         ...(transition && Object.keys(transition).length && { transition }),
         ...(code && Object.keys(code).length && { code }),
     });
 
     const makeSpecification = (queue) => {
-        const parameterBlock = getSingleParameterBlock();
+        const singleParameterBlock = getSingleParameterBlock();
+        const singleResultBlock = getSingleResultBlock(queue);
 
         const specification_json = {
             service_data: [],
@@ -81,7 +100,6 @@ const ResultPanel = () => {
                 const blockSpec = fillBlock({
                     id: block.selfId,
                     type: block.type,
-                    //inputs: block.incomeConnections
                 });
                 specification_json.blocks.push(blockSpec);
             } else if (block.type === 'codeBlock') {
@@ -99,8 +117,38 @@ const ResultPanel = () => {
                 const blockSpec = fillBlock({
                     id: block.selfId,
                     type: block.type,
-                    inputs: Object.values(block.data.parameters.inputs),
-                    outputs: Object.values(block.data.output_parameters),
+                    inputs: Object.values(block.data.parameters &&
+                        block.data.parameters.inputs ?
+                        block.data.parameters.inputs : {}),
+                    condition: [
+                        {
+                            parameterA: block.data.parameters &&
+                                block.data.parameters.inputs.parameterA ?
+                                block.data.parameters.inputs.parameterA : {}
+                        },
+                        {
+                            parameterB: block.data.parameters &&
+                                block.data.parameters.inputs.parameterB ?
+                                block.data.parameters.inputs.parameterB : {}
+                        },
+                        {
+                            operator: block.data.parameters &&
+                                block.data.parameters.condition.condition ?
+                                block.data.parameters.condition.condition : ''
+                        },
+                    ],
+                    outputs: [
+                        {
+                            condition: true, blockID: block.data.parameters &&
+                                block.data.parameters.outputIfTrue ?
+                                block.data.parameters.outputIfTrue : ''
+                        },
+                        {
+                            condition: false, blockID: block.data.parameters &&
+                                block.data.parameters.outputIfFalse ?
+                                block.data.parameters.outputIfFalse : ''
+                        },
+                    ],
                     code: block.data.code,
                 });
                 specification_json.blocks.push(blockSpec);
@@ -122,18 +170,28 @@ const ResultPanel = () => {
             }
         });
 
+        console.log('F1', singleParameterBlock);
         specification_json.blocks.push(
             fillBlock({
                 id: Math.max(...queue.map(Number)) + 1,
                 type: 'parameters_block',
-                outputs: parameterBlock,
+                outputs: singleParameterBlock,
             })
         );
+
+        singleResultBlock.forEach(element => {
+            specification_json.result.push(
+                element
+            );
+        });
+        console.log('F2', singleResultBlock);
+        
 
         setSpecificationContent(JSON.stringify(specification_json, null, 2));
     };
 
     useEffect(() => {
+        console.log(blocks);
         if (blocks.length === 0) return;
 
         const endBlock = blocks.find(block => block.type === 'endBlock');
@@ -171,7 +229,6 @@ const ResultPanel = () => {
                         </div>
                         <div className="resultPanel-title">Спецификация</div>
                     </header>
-                    {/* <hr /> */}
                     <div className="resultPanel-content-specification">
                         <CodeContainer language="json">{specificationContent}</CodeContainer>
                         <div className="resultPanel-content-buttons">

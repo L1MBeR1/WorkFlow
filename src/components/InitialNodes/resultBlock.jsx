@@ -11,6 +11,7 @@ export default memo(({ data, isConnectable }) => {
     const [options, setOptions] = useState([]);
     const [incomingParameterBlocksIds, setincomingParameterBlocksIds] = useState([]);
     const [parameters, setParameters] = useState([{ id: uuidv4(), name: '', type: 'string', value: '' }]);
+    const updateBlock = useBlocks((state) => state.updateBlock);
 
     const addParameter = () => {
         let newParameter = {
@@ -24,6 +25,48 @@ export default memo(({ data, isConnectable }) => {
     const handleDeleteParameter = (paramid) => {
         const updatedParameters = parameters.filter(param => param.id !== paramid);
         setParameters(updatedParameters);
+    };
+
+    useEffect(() => {
+        parameters.forEach(parameter => {
+            handleNameChange(parameter.id, '');
+            handleNameChange(parameter.id, 'string');
+        });
+    }, [parameters]);
+
+    const handleNameChange = (id, value) => {
+        let newData;
+        blocks.forEach(block => {
+            if (block.selfId === data.id) {
+                if (!block.data.output_parameters) {
+                    block.data.output_parameters = [];
+                }
+                if (!block.data.output_parameters[id]) {
+                    block.data.output_parameters[id] = {};
+                }
+                newData = {
+                    ...block.data,
+                    output_parameters: {
+                        ...block.data.output_parameters,
+                        [id]: {
+                            ...block.data.output_parameters[id],
+                            blockId: block.incomeConnections[0],
+                            name: value,
+                            value: block.data.parameters &&
+                                block.data.parameters.inputs &&
+                                block.data.parameters.inputs[id].value ?
+                                block.data.parameters.inputs[id].value : '---',
+                            outputId: block.data.parameters &&
+                                block.data.parameters.inputs &&
+                                block.data.parameters.inputs[id].id ?
+                                block.data.parameters.inputs[id].id : ''
+                        },
+                    }
+
+                };
+            }
+        })
+        updateBlock(data.id, newData);
     };
 
     // TODO: Переписать
@@ -59,22 +102,43 @@ export default memo(({ data, isConnectable }) => {
         setOptions(outputParams);
     }, [incomingParameterBlocksIds, blocks]);
 
-    const handleTypeChange = (paramid, newType) => {
-        console.log(parameters)
-        const updatedParameters = parameters.map(param => {
-            if (param.id === paramid) {
-                return { ...param, type: newType };
+    const handleTypeChange = (id, value) => {
+        let newData;
+        blocks.forEach(block => {
+            if (block.selfId === data.id) {
+                if (!block.data.output_parameters) {
+                    block.data.output_parameters = [];
+                }
+                if (!block.data.output_parameters[id]) {
+                    block.data.output_parameters[id] = {};
+                }
+                newData = {
+                    ...block.data,
+                    output_parameters: {
+                        ...block.data.output_parameters,
+                        [id]: {
+                            ...block.data.output_parameters[id],
+                            blockId: block.incomeConnections[0],
+                            type: value,
+                            value: block.data.parameters &&
+                                block.data.parameters.inputs &&
+                                block.data.parameters.inputs[id].value ?
+                                block.data.parameters.inputs[id].value : '---',
+                            outputId: block.data.parameters &&
+                                block.data.parameters.inputs &&
+                                block.data.parameters.inputs[id].id ?
+                                block.data.parameters.inputs[id].id : ''
+                        },
+                    }
+
+                };
             }
-            return param;
-        });
-        setParameters(updatedParameters);
-        /*data.function_to_update_parameters(data.id, updatedParameters);*/
+        })
+        updateBlock(data.id, newData);
     };
 
-
-
     const printOutputParamsToConsole = () => {
-        console.log('options', options);
+        console.log('options', blocks.find(block => block.selfId === data.id));
     }
     return (
         <>
@@ -106,7 +170,7 @@ export default memo(({ data, isConnectable }) => {
                                     <div key={parameter.id} className='parameter' >
                                         <div className='parameter_name'>
                                             <input placeholder="Имя параметра" style={{ height: '100%' }}
-                                            // onChange={(e) => handleNameChange(parameter.id, e.target.value)}
+                                                onChange={(e) => handleNameChange(parameter.id, e.target.value)}
                                             ></input>
                                         </div>
                                         <div className='type_value'>
@@ -123,9 +187,9 @@ export default memo(({ data, isConnectable }) => {
                                                 options={options}
                                                 blockId={data.id}
                                                 funcParamType={parameter.type}
+                                                funcParamName={parameter.id}
                                                 type='parameters'
                                             >
-
                                             </CustomSelect>
                                         </div>
                                         <div className='delete_button' onClick={() => handleDeleteParameter(parameter.id)}>
@@ -134,12 +198,9 @@ export default memo(({ data, isConnectable }) => {
                                     </div>
                                 ))}
                             </div>
-
                         </IntaractiveSection>
-
-
                     </div>
-                </div >
+                </div>
             </div>
         </>
     );

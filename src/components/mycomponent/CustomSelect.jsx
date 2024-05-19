@@ -78,9 +78,9 @@ const CustomSelect = (props) => {
             } else if (props.type === 'conditions') {
                 variableKey = props.funcParamName;
                 propToSave = item;
-            }else if (props.type === 'blocks') {
+            } else if (props.type === 'blocks') {
                 variableKey = props.funcParamName;
-                propToSave = item;
+                propToSave = item.selfId;
             }
 
 
@@ -126,11 +126,6 @@ const CustomSelect = (props) => {
                     type: item.type,
                 });
             }
-                    // setValue({
-                    //     value: item.description,
-                    //     id: item.id,
-                    //     type: item.condition,
-                    // });
             setIsOpen(!isOpen);
         }
     };
@@ -144,7 +139,6 @@ const CustomSelect = (props) => {
         else {
             return options
         }
-
     };
 
     return (
@@ -169,7 +163,6 @@ const CustomSelect = (props) => {
                                                     <div className='custom-select-item-name'>
                                                         {item.name}
                                                     </div>
-
                                                 </div>
                                             ))
                                         }

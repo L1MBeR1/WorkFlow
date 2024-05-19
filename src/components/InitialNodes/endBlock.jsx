@@ -1,41 +1,27 @@
-import React, { memo, useRef, useEffect } from 'react';
+import React, { memo, useRef } from 'react';
 import { Handle, Position } from 'reactflow';
-import { useBlocks } from '../../stores/store';
-
-
+import { useBlocks, useParameterBlocksData } from '../../stores/store';
 export default memo(({ data, isConnectable }) => {
-    const blocks = useBlocks((state) => state.blocks);
-    //const {blocks} = useBlocks();
     const labelRef = useRef(null);
+    const blocks = useBlocks((state) => state.blocks);
 
-
-    useEffect(() => {
-        //labelRef.current.innerHTML = blocks;  //data.label;
-        // console.log(blocks);
-        
-
-    }, [blocks]);
-
+    const printToConsole = () => {
+        console.log(blocks);
+    }
 
     return (
         <>
-            <div className='node'tabIndex="0">
+            <button onClick={printToConsole}>  в консоли </button>
+            <div className='node' tabIndex="0">
                 <Handle
                     className='HandleComponent'
                     type="target"
                     position={Position.Left}
                     isConnectable={isConnectable}
                 />
-
                 <div ref={labelRef} >
                     Конечный блок
-                    {/* {blocks.map((block, index) => (
-                        <option key={index} value={index}>
-                            {block.selfId}
-                        </option>
-                    ))} */}
                 </div>
-
             </div>
         </>
     );

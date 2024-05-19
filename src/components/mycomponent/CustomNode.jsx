@@ -79,24 +79,20 @@ export default memo(({ data, isConnectable }) => {
         };
 
         const findLeftIds = (blocks, id) => {
-            return blocks
-                .filter(block => (block.type === 'custom' || block.type === 'codeBlock') && block.outcomeConnections.includes(id))
+            const directConnections = blocks
+                .filter(block => (block.type === 'custom' || block.type === 'codeBlock') &&
+                    block.outcomeConnections.includes(id))
                 .map(block => block.selfId);
+        
+            const connectedViaConditions = blocks
+                .filter(block => block.type === 'conditionBlock' &&
+                    block.outcomeConnections.includes(id))
+                .map(block => block.incomeConnections)
+                .flat(); // Плоский массив из вложенных массивов
+        
+            return [...directConnections, ...connectedViaConditions];
         };
-
-        // const getOutputParameters = (blocks, leftIds) => {
-        //     return blocks.reduce((acc, block) => {
-        //         if (leftIds.includes(block.selfId)) {
-        //             acc[block.data.label] = block.data.output_parameters.map(param => ({
-        //                 id: param.id,
-        //                 type: param.type,
-        //                 value: '---',
-        //                 name: param.name,
-        //             }));
-        //         }
-        //         return acc;
-        //     }, {});
-        // };
+        
 
         const getOutputParameters = (blocks, leftIds) => {
             return blocks.reduce((acc, block) => {
@@ -114,7 +110,7 @@ export default memo(({ data, isConnectable }) => {
                 return acc;
             }, {});
         };
-        
+
 
         const incomingParameters = getIncomingParameters(parameterBlocks, incomingParameterBlocksIds);
         const leftIds = findLeftIds(blocks, data.id);

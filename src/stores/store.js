@@ -29,16 +29,8 @@ export const useBlocks = create(set => ({
 
         return { blocks: updatedBlocks };
     }),
-    /*updateBlockIncomers: (id, newIncomerId) => set((state) => {
-        const updatedBlocks = state.blocks.map((block) => {
-            if (block.selfId === id) {
-                return { ...block, incomeConnections: [...block.incomeConnections, newIncomerId] };
-            }
-            return block;
-        });
 
-        return { blocks: updatedBlocks };
-    }),*/
+
     updateBlockIncomers: (id, newIncomerId) => set((state) => {
         const updatedBlocks = state.blocks.map((block) => {
             if (block.selfId === id) {
@@ -50,10 +42,10 @@ export const useBlocks = create(set => ({
             }
             return block;
         });
-    
+
         return { blocks: updatedBlocks };
     }),
-    
+
 
     deleteBlockIncomer: (id, incomerToRemoveId) => set((state) => {
         const updatedBlocks = state.blocks.map((block) => {
@@ -68,16 +60,6 @@ export const useBlocks = create(set => ({
     }),
 
 
-    /*updateBlockOutcomers: (id, newOutcomerId) => set((state) => {
-        const updatedBlocks = state.blocks.map((block) => {
-            if (block.selfId === id) {
-                return { ...block, outcomeConnections: [...block.outcomeConnections, newOutcomerId] };
-            }
-            return block;
-        });
-
-        return { blocks: updatedBlocks };
-    }),*/
     updateBlockOutcomers: (id, newOutcomerId) => set((state) => {
         const updatedBlocks = state.blocks.map((block) => {
             if (block.selfId === id) {
@@ -89,10 +71,10 @@ export const useBlocks = create(set => ({
             }
             return block;
         });
-    
+
         return { blocks: updatedBlocks };
     }),
-    
+
 
 
     deleteBlockOutcomer: (id, outcomerToRemoveId) => set((state) => {
@@ -106,6 +88,10 @@ export const useBlocks = create(set => ({
 
         return { blocks: updatedBlocks };
     }),
+
+    checkIfBlockExists: (attribute, value) => set(state => {
+        return state.blocks.some(block => block[attribute] === value);
+    }),    
 }));
 
 export const useParameterBlocksData = create(set => ({
