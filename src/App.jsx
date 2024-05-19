@@ -179,6 +179,7 @@ export default function App() {
                 newData = {
                     id: newid,
                     label: 'Блок с кодом',
+                    // output_parameters: [],
                 };
                 break;
             case 'conditionBlock':

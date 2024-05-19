@@ -1,54 +1,89 @@
 import React, { memo, useEffect, useState } from 'react';
 import { Handle, Position } from 'reactflow';
 import './initialNodes.css';
-import { useBlocks } from '../../stores/store';
 import CustomSelect from '../mycomponent/CustomSelect.jsx';
-
+import { useBlocks, useParameterBlocksData } from '../../stores/store';
 
 const ConditionBlock = ({ data, isConnectable }) => {
     const blocks = useBlocks((state) => state.blocks);
-    const [condition, setCondition] = useState('');
-    const [options, setOptions] = useState([]);
 
-    const handleConditionChange = (e) => {
-        setCondition(e.target.value);
-    };
+    const [options, setOptions] = useState([]);
+    const [incomingParameterBlocksIds, setincomingParameterBlocksIds] = useState([]);
+    const parameterBlocks = useParameterBlocksData((state) => state.blocks);
 
     useEffect(() => {
         setOptions(blocks.find(block => block.selfId === data.id).outcomeConnections);
     }, [blocks.find(block => block.selfId === data.id).outcomeConnections]);
 
-    const handleOptionChange = (id, newText) => {
-        if (id === 'true') {
-            data.true = newText;
-        } else if (id === 'false') {
-            data.false = newText;
-        }
-    };
-
     useEffect(() => {
-        if (options.length > 0) {
-            handleOptionChange('true', options[0]);
-            handleOptionChange('false', options[0]);
-        }
-    }, [options]);
+        const getIncomingParameters = (parameterBlocks, incomingParameterBlocksIds) => {
+            return parameterBlocks
+                .filter(block => incomingParameterBlocksIds.includes(block.selfId))
+                .reduce((acc, block) => {
+                    const parameters = Array.isArray(block.data) ? block.data : [block.data];
+                    return {
+                        ...acc,
+                        [block.label]: parameters,
+                    };
+                }, {});
+        };
+
+        const findLeftIds = (blocks, id) => {
+            return blocks
+                .filter(block => (block.type === 'custom' || block.type === 'codeBlock') && block.outcomeConnections.includes(id))
+                .map(block => block.selfId);
+        };
+
+        const getOutputParameters = (blocks, leftIds) => {
+            return blocks.reduce((acc, block) => {
+                if (leftIds.includes(block.selfId)) {
+                    acc[block.data.label] = Object.keys(block.data.output_parameters).map(key => {
+                        const param = block.data.output_parameters[key];
+                        return {
+                            id: param.id,
+                            type: param.type,
+                            value: '---',
+                            name: param.name,
+                        };
+                    });
+                }
+                return acc;
+            }, {});
+        };
+
+
+        const incomingParameters = getIncomingParameters(parameterBlocks, incomingParameterBlocksIds);
+        const leftIds = findLeftIds(blocks, data.id);
+
+        blocks.forEach(block => {
+            if (block.selfId === data.id) {
+                setincomingParameterBlocksIds(block.incomeConnections);
+            }
+        });
+
+        const outputParameters = getOutputParameters(blocks, leftIds);
+        const combinedObj = { ...outputParameters, ...incomingParameters };
+
+        setOptions(combinedObj);
+    }, [parameterBlocks, incomingParameterBlocksIds, blocks]);
+
     const conditions = [
-        { condition: "Equal", description: "Равно" },
-        { condition: "NotEqual", description: "Не равно" },
-        { condition: "GreaterThan", description: "Больше" },
-        { condition: "LessThan", description: "Меньше" },
-        { condition: "GreaterThanOrEqual", description: "Больше или равно" },
-        { condition: "LessThanOrEqual", description: "Меньше или равно" },
-        { condition: "BothTrue", description: "Оба истинны" },
-        { condition: "BothFalse", description: "Оба ложны" },
-        { condition: "EitherTrue", description: "Одно истинно" },
-        { condition: "EitherFalse", description: "Одно ложно" }
+        { id: 1, condition: "Equal", description: "Равно" },
+        { id: 2, condition: "NotEqual", description: "Не равно" },
+        { id: 3, condition: "GreaterThan", description: "Больше" },
+        { id: 4, condition: "LessThan", description: "Меньше" },
+        { id: 5, condition: "GreaterThanOrEqual", description: "Больше или равно" },
+        { id: 6, condition: "LessThanOrEqual", description: "Меньше или равно" },
+        { id: 7, condition: "BothTrue", description: "Оба истинны" },
+        { id: 8, condition: "BothFalse", description: "Оба ложны" },
+        { id: 9, condition: "EitherTrue", description: "Одно истинно" },
+        { id: 0, condition: "EitherFalse", description: "Одно ложно" }
     ];
+
     return (
         <div className='condition-block'>
             <div className='condition-label-if'>
                 <label>Если</label>
-                {/* <input type='text' value={condition} onChange={handleConditionChange} /> */}
             </div>
             <div className='condition-content'>
                 <header className='condition-content-header'>
@@ -58,21 +93,24 @@ const ConditionBlock = ({ data, isConnectable }) => {
                 </header>
                 <div className='condition-selects'>
                     <CustomSelect
-                    options={options}
-                    blockId={data.id}
-                    type='parameters'
+                        options={options}
+                        blockId={data.id}
+                        type='parameters'
+                        funcParamName='parameterA'
                     >
                     </CustomSelect>
                     <CustomSelect
-                    options={conditions}
-                    blockId={data.id} // TODO Не уверен что именно так
-                    type='conditions'
+                        options={conditions}
+                        blockId={data.id}
+                        type='conditions'
+                        funcParamName='condition'
                     >
                     </CustomSelect>
                     <CustomSelect
-                    options={options}
-                    blockId={data.id}
-                    type='parameters'
+                        options={options}
+                        blockId={data.id}
+                        type='parameters'
+                        funcParamName='parameterB'
                     >
                     </CustomSelect>
                 </div>
@@ -80,49 +118,22 @@ const ConditionBlock = ({ data, isConnectable }) => {
             <div className='condition-label-else'>
                 <label>Иначе</label>
             </div>
-            {/* <div className='options-list'>
-                {
-                options.length > 0 ? (
-                    <>
-                        <div className='selector-true'>
-                            <div className='option-item'>
-                                <label>Вариант если TRUE:</label>
-                                <select
-                                    defaultValue={options[0]}
-                                    onChange={(e) => handleOptionChange('true', e.target.value)}
-                                >
-                                    {options.map((opt, ind) => (
-                                        <option key={ind} value={opt}>{opt}</option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
-                        <div className='selector-false'>
-                            <div className='option-item'>
-                                <label>Вариант если FALSE:</label>
-                                <select
-                                    defaultValue={options[0]}
-                                    onChange={(e) => handleOptionChange('false', e.target.value)}
-                                >
-                                    {options.map((opt, ind) => (
-                                        <option key={ind} value={opt}>{opt}</option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
-                    </>
-                ) : (
-                    <div>Подключите узлы</div>
-                )}
-            </div> */}
         </div>
     );
 };
 
 export default memo(({ data, isConnectable }) => {
+    const blocks = useBlocks((state) => state.blocks);
+
+    const printToConsole = () => {
+        console.log(blocks.find(block => block.selfId === data.id));
+    }
+
     return (
         <>
-            <div className='node' tabIndex="0">
+            <button onClick={printToConsole}> Выходные параметры в консоли </button>
+            <div className='node' tabIndex="0"
+            >
                 <div>
                     <div>{data.label}</div>
                     <hr></hr>
@@ -137,20 +148,25 @@ export default memo(({ data, isConnectable }) => {
                     position={Position.Left}
                     isConnectable={isConnectable}
                 />
-                <Handle
-                    className='HandleComponent'
-                    type="source"
-                    position={Position.Right}
-                    style={{ top: 60}}
-                    isConnectable={isConnectable}
-                />
-                <Handle
-                    className='HandleComponent'
-                    type="source"
-                    position={Position.Right}
-                    style={{  top: 125}}
-                    isConnectable={isConnectable}
-                />
+
+                <div>
+                    <Handle
+                        className='HandleComponent'
+                        type="source"
+                        id="a"
+                        position={Position.Right}
+                        style={{ top: 60 }}
+                        isConnectable={isConnectable}
+                    />
+                    <Handle
+                        id="b"
+                        className='HandleComponent'
+                        type="source"
+                        position={Position.Right}
+                        style={{ top: 125 }}
+                        isConnectable={isConnectable}
+                    />
+                </div>
             </div>
         </>
     );

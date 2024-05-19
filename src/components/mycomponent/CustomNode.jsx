@@ -65,7 +65,6 @@ export default memo(({ data, isConnectable }) => {
         fetchParameters();
     }, [data.function_id]);
 
-
     useEffect(() => {
         const getIncomingParameters = (parameterBlocks, incomingParameterBlocksIds) => {
             return parameterBlocks
@@ -81,23 +80,41 @@ export default memo(({ data, isConnectable }) => {
 
         const findLeftIds = (blocks, id) => {
             return blocks
-                .filter(block => block.type === 'custom' && block.outcomeConnections.includes(id))
+                .filter(block => (block.type === 'custom' || block.type === 'codeBlock') && block.outcomeConnections.includes(id))
                 .map(block => block.selfId);
         };
+
+        // const getOutputParameters = (blocks, leftIds) => {
+        //     return blocks.reduce((acc, block) => {
+        //         if (leftIds.includes(block.selfId)) {
+        //             acc[block.data.label] = block.data.output_parameters.map(param => ({
+        //                 id: param.id,
+        //                 type: param.type,
+        //                 value: '---',
+        //                 name: param.name,
+        //             }));
+        //         }
+        //         return acc;
+        //     }, {});
+        // };
 
         const getOutputParameters = (blocks, leftIds) => {
             return blocks.reduce((acc, block) => {
                 if (leftIds.includes(block.selfId)) {
-                    acc[block.data.label] = block.data.output_parameters.map(param => ({
-                        id: param.id,
-                        type: param.type,
-                        value: '---',
-                        name: param.name,
-                    }));
+                    acc[block.data.label] = Object.keys(block.data.output_parameters).map(key => {
+                        const param = block.data.output_parameters[key];
+                        return {
+                            id: param.id,
+                            type: param.type,
+                            value: '---',
+                            name: param.name,
+                        };
+                    });
                 }
                 return acc;
             }, {});
         };
+        
 
         const incomingParameters = getIncomingParameters(parameterBlocks, incomingParameterBlocksIds);
         const leftIds = findLeftIds(blocks, data.id);

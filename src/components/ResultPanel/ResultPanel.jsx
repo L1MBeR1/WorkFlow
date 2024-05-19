@@ -85,11 +85,22 @@ const ResultPanel = () => {
                 });
                 specification_json.blocks.push(blockSpec);
             } else if (block.type === 'codeBlock') {
+                console.log(block.data.input_parameters);
                 const blockSpec = fillBlock({
                     id: block.selfId,
                     type: block.type,
-                    //inputs: block.incomeConnections,
-                    //outputs: block.outcomeConnections,
+                    inputs: Object.values(block.data.input_parameters),
+                    outputs: Object.values(block.data.output_parameters),
+                    code: block.data.code,
+                });
+                specification_json.blocks.push(blockSpec);
+            } else if (block.type === 'conditionBlock') {
+                console.log(block.data.input_parameters);
+                const blockSpec = fillBlock({
+                    id: block.selfId,
+                    type: block.type,
+                    inputs: Object.values(block.data.parameters.inputs),
+                    outputs: Object.values(block.data.output_parameters),
                     code: block.data.code,
                 });
                 specification_json.blocks.push(blockSpec);
@@ -101,7 +112,9 @@ const ResultPanel = () => {
                         componentID: block.data.component_id,
                         functionID: block.data.function_id,
                     },
-                    inputs: block.data.parameters && block.data.parameters.inputs ? block.data.parameters.inputs : [],
+                    inputs: block.data.parameters &&
+                        block.data.parameters.inputs ?
+                        Object.values(block.data.parameters.inputs) : [],
                     outputs: block.data.output_parameters ? block.data.output_parameters : [],
                     transition,
                 });
@@ -158,7 +171,7 @@ const ResultPanel = () => {
                         </div>
                         <div className="resultPanel-title">Спецификация</div>
                     </header>
-                    <hr />
+                    {/* <hr /> */}
                     <div className="resultPanel-content-specification">
                         <CodeContainer language="json">{specificationContent}</CodeContainer>
                         <div className="resultPanel-content-buttons">
