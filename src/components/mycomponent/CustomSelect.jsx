@@ -78,7 +78,11 @@ const CustomSelect = (props) => {
             } else if (props.type === 'conditions') {
                 variableKey = props.funcParamName;
                 propToSave = item;
+            }else if (props.type === 'blocks') {
+                variableKey = props.funcParamName;
+                propToSave = item;
             }
+
 
             if (!currentBlock.data.parameters) {
                 currentBlock.data = {
@@ -114,7 +118,19 @@ const CustomSelect = (props) => {
                     id: item.id,
                     type: item.condition,
                 });
+            } else if (props.type === 'blocks') {
+                console.log(item);
+                setValue({
+                    value: item.data.label,
+                    id: item.selfId,
+                    type: item.type,
+                });
             }
+                    // setValue({
+                    //     value: item.description,
+                    //     id: item.id,
+                    //     type: item.condition,
+                    // });
             setIsOpen(!isOpen);
         }
     };
@@ -181,6 +197,13 @@ const CustomSelect = (props) => {
                     Object.values(props.options).flatMap(options => options).map((item, index) => (
                         <div key={index} className='custom-select-item' onClick={() => handleSelect(item)}>
                             {item.description}
+                        </div>
+                    ))
+                )}
+                {props.type === 'blocks' && (
+                    Object.values(props.options).flatMap(options => options).map((item, index) => (
+                        <div key={index} className='custom-select-item' onClick={() => handleSelect(item)}>
+                            {item.data.label}
                         </div>
                     ))
                 )}

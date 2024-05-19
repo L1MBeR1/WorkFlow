@@ -10,6 +10,7 @@ const ConditionBlock = ({ data, isConnectable }) => {
     const [options, setOptions] = useState([]);
     const [incomingParameterBlocksIds, setincomingParameterBlocksIds] = useState([]);
     const parameterBlocks = useParameterBlocksData((state) => state.blocks);
+    const [rightBlocks, setrightBlocks] = useState([]);
 
     useEffect(() => {
         setOptions(blocks.find(block => block.selfId === data.id).outcomeConnections);
@@ -33,7 +34,10 @@ const ConditionBlock = ({ data, isConnectable }) => {
                 .filter(block => (block.type === 'custom' || block.type === 'codeBlock') && block.outcomeConnections.includes(id))
                 .map(block => block.selfId);
         };
-
+        const findRightBlocks = (blocks, id) => {
+            return blocks
+                .filter(block => (block.type === 'custom' || block.type === 'codeBlock') && block.incomeConnections.includes(id));
+        };
         const getOutputParameters = (blocks, leftIds) => {
             return blocks.reduce((acc, block) => {
                 if (leftIds.includes(block.selfId)) {
@@ -50,8 +54,8 @@ const ConditionBlock = ({ data, isConnectable }) => {
                 return acc;
             }, {});
         };
-
-
+        setrightBlocks(findRightBlocks(blocks, data.id))
+        console.log(findRightBlocks(blocks, data.id))
         const incomingParameters = getIncomingParameters(parameterBlocks, incomingParameterBlocksIds);
         const leftIds = findLeftIds(blocks, data.id);
 
@@ -114,9 +118,33 @@ const ConditionBlock = ({ data, isConnectable }) => {
                     >
                     </CustomSelect>
                 </div>
+                <div className='condition-content-step'>
+                    <header className='condition-content-header'>
+                        <div className='condition-header-item'>Блок для перехода</div>
+                    </header>
+                    <CustomSelect
+                            options={rightBlocks}
+                            blockId={data.id}
+                            type='blocks'
+                            funcParamName='blocks'
+                        >
+                        </CustomSelect>
+                </div>
             </div>
             <div className='condition-label-else'>
                 <label>Иначе</label>
+            </div>
+            <div className='condition-content'>
+                <header className='condition-content-header'>
+                    <div className='condition-header-item'>Блок для перехода</div>
+                </header>
+                    <CustomSelect
+                        options={rightBlocks}
+                        blockId={data.id}
+                        type='blocks'
+                        funcParamName='blocks'
+                    >
+                    </CustomSelect>
             </div>
         </div>
     );
@@ -126,11 +154,18 @@ export default memo(({ data, isConnectable }) => {
     const blocks = useBlocks((state) => state.blocks);
 
     const printToConsole = () => {
+      
         console.log(blocks.find(block => block.selfId === data.id));
     }
 
     return (
         <>
+            <Handle
+                    className='HandleComponent'
+                    type="target"
+                    position={Position.Left}
+                    isConnectable={isConnectable}
+                />
             <button onClick={printToConsole}> Выходные параметры в консоли </button>
             <div className='node' tabIndex="0"
             >
@@ -140,34 +175,14 @@ export default memo(({ data, isConnectable }) => {
                 </div>
 
                 <ConditionBlock data={data} isConnectable={isConnectable} />
-
-
-                <Handle
-                    className='HandleComponent'
-                    type="target"
-                    position={Position.Left}
-                    isConnectable={isConnectable}
-                />
-
-                <div>
-                    <Handle
-                        className='HandleComponent'
-                        type="source"
-                        id="a"
-                        position={Position.Right}
-                        style={{ top: 60 }}
-                        isConnectable={isConnectable}
-                    />
-                    <Handle
-                        id="b"
-                        className='HandleComponent'
-                        type="source"
-                        position={Position.Right}
-                        style={{ top: 125 }}
-                        isConnectable={isConnectable}
-                    />
-                </div>
             </div>
+             <Handle
+                className='HandleComponent'
+                type="source"
+                id="a"
+                position={Position.Right}
+                isConnectable={isConnectable}
+            />
         </>
     );
 });

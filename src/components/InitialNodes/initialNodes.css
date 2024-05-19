@@ -196,10 +196,9 @@ stroke:gray;
 .condition-content-header{
     display: flex;
     flex-grow: 1;
+    gap:70px;
 }
-.condition-header-item{
-    min-width: 102px;
-}
+
 .condition-label-else{
     margin-top: 5px;
 }
@@ -219,4 +218,7 @@ stroke:gray;
 }
 .value .custom-select{
     padding: 3px 5px;
+}
+.condition-content-step{
+    margin-top: 5px;
 }
