@@ -31,7 +31,7 @@ const ResultPanel = () => {
     };
 
     const getSingleResultBlock = (queue) => {
-        
+
         let connectedBlocks = [];
 
         blocks.forEach(element => {
@@ -114,7 +114,9 @@ const ResultPanel = () => {
                 const blockSpec = fillBlock({
                     id: block.selfId,
                     type: block.type,
-                    inputs: Object.values(block.data.input_parameters),
+                    inputs: block.data.input_parameters ?
+                        Object.values(block.data.input_parameters) :
+                        [],
                     outputs: Object.values(block.data.output_parameters),
                     code: block.data.code,
                 });
@@ -193,9 +195,9 @@ const ResultPanel = () => {
                 );
             });
         }
-        
+
         // console.log('F2', singleResultBlock);
-        
+
 
         setSpecificationContent(JSON.stringify(specification_json, null, 2));
     };
