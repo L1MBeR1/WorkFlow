@@ -31,6 +31,7 @@ const ResultPanel = () => {
     };
 
     const getSingleResultBlock = (queue) => {
+        
         let connectedBlocks = [];
 
         blocks.forEach(element => {
@@ -43,6 +44,8 @@ const ResultPanel = () => {
         // connectedBlocks = connectedBlocks.map(block => block.data || []);
         // connectedBlocks = connectedBlocks.output_parameters;
 
+        if (connectedBlocks.length === 0) return;
+        console.log(connectedBlocks);
         connectedBlocks = Object.values(connectedBlocks[0]);
         return connectedBlocks;
     };
@@ -67,6 +70,7 @@ const ResultPanel = () => {
     });
 
     const makeSpecification = (queue) => {
+        if (!queue.length) return;
         const singleParameterBlock = getSingleParameterBlock();
         const singleResultBlock = getSingleResultBlock(queue);
 
@@ -182,11 +186,14 @@ const ResultPanel = () => {
             })
         );
 
-        singleResultBlock.forEach(element => {
-            specification_json.result.push(
-                element
-            );
-        });
+        if (singleResultBlock) {
+            singleResultBlock.forEach(element => {
+                specification_json.result.push(
+                    element
+                );
+            });
+        }
+        
         // console.log('F2', singleResultBlock);
         
 
