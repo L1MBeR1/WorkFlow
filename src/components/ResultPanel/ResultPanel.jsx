@@ -170,7 +170,7 @@ const ResultPanel = () => {
             }
         });
 
-        console.log('F1', singleParameterBlock);
+        // console.log('F1', singleParameterBlock);
         specification_json.blocks.push(
             fillBlock({
                 id: Math.max(...queue.map(Number)) + 1,
@@ -184,14 +184,14 @@ const ResultPanel = () => {
                 element
             );
         });
-        console.log('F2', singleResultBlock);
+        // console.log('F2', singleResultBlock);
         
 
         setSpecificationContent(JSON.stringify(specification_json, null, 2));
     };
 
     useEffect(() => {
-        console.log(blocks);
+        // console.log(blocks);
         if (blocks.length === 0) return;
 
         const endBlock = blocks.find(block => block.type === 'endBlock');

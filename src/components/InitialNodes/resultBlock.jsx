@@ -29,45 +29,37 @@ export default memo(({ data, isConnectable }) => {
 
     useEffect(() => {
         parameters.forEach(parameter => {
-            handleNameChange(parameter.id, '');
-            handleNameChange(parameter.id, 'string');
+            changeName(parameter.id, '');
+            changeType(parameter.id, 'string');
         });
     }, [parameters]);
 
-    const handleNameChange = (id, value) => {
-        let newData;
-        blocks.forEach(block => {
-            if (block.selfId === data.id) {
-                if (!block.data.output_parameters) {
-                    block.data.output_parameters = [];
-                }
-                if (!block.data.output_parameters[id]) {
-                    block.data.output_parameters[id] = {};
-                }
-                newData = {
-                    ...block.data,
-                    output_parameters: {
-                        ...block.data.output_parameters,
-                        [id]: {
-                            ...block.data.output_parameters[id],
-                            blockId: block.incomeConnections[0],
-                            name: value,
-                            value: block.data.parameters &&
-                                block.data.parameters.inputs &&
-                                block.data.parameters.inputs[id].value ?
-                                block.data.parameters.inputs[id].value : '---',
-                            outputId: block.data.parameters &&
-                                block.data.parameters.inputs &&
-                                block.data.parameters.inputs[id].id ?
-                                block.data.parameters.inputs[id].id : ''
-                        },
-                    }
-
-                };
+    const changeName = (id, value) => {
+        const block = blocks.find(block => block.selfId === data.id);
+        if (!block) return;
+    
+        const { parameters } = block.data;
+        const inputParameters = parameters?.inputs ?? {};
+    
+        const newOutputParameters = {
+            ...block.data.output_parameters,
+            [id]: {
+                ...block.data.output_parameters?.[id],
+                blockId: block.incomeConnections[0],
+                name: value,
+                value: inputParameters[id]?.value ?? '---',
+                outputId: inputParameters[id]?.id ?? ''
             }
-        })
+        };
+    
+        const newData = {
+            ...block.data,
+            output_parameters: newOutputParameters
+        };
+    
         updateBlock(data.id, newData);
     };
+    
 
     // TODO: Переписать
     useEffect(() => {
@@ -102,40 +94,32 @@ export default memo(({ data, isConnectable }) => {
         setOptions(outputParams);
     }, [incomingParameterBlocksIds, blocks]);
 
-    const handleTypeChange = (id, value) => {
-        let newData;
-        blocks.forEach(block => {
-            if (block.selfId === data.id) {
-                if (!block.data.output_parameters) {
-                    block.data.output_parameters = [];
-                }
-                if (!block.data.output_parameters[id]) {
-                    block.data.output_parameters[id] = {};
-                }
-                newData = {
-                    ...block.data,
-                    output_parameters: {
-                        ...block.data.output_parameters,
-                        [id]: {
-                            ...block.data.output_parameters[id],
-                            blockId: block.incomeConnections[0],
-                            type: value,
-                            value: block.data.parameters &&
-                                block.data.parameters.inputs &&
-                                block.data.parameters.inputs[id].value ?
-                                block.data.parameters.inputs[id].value : '---',
-                            outputId: block.data.parameters &&
-                                block.data.parameters.inputs &&
-                                block.data.parameters.inputs[id].id ?
-                                block.data.parameters.inputs[id].id : ''
-                        },
-                    }
-
-                };
+    const changeType = (id, value) => {
+        const block = blocks.find(block => block.selfId === data.id);
+        if (!block) return;
+    
+        const { parameters } = block.data;
+        const inputParameters = parameters?.inputs ?? {};
+    
+        const newOutputParameters = {
+            ...block.data.output_parameters,
+            [id]: {
+                ...block.data.output_parameters?.[id],
+                blockId: block.incomeConnections[0],
+                type: value,
+                value: inputParameters[id]?.value ?? '---',
+                outputId: inputParameters[id]?.id ?? ''
             }
-        })
+        };
+    
+        const newData = {
+            ...block.data,
+            output_parameters: newOutputParameters
+        };
+    
         updateBlock(data.id, newData);
     };
+    
 
     const printOutputParamsToConsole = () => {
         console.log('options', blocks.find(block => block.selfId === data.id));
@@ -154,7 +138,6 @@ export default memo(({ data, isConnectable }) => {
                     {data.label}
                     <hr></hr>
                     <div className='result-block-content'>
-                        {/* <CustomCheckBox></CustomCheckBox> */}
                         <IntaractiveSection sectionName='Выходные параметры' visible='true'
                             button={
                                 <div className='addButton' onClick={addParameter}>
@@ -170,12 +153,12 @@ export default memo(({ data, isConnectable }) => {
                                     <div key={parameter.id} className='parameter' >
                                         <div className='parameter_name'>
                                             <input placeholder="Имя параметра" style={{ height: '100%' }}
-                                                onChange={(e) => handleNameChange(parameter.id, e.target.value)}
+                                                onChange={(e) => changeName(parameter.id, e.target.value)}
                                             ></input>
                                         </div>
                                         <div className='type_value'>
                                             <select
-                                                onChange={(e) => handleTypeChange(parameter.id, e.target.value)}
+                                                onChange={(e) => changeType(parameter.id, e.target.value)}
                                             >
                                                 <option value="string">string</option>
                                                 <option value="number">number</option>

@@ -5,6 +5,7 @@ import IntaractiveSection from './intaractiveSection';
 
 const CustomSelect = (props) => {
     const blocks = useBlocks((state) => state.blocks);
+    const updateBlock = useBlocks((state) => state.updateBlock);
     const [selectedOption, setValue] = useState({
         value: "Выберите",
         id: null,
@@ -95,7 +96,17 @@ const CustomSelect = (props) => {
                 if (!currentBlock.data.parameters.inputs) {
                     currentBlock.data.parameters.inputs = {};
                 }
-                currentBlock.data.parameters.inputs[variableKey] = propToSave;
+                updateBlock(currentBlock.selfId, {
+                    ...currentBlock.data,
+                    parameters: {
+                        ...currentBlock.data.parameters,
+                        inputs: {
+                            ...currentBlock.data.parameters.inputs,
+                            [variableKey]: propToSave,
+                        },
+                    },
+                });
+                // currentBlock.data.parameters.inputs[variableKey] = propToSave;
             } else {
                 currentBlock.data.parameters[variableKey] = propToSave;
             }
