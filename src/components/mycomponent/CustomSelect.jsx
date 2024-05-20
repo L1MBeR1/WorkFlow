@@ -96,17 +96,17 @@ const CustomSelect = (props) => {
                 if (!currentBlock.data.parameters.inputs) {
                     currentBlock.data.parameters.inputs = {};
                 }
-                updateBlock(currentBlock.selfId, {
-                    ...currentBlock.data,
-                    parameters: {
-                        ...currentBlock.data.parameters,
-                        inputs: {
-                            ...currentBlock.data.parameters.inputs,
-                            [variableKey]: propToSave,
-                        },
-                    },
-                });
-                // currentBlock.data.parameters.inputs[variableKey] = propToSave;
+                // updateBlock(currentBlock.selfId, {
+                //     ...currentBlock.data,
+                //     parameters: {
+                //         ...currentBlock.data.parameters,
+                //         inputs: {
+                //             ...currentBlock.data.parameters.inputs,
+                //             [variableKey]: propToSave,
+                //         },
+                //     },
+                // });
+                currentBlock.data.parameters.inputs[variableKey] = propToSave;
             } else {
                 currentBlock.data.parameters[variableKey] = propToSave;
             }

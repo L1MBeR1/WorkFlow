@@ -81,11 +81,14 @@ const ResultPanel = () => {
 
             if (!block) return;
 
-            if (block.type === 'custom' && block.data?.parameters?.[0]) {
+            if (block.type === 'custom' && block.data?.parameters) {
+                console.log('ddfaw');
                 const serviceSample = fillServiceSample({
                     id: block.data.function_id,
-                    serviceID: block.data.parameters[0].service_id,
-                    entry_pointID: block.data.parameters[0].uri_id,
+                    // serviceID: block.data.parameters[0].service_id,
+                    serviceID: block.data.parameters.service_id,
+                    // entry_pointID: block.data.parameters[0].uri_id,
+                    entry_pointID: block.data.parameters.uri_id,
                 });
                 specification_json.service_data.push(serviceSample);
             }
