@@ -307,7 +307,6 @@ def function(input):
                             <header >
                                 <div className='header-name'>Название</div>
                                 <div className='header-type'>Тип</div>
-                                <div className='header-value'>Значение</div>
                             </header>
                             <div className='parametrs'>
                                 {parameters.map(parameter => (
