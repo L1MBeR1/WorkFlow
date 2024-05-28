@@ -2,11 +2,12 @@ import React, { memo, useState } from 'react';
 import { Handle, Position } from 'reactflow';
 import { ReactComponent as Trash } from './trash.svg';
 import './initialNodes.css';
-import { useParameterBlocksData } from '../../stores/store';
+import { useParameterBlocksData, useDataTypes } from '../../stores/store';
 import { v4 as uuidv4 } from 'uuid';
 import IntaractiveSection from '../mycomponent/intaractiveSection';
 
 export default memo(({ data, isConnectable }) => {
+    const dataTypes = useDataTypes((state) => state.types);
     const updateParameterBlock = useParameterBlocksData((state) => state.update);
     const updateParameterBlockLabel = useParameterBlocksData((state) => state.updateLabel);
     const [parameters, setParameters] = useState([{ id: uuidv4(), name: '', type: 'string', value: '' }]);
@@ -74,9 +75,12 @@ export default memo(({ data, isConnectable }) => {
                                     </div>
                                     <div className='type_value'>
                                         <select onChange={(e) => handleTypeChange(parameter.id, e.target.value)}>
-                                            <option value="string">String</option>
+                                            {/* <option value="string">String</option>
                                             <option value="number">Number</option>
-                                            <option value="boolean">Boolean</option>
+                                            <option value="boolean">Boolean</option> */}
+                                            {dataTypes.map((item, index) => (
+                                                    <option key={index} value={item.type}>{item.type}</option>
+                                                ))}
                                         </select>
                                         <input placeholder="Значение" onChange={(e) => handleValueChange(parameter.id, e.target.value)}></input>
                                     </div>

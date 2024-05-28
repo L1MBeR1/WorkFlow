@@ -1,7 +1,7 @@
 import React, { memo, useEffect, useState } from 'react';
 import { Handle, Position } from 'reactflow';
 import AceEditor from 'react-ace';
-import { useBlocks, useParameterBlocksData } from '../../stores/store';
+import { useBlocks, useParameterBlocksData, useDataTypes } from '../../stores/store';
 import IntaractiveSection from '../mycomponent/intaractiveSection.jsx';
 import { v4 as uuidv4 } from 'uuid';
 import CustomSelect from '../mycomponent/CustomSelect.jsx';
@@ -15,6 +15,7 @@ import 'ace-builds/src-noconflict/theme-dracula';
 export default memo(({ data, isConnectable }) => {
     const blocks = useBlocks((state) => state.blocks);
     const updateBlock = useBlocks((state) => state.updateBlock);
+    const dataTypes = useDataTypes((state) => state.types);
     const [options, setOptions] = useState([]);
     const [parameters, setParameters] = useState([{ id: uuidv4(), name: '', type: 'string', value: '' }]);
     const [parameters1, setParameters1] = useState([{ id: uuidv4(), name: '', type: 'string', value: '' }]);
@@ -32,11 +33,47 @@ def function(input):
 `);
 
     const updateCode = () => {
-        updateBlock(data.id,  {
+        updateBlock(data.id, {
             ...blocks.find(block => block.selfId === data.id).data,
             code: code
         });
     };
+
+    // useEffect(() => {
+    //     const fetchData = async (isReturn) => {
+    //         try {
+    //             const response = await fetch('http://localhost:4000/database/components/functions/parameters/by_function_id', {
+    //                 method: 'POST',
+    //                 headers: {
+    //                     'Content-Type': 'application/json',
+    //                 },
+    //                 body: JSON.stringify({
+    //                     function_id: data.function_id,
+    //                     is_return: isReturn,
+    //                 }),
+    //             });
+    //             if (!response.ok) {
+    //                 throw new Error('Network response was not ok');
+    //             }
+    //             return await response.json();
+    //         } catch (error) {
+    //             console.error('Error fetching data:', error);
+    //             throw error;
+    //         }
+    //     };
+
+    //     const fetchParameters = async () => {
+    //         try {
+    //             const outputParams = await fetchData(true);
+    //             setOutputParameters(outputParams);
+    //             data.output_parameters = outputParams;
+    //         } catch (error) {
+    //             console.error('Error fetching data:', error);
+    //         }
+    //     };
+
+    //     fetchParameters();
+    // }, []);
 
     useEffect(() => {
         const getIncomingParameters = (parameterBlocks, incomingParameterBlocksIds) => {
@@ -129,7 +166,8 @@ def function(input):
     };
 
     const printToConsole = () => {
-        console.log(blocks.find(block => block.selfId === data.id));
+        // console.log(blocks.find(block => block.selfId === data.id));
+        console.log(dataTypes);
     };
 
     const saveNameToData = (id, value) => {
@@ -321,9 +359,12 @@ def function(input):
                                             <select
                                                 onChange={(e) => saveTypeToData(parameter.id, e.target.value)}
                                             >
-                                                <option value="string">String</option>
+                                                {dataTypes.map((item, index) => (
+                                                    <option key={index} value={item.type}>{item.type}</option>
+                                                ))}
+                                                {/* <option value="string">String</option>
                                                 <option value="number">Number</option>
-                                                <option value="boolean">Boolean</option>
+                                                <option value="boolean">Boolean</option> */}
                                             </select>
 
                                         </div>
