@@ -8,7 +8,7 @@ import EndNode from './components/InitialNodes/endBlock.jsx';
 import ParametrBlock from './components/InitialNodes/parametrBlock.jsx';
 import ResultBlock from './components/InitialNodes/resultBlock.jsx';
 import CodeBlock from './components/InitialNodes/codeBlock.jsx';
-import ConditionBlock from './components/InitialNodes/ConditionBlock.jsx';
+import ConditionBlock from './components/InitialNodes/conditionBlock.jsx';
 
 import HeaderPanel from './components/HeaderPanel/headerPanel.jsx';
 

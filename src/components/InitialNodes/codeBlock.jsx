@@ -2,7 +2,7 @@ import React, { memo, useEffect, useState } from 'react';
 import { Handle, Position } from 'reactflow';
 import AceEditor from 'react-ace';
 import { useBlocks, useParameterBlocksData, useDataTypes } from '../../stores/store.js';
-import IntaractiveSection from '../AdditionalComponents/intaractiveSection.jsx';
+import IntaractiveSection from '../AdditionalComponents/intaractiveSection';
 import { v4 as uuidv4 } from 'uuid';
 import CustomSelect from '../AdditionalComponents/customSelect.jsx';
 import '../../css/initialNodes.css';
