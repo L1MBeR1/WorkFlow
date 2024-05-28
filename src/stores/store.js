@@ -129,3 +129,34 @@ export const useParameterBlocksData = create(set => ({
         return { blocks: updatedBlocks };
     }),
 }));
+
+export const useDataTypes = create(set => ({
+    types: [],
+    loading: false,
+    error: null,
+    loadTypes: async () => {
+        set({ loading: true, error: null });
+
+        try {
+            const response = await fetch('http://localhost:4000/database/data_types', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            set({ types: data, loading: false });
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            set({ error: error.message, loading: false });
+        }
+    },
+    getTypes: () => set(state => {
+        return { types: state.types };
+    }),
+}));

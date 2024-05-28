@@ -40,6 +40,22 @@ async function select_all_functions() {
 	}
 }
 
+async function select_data_types() {
+	const query = `
+					SELECT * 
+					FROM  components.type c 
+					WHERE (c.type <> '') AND (c.type is not null)
+	`;
+
+	try {
+		const result = await pool.query(query);
+		return result.rows;
+	} catch (error) {
+		console.error("Error executing query:", error);
+		throw error;
+	}
+}
+
 async function select_component_functions_by_component_id(component_id) {
 	const query = `
 					SELECT cf.id, cf.name as "name"
@@ -127,4 +143,5 @@ module.exports = {
 	select_services_by_component_id,
 	select_component_function_parameters_by_function_id,
 	select_service_points_by_service_id,
+	select_data_types,
 };

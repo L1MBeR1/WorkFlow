@@ -5,8 +5,8 @@ const {
     select_component_functions_by_component_id,
     select_services_by_component_id,
     select_component_function_parameters_by_function_id,
-    select_service_points_by_service_id
-
+    select_service_points_by_service_id,
+    select_data_types
 } = require("../database/functions/functions");
 
 const router = express.Router();
@@ -81,6 +81,15 @@ router.post("/database/services/service_points/by_service_id", async (req, res) 
         select_service_points_by_service_id,
         [service_id],
         "Service points not found"
+    );
+});
+
+router.post("/database/data_types", async (req, res) => {
+    await handleRequest(
+        res,
+        select_data_types,
+        [],
+        "Data types not found"
     );
 });
 

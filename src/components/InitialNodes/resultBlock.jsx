@@ -2,12 +2,13 @@ import React, { memo, useEffect, useState, useRef } from 'react';
 import { Handle, Position } from 'reactflow';
 import CustomSelect from '../mycomponent/CustomSelect.jsx';
 import './initialNodes.css';
-import { useBlocks } from '../../stores/store.js';
+import { useBlocks, useDataTypes } from '../../stores/store.js';
 import IntaractiveSection from '../mycomponent/intaractiveSection.jsx';
 import { v4 as uuidv4 } from 'uuid';
 import { ReactComponent as Trash } from './trash.svg';
 export default memo(({ data, isConnectable }) => {
     const blocks = useBlocks((state) => state.blocks);
+    const dataTypes = useDataTypes((state) => state.types);
     const [options, setOptions] = useState([]);
     const [incomingParameterBlocksIds, setincomingParameterBlocksIds] = useState([]);
     const [parameters, setParameters] = useState([{ id: uuidv4(), name: '', type: 'string', value: '' }]);
@@ -160,9 +161,12 @@ export default memo(({ data, isConnectable }) => {
                                             <select
                                                 onChange={(e) => changeType(parameter.id, e.target.value)}
                                             >
-                                                <option value="string">string</option>
+                                                {/* <option value="string">string</option>
                                                 <option value="number">number</option>
-                                                <option value="boolean">boolean</option>
+                                                <option value="boolean">boolean</option> */}
+                                                {dataTypes.map((item, index) => (
+                                                    <option key={index} value={item.type}>{item.type}</option>
+                                                ))}
                                             </select>
                                         </div>
                                         <div className='value'>

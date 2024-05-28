@@ -12,10 +12,8 @@ import ConditionBlock from './components/InitialNodes/ConditionBlock';
 
 import HeaderPanel from './headerPanel/panel';
 
-import { v4 as uuidv4 } from 'uuid';
-
-
 import { useBlocks } from './stores/store';
+import { useDataTypes } from './stores/store';
 import { useParameterBlocksData } from './stores/store';
 
 
@@ -35,8 +33,6 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 
-
-
 const nodeTypes = {
     custom: CustomNode,
     startBlock: StartNode,
@@ -51,6 +47,8 @@ export default function App() {
     let lastId = 0;
     const blocks = useBlocks((state) => state.blocks);
     const addBlock = useBlocks((state) => state.addBlock);
+    const loadDataTypes = useDataTypes((state) => state.loadTypes);
+    const datatypes = useDataTypes((state) => state.types);
     const addParameterBlock = useParameterBlocksData((state) => state.add);
     // const parameterBlocks = useParameterBlocksData((state) => state.blocks);
     const updateBlockIncomers = useBlocks((state) => state.updateBlockIncomers);
@@ -76,6 +74,11 @@ export default function App() {
         const incomingNodes = getIncomers(node, nodes, edges);
         return incomingNodes;
     }, [nodes, edges]);
+
+    useEffect(() => {
+        loadDataTypes();
+        console.log('Компонент создан');
+    }, []);
 
 
     const onEdgesChange = useCallback(
@@ -148,7 +151,7 @@ export default function App() {
         if (!type) {
             return;
         }
-        
+
 
         let newData;
         let newid = `${lastId++}`;
@@ -166,8 +169,8 @@ export default function App() {
                 newData = { label: 'Начальный блок' };
                 break;
             case 'endBlock':
-                
-                
+
+
                 newData = {
                     id: newid,
                     label: 'Конечный блок'
@@ -225,7 +228,8 @@ export default function App() {
 
 
     const printToConsole = () => {
-        console.log(blocks);
+        // console.log(blocks);
+        console.log(datatypes);
     }
 
     return (
@@ -253,7 +257,7 @@ export default function App() {
                         <Background variant="dots" color="#1e31db" gap={15} size={1} />
                     </ReactFlow>
                 </div>
-                {/* <button onClick={printToConsole}> Выходные параметры в консоли </button> */}
+                <button onClick={printToConsole}> Выходные параметры в консоли </button>
                 <ResultPanel></ResultPanel>
             </div>
 
