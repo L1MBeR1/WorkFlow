@@ -1,10 +1,10 @@
 import React, { memo, useState } from 'react';
 import { Handle, Position } from 'reactflow';
-import { ReactComponent as Trash } from './trash.svg';
-import './initialNodes.css';
+import { ReactComponent as Trash } from '../../images/InitialNodes/trash.svg';
+import '../../css/initialNodes.css';
 import { useParameterBlocksData, useDataTypes } from '../../stores/store';
 import { v4 as uuidv4 } from 'uuid';
-import IntaractiveSection from '../mycomponent/intaractiveSection';
+import IntaractiveSection from '../AdditionalComponents/intaractiveSection';
 
 export default memo(({ data, isConnectable }) => {
     const dataTypes = useDataTypes((state) => state.types);

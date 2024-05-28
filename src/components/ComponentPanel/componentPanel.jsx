@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { ReactComponent as Arrow } from '../images/panel/arrow.svg';
-import '../css/componentPanel.css';
+import { ReactComponent as Arrow } from '../../images/ComponentPanel/arrow.svg';
+import '../../css/componentPanel.css';
 import ComponentFunc from './componentFunc';
 import Component from './component';
-import InitialNode from '../components/InitialNodes/initialNode';
+import InitialNode from '../InitialNodes/initialNode';
 
 const ComponentPanel = () => {
   const [isVisible, setIsVisible] = useState(true);

@@ -1,16 +1,16 @@
-import ComponentPanel from './componentPanel/componentPanel';
-import ResultPanel from './components/ResultPanel/ResultPanel';
+import ComponentPanel from './components/ComponentPanel/componentPanel.jsx';
+import ResultPanel from './components/ResultPanel/resultPanel.jsx';
 import './css/app.css';
-import CustomNode from './components/mycomponent/CustomNode';
+import CustomNode from './components/Functions/functionNode.jsx';
 
-import StartNode from './components/InitialNodes/startBlock';
-import EndNode from './components/InitialNodes/endBlock';
-import ParametrBlock from './components/InitialNodes/parametrBlock';
-import ResultBlock from './components/InitialNodes/resultBlock';
-import CodeBlock from './components/InitialNodes/codeBlock';
-import ConditionBlock from './components/InitialNodes/ConditionBlock';
+import StartNode from './components/InitialNodes/startBlock.jsx';
+import EndNode from './components/InitialNodes/endBlock.jsx';
+import ParametrBlock from './components/InitialNodes/parametrBlock.jsx';
+import ResultBlock from './components/InitialNodes/resultBlock.jsx';
+import CodeBlock from './components/InitialNodes/codeBlock.jsx';
+import ConditionBlock from './components/InitialNodes/ConditionBlock.jsx';
 
-import HeaderPanel from './headerPanel/panel';
+import HeaderPanel from './components/HeaderPanel/headerPanel.jsx';
 
 import { useBlocks } from './stores/store';
 import { useDataTypes } from './stores/store';

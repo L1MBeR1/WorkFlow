@@ -1,5 +1,6 @@
 import React, { memo, useRef } from 'react';
 import { Handle, Position } from 'reactflow';
+import '../../css/initialNodes.css';
 import { useBlocks, useParameterBlocksData } from '../../stores/store';
 export default memo(({ data, isConnectable }) => {
     const labelRef = useRef(null);

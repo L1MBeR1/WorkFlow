@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import './ResultPanel.css';
+import '../../css/resultPanel.css';
 import { useBlocks, useParameterBlocksData } from '../../stores/store';
 import ResultPanelStatus from '../../stores/storeResult';
-import { ReactComponent as Close } from './close.svg';
-import CodeContainer from '../CodeContainer';
+import { ReactComponent as Close } from '../../images/ResultPanel/close.svg';
+import CodeContainer from '../AdditionalComponents/codeContainer';
 
 const ResultPanel = () => {
     const blocks = useBlocks((state) => state.blocks);

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import '../css/componentPanel.css';
+import '../../css/componentPanel.css';
 
 const ComponentFunc = (props) => {
     const onDragStart = (event, args) => {

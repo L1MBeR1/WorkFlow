@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 
 import TestButton from './testButton';
 import MenuButton from './backToMenuButton';
-import { ReactComponent as Arrow } from './back-arrow.svg';
+import { ReactComponent as Arrow } from '../../images/HeaderPanel/back-arrow.svg';
 
-import './HeaderPanel.css'
+import '../../css/headerPanel.css'
 
 const HeaderPanel=()=>{
     return(

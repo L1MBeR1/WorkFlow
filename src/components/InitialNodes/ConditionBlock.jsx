@@ -1,8 +1,8 @@
 import React, { memo, useEffect, useState } from 'react';
 import { Handle, Position } from 'reactflow';
-import './initialNodes.css';
-import CustomSelect from '../mycomponent/CustomSelect.jsx';
-import { useBlocks, useParameterBlocksData } from '../../stores/store';
+import '../../css/initialNodes.css';
+import CustomSelect from '../AdditionalComponents/customSelect.jsx';
+import { useBlocks, useParameterBlocksData } from '../../stores/store.js';
 
 const ConditionBlock = ({ data, isConnectable }) => {
     const blocks = useBlocks((state) => state.blocks);

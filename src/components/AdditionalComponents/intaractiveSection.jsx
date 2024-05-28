@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './ccc.css';
-import { ReactComponent as ComArrow } from './arrow.svg';
+import '../../css/additionalComponents.css';
+import { ReactComponent as ComArrow } from '../../images/AdditionalComponents/arrow.svg';
 
 const IntaractiveSection = (props) => {
     const [isVisible, setIsVisible] = useState(props.visible);
