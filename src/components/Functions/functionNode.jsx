@@ -6,31 +6,23 @@ import { useBlocks } from '../../stores/store.js';
 import IntaractiveSection from '../AdditionalComponents/intaractiveSection.jsx';
 import { useParameterBlocksData } from '../../stores/store.js';
 import CustomSelect from '../AdditionalComponents/customSelect.jsx';
-import e from 'cors';
-import { type } from '@testing-library/user-event/dist/type/index.js';
 
 export default memo(({ data, isConnectable }) => {
     const blocks = useBlocks((state) => state.blocks);
-    // const updateBlock = useBlocks((state) => state.updateBlock);
     const parameterBlocks = useParameterBlocksData((state) => state.blocks);
-
-
     const [input_parameters, setInputParameters] = useState([]);
     const [output_parameters, setOutputParameters] = useState([]);
-    // const [parameters_from_left_nodes, setLeftNodesParameters] = useState([]);
-
-
     const [incomingParameterBlocksIds, setincomingParameterBlocksIds] = useState([]);
     const [services_functions, setServicesFunctions] = useState([]);
     const [entry_points, setEntryPoints] = useState([]);
     const [options, setOptions] = useState([]);
 
-    const param_ref = useRef(null);
+    // const param_ref = useRef(null);
 
     useEffect(() => {
         const fetchData = async (isReturn) => {
             try {
-                const response = await fetch(`http://localhost:${process.env.SERVER_PORT}/database/components/functions/parameters/by_function_id`, {
+                const response = await fetch(`http://localhost:5101/database/components/functions/parameters/by_function_id`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -132,7 +124,7 @@ export default memo(({ data, isConnectable }) => {
     useEffect(() => {
         const fetchInputParameters = async () => {
             try {
-                const response = await fetch(`http://localhost:${process.env.SERVER_PORT}/database/services/by_component_id`, {
+                const response = await fetch(`http://localhost:5101/database/services/by_component_id`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -155,7 +147,7 @@ export default memo(({ data, isConnectable }) => {
         const fetchEntryPoints = async () => {
             try {
                 if (services_functions.length > 0) {
-                    const response = await fetch(`http://localhost:${process.env.SERVER_PORT}/database/services/service_points/by_service_id`, {
+                    const response = await fetch(`http://localhost:5101/database/services/service_points/by_service_id`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -202,7 +194,7 @@ export default memo(({ data, isConnectable }) => {
                                 <div className='parameter-Header_type'>Тип</div>
                                 <div className='parameter-Header_type'>Параметр</div>
                             </header>
-                            <div ref={param_ref} className='parametrs'>
+                            <div className='parametrs'>
                                 {input_parameters.map((item, index) => (
                                     <div key={index} className='parameter'>
                                         <div className='fucn_parameter_name'>{item.name}</div>

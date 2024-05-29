@@ -10,4 +10,4 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/", routes);
-app.listen(process.env.SERVER_PORT, () => console.log(`Server running on localhost:process.env.SERVER_PORT`));
+app.listen(5101, () => console.log(`Server running on localhost:5101`));

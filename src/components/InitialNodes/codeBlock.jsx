@@ -42,7 +42,7 @@ def function(input):
     // useEffect(() => {
     //     const fetchData = async (isReturn) => {
     //         try {
-    //             const response = await fetch(`http://localhost:${process.env.SERVER_PORT}/database/components/functions/parameters/by_function_id`, {
+    //             const response = await fetch(`http://localhost:5101/database/components/functions/parameters/by_function_id`, {
     //                 method: 'POST',
     //                 headers: {
     //                     'Content-Type': 'application/json',

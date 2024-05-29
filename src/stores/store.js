@@ -138,7 +138,7 @@ export const useDataTypes = create(set => ({
         set({ loading: true, error: null });
 
         try {
-            const response = await fetch(`http://localhost:${process.env.SERVER_PORT}/database/data_types`, {
+            const response = await fetch(`http://localhost:5101/database/data_types`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
