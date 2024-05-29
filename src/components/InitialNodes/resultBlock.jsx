@@ -1,11 +1,11 @@
 import React, { memo, useEffect, useState, useRef } from 'react';
 import { Handle, Position } from 'reactflow';
-import CustomSelect from '../mycomponent/CustomSelect.jsx';
-import './initialNodes.css';
+import CustomSelect from '../AdditionalComponents/customSelect.jsx';
+import '../../css/initialNodes.css';
 import { useBlocks, useDataTypes } from '../../stores/store.js';
-import IntaractiveSection from '../mycomponent/intaractiveSection.jsx';
+import IntaractiveSection from '../AdditionalComponents/intaractiveSection.jsx';
 import { v4 as uuidv4 } from 'uuid';
-import { ReactComponent as Trash } from './trash.svg';
+import { ReactComponent as Trash } from '../../images/InitialNodes/trash.svg';
 export default memo(({ data, isConnectable }) => {
     const blocks = useBlocks((state) => state.blocks);
     const dataTypes = useDataTypes((state) => state.types);

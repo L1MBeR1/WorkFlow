@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ReactComponent as Arrow } from './arrow.svg';
+import { ReactComponent as Arrow } from '../../images/AdditionalComponents/arrow.svg';
 import { useBlocks } from '../../stores/store';
 import IntaractiveSection from './intaractiveSection';
 

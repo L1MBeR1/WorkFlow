@@ -1,11 +1,11 @@
 import React, { useState, useEffect, memo, useRef } from 'react';
 import { Handle, Position } from 'reactflow';
-import './ccc.css';
+import '../../css/functions.css';
 
 import { useBlocks } from '../../stores/store.js';
-import IntaractiveSection from './intaractiveSection';
+import IntaractiveSection from '../AdditionalComponents/intaractiveSection.jsx';
 import { useParameterBlocksData } from '../../stores/store.js';
-import CustomSelect from './CustomSelect.jsx';
+import CustomSelect from '../AdditionalComponents/customSelect.jsx';
 import e from 'cors';
 import { type } from '@testing-library/user-event/dist/type/index.js';
 

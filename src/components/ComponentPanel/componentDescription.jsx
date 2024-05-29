@@ -1,7 +1,7 @@
 import React, { useState} from 'react';
-import '../css/componentPanel.css';
+import '../../css/componentPanel.css';
 
-import { ReactComponent as Info } from '../images/panel/info.svg';
+import { ReactComponent as Info } from '../../images/ComponentPanel/info.svg';
 
 const CompDescription = (props) => {
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import '../../css/initialNodes.css';
 const InitialNode = (props) => {
     const onDragStart = (event, args) => {
         event.dataTransfer.setData('application/reactflow', JSON.stringify(args)); 

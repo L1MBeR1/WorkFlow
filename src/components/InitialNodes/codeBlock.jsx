@@ -1,12 +1,12 @@
 import React, { memo, useEffect, useState } from 'react';
 import { Handle, Position } from 'reactflow';
 import AceEditor from 'react-ace';
-import { useBlocks, useParameterBlocksData, useDataTypes } from '../../stores/store';
-import IntaractiveSection from '../mycomponent/intaractiveSection.jsx';
+import { useBlocks, useParameterBlocksData, useDataTypes } from '../../stores/store.js';
+import IntaractiveSection from '../AdditionalComponents/intaractiveSection';
 import { v4 as uuidv4 } from 'uuid';
-import CustomSelect from '../mycomponent/CustomSelect.jsx';
-
-import { ReactComponent as Trash } from './trash.svg';
+import CustomSelect from '../AdditionalComponents/customSelect.jsx';
+import '../../css/initialNodes.css';
+import { ReactComponent as Trash } from '../../images/InitialNodes/trash.svg';
 
 import 'ace-builds/src-noconflict/mode-python';
 import 'ace-builds/src-noconflict/theme-dracula';
@@ -345,7 +345,6 @@ def function(input):
                             <header >
                                 <div className='header-name'>Название</div>
                                 <div className='header-type'>Тип</div>
-                                <div className='header-value'>Значение</div>
                             </header>
                             <div className='parametrs'>
                                 {parameters.map(parameter => (

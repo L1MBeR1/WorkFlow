@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import '../css/componentPanel.css';
+import '../../css/componentPanel.css';
 import Info from './componentDescription';
-import { ReactComponent as ComArrow } from '../images/panel/component-arrow.svg';
+import { ReactComponent as ComArrow } from '../../images/ComponentPanel/component-arrow.svg';
 
 const Component = (props) => {
     const [isVisible, setIsVisible] = useState(false);
