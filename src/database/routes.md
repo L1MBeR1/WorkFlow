@@ -1,15 +1,15 @@
 1. # POST
 	1. # Получить все компоненты
 
-		localhost:4000/database/components/all
+		/database/components/all
 
 	2. # Получить все функции
 
-		localhost:4000/database/functions/all
+		/database/functions/all
 
 	3. # Получить функции компонента по ID компонента
 
-		localhost:4000/database/components/functions/by_component_id
+		/database/components/functions/by_component_id
 
 		{
 			"component_id": Integer

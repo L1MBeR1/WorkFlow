@@ -228,7 +228,6 @@ export default function App() {
 
 
     const printToConsole = () => {
-        // console.log(blocks);
         console.log(datatypes);
     }
 
@@ -252,12 +251,10 @@ export default function App() {
                     >
 
                         <Controls position="bottom-right" />
-
-                        {/* <MiniMap /> */}
                         <Background variant="dots" color="#1e31db" gap={15} size={1} />
                     </ReactFlow>
                 </div>
-                <button onClick={printToConsole}> Выходные параметры в консоли </button>
+                {/* <button onClick={printToConsole}> Выходные параметры в консоли </button> */}
                 <ResultPanel></ResultPanel>
             </div>
 

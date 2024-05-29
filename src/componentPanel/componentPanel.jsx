@@ -26,7 +26,7 @@ const ComponentPanel = () => {
   };
   const fetchFunctionsData = async (component) => {
     try {
-      const response = await fetch('http://localhost:4000/database/functions/all', {
+      const response = await fetch(`http://localhost:${process.env.SERVER_PORT}/database/functions/all`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ const ComponentPanel = () => {
   };
   const fetchComponentsData = async () => {
     try {
-      const response = await fetch('http://localhost:4000/database/components/all', {
+      const response = await fetch(`http://localhost:${process.env.SERVER_PORT}/database/components/all`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

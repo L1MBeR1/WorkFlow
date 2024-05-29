@@ -30,7 +30,7 @@ export default memo(({ data, isConnectable }) => {
     useEffect(() => {
         const fetchData = async (isReturn) => {
             try {
-                const response = await fetch('http://localhost:4000/database/components/functions/parameters/by_function_id', {
+                const response = await fetch(`http://localhost:${process.env.SERVER_PORT}/database/components/functions/parameters/by_function_id`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -132,7 +132,7 @@ export default memo(({ data, isConnectable }) => {
     useEffect(() => {
         const fetchInputParameters = async () => {
             try {
-                const response = await fetch('http://localhost:4000/database/services/by_component_id', {
+                const response = await fetch(`http://localhost:${process.env.SERVER_PORT}/database/services/by_component_id`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -155,7 +155,7 @@ export default memo(({ data, isConnectable }) => {
         const fetchEntryPoints = async () => {
             try {
                 if (services_functions.length > 0) {
-                    const response = await fetch('http://localhost:4000/database/services/service_points/by_service_id', {
+                    const response = await fetch(`http://localhost:${process.env.SERVER_PORT}/database/services/service_points/by_service_id`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
