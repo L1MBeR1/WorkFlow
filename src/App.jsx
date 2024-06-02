@@ -1,5 +1,5 @@
 import ComponentPanel from './components/ComponentPanel/componentPanel.jsx';
-import ResultPanel from './components/ResultPanel/resultPanel.jsx';
+import ResultPanel from './components/ResultPanel/ResultPanel.jsx';
 import './css/app.css';
 import CustomNode from './components/Functions/functionNode.jsx';
 
@@ -8,7 +8,7 @@ import EndNode from './components/InitialNodes/endBlock.jsx';
 import ParametrBlock from './components/InitialNodes/parametrBlock.jsx';
 import ResultBlock from './components/InitialNodes/resultBlock.jsx';
 import CodeBlock from './components/InitialNodes/codeBlock.jsx';
-import ConditionBlock from './components/InitialNodes/conditionBlock.jsx';
+import ConditionBlock from './components/InitialNodes/ConditionBlock.jsx';
 
 import HeaderPanel from './components/HeaderPanel/headerPanel.jsx';
 
