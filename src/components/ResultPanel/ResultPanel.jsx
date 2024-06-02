@@ -50,7 +50,7 @@ const ResultPanel = () => {
         return connectedBlocks;
     };
 
-    const fillServiceSample = ({ id, serviceID, entry_pointID }) => ({
+    const fillService = ({ id, serviceID, entry_pointID }) => ({
         ...(id && { id }),
         ...(serviceID && { serviceID }),
         ...(entry_pointID && { entry_pointID }),
@@ -87,7 +87,7 @@ const ResultPanel = () => {
 
             if (block.type === 'custom' && block.data?.parameters) {
                 console.log('ddfaw');
-                const serviceSample = fillServiceSample({
+                const serviceSample = fillService({
                     id: block.data.function_id,
                     // serviceID: block.data.parameters[0].service_id,
                     serviceID: block.data.parameters.service_id,
@@ -171,7 +171,9 @@ const ResultPanel = () => {
                     },
                     inputs: block.data.parameters &&
                         block.data.parameters.inputs ?
-                        Object.values(block.data.parameters.inputs) : [],
+                        // Object.values(block.data.parameters.inputs) : [],
+                        Object.entries(block.data.parameters.inputs) : [],
+                        
                     outputs: block.data.output_parameters ? block.data.output_parameters : [],
                     transition,
                 });

@@ -159,7 +159,7 @@ export default function App() {
             case 'custom':
                 newData = {
                     id: newid,
-                    label: `${function_name} ` + newid,
+                    label: `${function_name} (${newid})`,
                     function_id: function_id,
                     is_return: false,
                     component_id: component_id
