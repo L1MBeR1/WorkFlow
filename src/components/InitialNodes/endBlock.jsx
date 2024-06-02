@@ -12,7 +12,7 @@ export default memo(({ data, isConnectable }) => {
 
     return (
         <>
-            <button onClick={printToConsole}>  в консоли </button>
+            {/* <button onClick={printToConsole}>  в консоли </button> */}
             <div className='node' tabIndex="0">
                 <Handle
                     className='HandleComponent'

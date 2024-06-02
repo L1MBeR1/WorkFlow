@@ -127,7 +127,7 @@ export default memo(({ data, isConnectable }) => {
     }
     return (
         <>
-            <button onClick={printOutputParamsToConsole}> Options в консоли </button>
+            {/* <button onClick={printOutputParamsToConsole}> Options в консоли </button> */}
             <div className='node' tabIndex="0">
                 <Handle
                     className='HandleComponent'

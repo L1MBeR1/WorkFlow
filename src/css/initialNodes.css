@@ -222,3 +222,7 @@ stroke:gray;
 .condition-content-step{
     margin-top: 5px;
 }
+.code_parameter_type{
+    font-size: 11px;
+    width: 75px;
+}

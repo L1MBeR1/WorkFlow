@@ -256,7 +256,7 @@ def function(input):
 
     return (
         <>
-            <button onClick={printToConsole}> Выходные параметры в консоли </button>
+            {/* <button onClick={printToConsole}> Выходные параметры в консоли </button> */}
             <div className='node' tabIndex="0">
                 <Handle
                     className='HandleComponent'
@@ -273,6 +273,10 @@ def function(input):
                 />
 
                 <div className='outputs'>
+                <div>
+                    <div>{data.label}</div>
+                    <hr></hr>
+                </div>
                     <div className='result-block-content'>
                         <IntaractiveSection sectionName='Входные параметры' visible='true'
                             button={
@@ -292,7 +296,7 @@ def function(input):
                                                 onChange={(e) => saveNameToData2(parameter.id, e.target.value, parameter.type)}
                                             ></input>
                                         </div>
-                                        <div className='fucn_parameter_type'>
+                                        <div className='code_parameter_type'>
                                             {parameter.type}
                                         </div>
                                         <div className='type_value'>

@@ -174,7 +174,7 @@ export default memo(({ data, isConnectable }) => {
 
     return (
         <>
-            <button onClick={printOutputParamsToConsole}> Выходные параметры в консоли </button>
+            {/* <button onClick={printOutputParamsToConsole}> Выходные параметры в консоли </button> */}
             <div className='component-Function-Block' tabIndex='0'>
                 <Handle
                     className='HandleComponent'

@@ -189,7 +189,7 @@ export default memo(({ data, isConnectable }) => {
                 position={Position.Left}
                 isConnectable={isConnectable}
             />
-            <button onClick={printToConsole}> Выходные параметры в консоли </button>
+            {/* <button onClick={printToConsole}> Выходные параметры в консоли </button> */}
             <div className='node' tabIndex="0"
             >
                 <div>
