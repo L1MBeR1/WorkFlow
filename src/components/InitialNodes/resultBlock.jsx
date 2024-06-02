@@ -11,7 +11,9 @@ export default memo(({ data, isConnectable }) => {
     const dataTypes = useDataTypes((state) => state.types);
     const [options, setOptions] = useState([]);
     const [incomingParameterBlocksIds, setincomingParameterBlocksIds] = useState([]);
-    const [parameters, setParameters] = useState([{ id: uuidv4(), name: '', type: 'string', value: '' }]);
+    const [parameters, setParameters] = useState([{ id: uuidv4(), name: '', type: 'int', value: '' }]);
+    const [selectedTypes, setSelectedTypes] = useState();
+    const [selectedWhat, setSelectedWhat] = useState();
     const updateBlock = useBlocks((state) => state.updateBlock);
 
     const addParameter = () => {
@@ -31,16 +33,17 @@ export default memo(({ data, isConnectable }) => {
     useEffect(() => {
         parameters.forEach(parameter => {
             changeName(parameter.id, '');
-            changeType(parameter.id, 'string');
+            changeType(parameter.id, 'int');
         });
+        console.log('');
     }, [parameters]);
 
     const changeName = (id, value) => {
         const block = blocks.find(block => block.selfId === data.id);
         if (!block) return;
 
-        const { parameters } = block.data;
-        const inputParameters = parameters?.inputs ?? {};
+        const { parameters2 } = block.data;
+        const inputParameters = parameters2?.inputs ?? {};
 
         const newOutputParameters = {
             ...block.data.output_parameters,
@@ -49,7 +52,7 @@ export default memo(({ data, isConnectable }) => {
                 blockId: block.incomeConnections[0],
                 name: value,
                 value: inputParameters[id]?.value ?? '---',
-                outputId: inputParameters[id]?.id ?? ''
+                outputId: inputParameters[id]?.id ?? '-p'
             }
         };
 
@@ -100,7 +103,7 @@ export default memo(({ data, isConnectable }) => {
                         const paramCollection = block.data.output_parameters[key];
                         if (typeof paramCollection === 'object') {
                             outputParams[block.data.label] = [];
-                        
+
                             tmp_params.push({
                                 // id: paramCollection.id,
                                 id: block.selfId,
@@ -142,12 +145,15 @@ export default memo(({ data, isConnectable }) => {
             output_parameters: newOutputParameters
         };
 
+        // console.log('EEE', newData);
+        // setSelectedTypes([
+        //     ...newData.output_parameters
+        // ]);
         updateBlock(data.id, newData);
     };
 
     return (
         <>
-            {/* <button onClick={printOutputParamsToConsole}> Options в консоли </button> */}
             <div className='node' tabIndex="0">
                 <Handle
                     className='HandleComponent'
@@ -181,9 +187,6 @@ export default memo(({ data, isConnectable }) => {
                                             <select
                                                 onChange={(e) => changeType(parameter.id, e.target.value)}
                                             >
-                                                {/* <option value="string">string</option>
-                                                <option value="number">number</option>
-                                                <option value="boolean">boolean</option> */}
                                                 {dataTypes.map((item, index) => (
                                                     <option key={index} value={item.type}>{item.type}</option>
                                                 ))}
