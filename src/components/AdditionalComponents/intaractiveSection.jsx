@@ -16,7 +16,6 @@ const IntaractiveSection = (props) => {
 
     const handleComponentClick = () => {
         setIsVisible(!isVisible);
-        console.log(contentHeight)
     };
 
     

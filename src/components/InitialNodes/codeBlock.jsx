@@ -272,11 +272,11 @@ def function(input):
                     isConnectable={isConnectable}
                 />
 
-                <div className='outputs'>
                 <div>
                     <div>{data.label}</div>
                     <hr></hr>
                 </div>
+                <div className='outputs'>
                     <div className='result-block-content'>
                         <IntaractiveSection sectionName='Входные параметры' visible='true'
                             button={

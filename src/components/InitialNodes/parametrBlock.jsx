@@ -44,8 +44,6 @@ export default memo(({ data, isConnectable }) => {
     const handleBlur = (e) => {
         setHeader(e.target.textContent);
         updateParameterBlockLabel(data.id, e.target.textContent)
-        console.log('setted', e.target.textContent);
-
     };
 
     return (

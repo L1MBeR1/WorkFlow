@@ -34,7 +34,6 @@ const ComponentPanel = () => {
         body: JSON.stringify({}),
       });
       const responseData = await response.json();
-      // console.log(responseData)
       setFunctionsData(responseData);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -50,7 +49,6 @@ const ComponentPanel = () => {
         body: JSON.stringify({}),
       });
       const responseData = await response.json();
-      // console.log(responseData)
       setComponentsData(responseData);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -82,7 +80,6 @@ const ComponentPanel = () => {
   }, []);
 
   componentAndFuncs = combineComponentsAndFunctions(componentsData, functionsData);
-  // console.log(componentAndFuncs)
   return (
     <div className={`panelDiv ${isVisible ? 'visible' : 'hidden'}`}>
       <div className="panel">
