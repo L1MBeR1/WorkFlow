@@ -8,36 +8,13 @@ const ConditionBlock = ({ data, isConnectable }) => {
     const blocks = useBlocks((state) => state.blocks);
 
     const [options, setOptions] = useState([]);
-    const updateBlock = useBlocks((state) => state.updateBlock);
     const [incomingParameterBlocksIds, setincomingParameterBlocksIds] = useState([]);
     const parameterBlocks = useParameterBlocksData((state) => state.blocks);
     const [rightBlocks, setrightBlocks] = useState([]);
 
     useEffect(() => {
         setOptions(blocks.find(block => block.selfId === data.id).outcomeConnections);
-        // updateData(data.id, options);
     }, [blocks.find(block => block.selfId === data.id).outcomeConnections]);
-
-
-    // const updateData = (id, value) => {
-    //     console.log('updateData', value);
-    //     let newData;
-    //     blocks.forEach(block => {
-    //         if (block.selfId === data.id) {
-    //             if (!block.data.output_parameters) {
-    //                 block.data.output_parameters = [];
-    //             }
-    //             if (!block.data.output_parameters[id]) {
-    //                 block.data.output_parameters[id] = {};
-    //             }
-    //             newData = {
-    //                 ...block.data,
-    //                 output_parameters: value
-    //             };
-    //         }
-    //     })
-    //     updateBlock(data.id, newData);
-    // };
 
     useEffect(() => {
         const getIncomingParameters = (parameterBlocks, incomingParameterBlocksIds) => {
@@ -174,13 +151,6 @@ const ConditionBlock = ({ data, isConnectable }) => {
 };
 
 export default memo(({ data, isConnectable }) => {
-    const blocks = useBlocks((state) => state.blocks);
-
-    const printToConsole = () => {
-
-        console.log(blocks.find(block => block.selfId === data.id));
-    }
-
     return (
         <>
             <Handle
@@ -189,14 +159,11 @@ export default memo(({ data, isConnectable }) => {
                 position={Position.Left}
                 isConnectable={isConnectable}
             />
-            <button onClick={printToConsole}> Выходные параметры в консоли </button>
-            <div className='node' tabIndex="0"
-            >
+            <div className='node' tabIndex="0">
                 <div>
                     <div>{data.label}</div>
                     <hr></hr>
                 </div>
-
                 <ConditionBlock data={data} isConnectable={isConnectable} />
             </div>
             <Handle

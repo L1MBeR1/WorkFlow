@@ -167,14 +167,8 @@ export default memo(({ data, isConnectable }) => {
         fetchEntryPoints();
     }, [services_functions]);
 
-    const printOutputParamsToConsole = () => {
-        console.log('BLOCK' + data.id, blocks.find(block => block.selfId === data.id));
-    }
-
-
     return (
         <>
-            <button onClick={printOutputParamsToConsole}> Выходные параметры в консоли </button>
             <div className='component-Function-Block' tabIndex='0'>
                 <Handle
                     className='HandleComponent'

@@ -6,13 +6,8 @@ export default memo(({ data, isConnectable }) => {
     const labelRef = useRef(null);
     const blocks = useBlocks((state) => state.blocks);
 
-    const printToConsole = () => {
-        console.log(blocks);
-    }
-
     return (
         <>
-            <button onClick={printToConsole}>  в консоли </button>
             <div className='node' tabIndex="0">
                 <Handle
                     className='HandleComponent'

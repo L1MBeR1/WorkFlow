@@ -121,13 +121,8 @@ export default memo(({ data, isConnectable }) => {
         updateBlock(data.id, newData);
     };
     
-
-    const printOutputParamsToConsole = () => {
-        console.log('options', blocks.find(block => block.selfId === data.id));
-    }
     return (
         <>
-            <button onClick={printOutputParamsToConsole}> Options в консоли </button>
             <div className='node' tabIndex="0">
                 <Handle
                     className='HandleComponent'

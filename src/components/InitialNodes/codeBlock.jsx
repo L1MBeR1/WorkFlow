@@ -39,42 +39,6 @@ def function(input):
         });
     };
 
-    // useEffect(() => {
-    //     const fetchData = async (isReturn) => {
-    //         try {
-    //             const response = await fetch(`http://localhost:5101/database/components/functions/parameters/by_function_id`, {
-    //                 method: 'POST',
-    //                 headers: {
-    //                     'Content-Type': 'application/json',
-    //                 },
-    //                 body: JSON.stringify({
-    //                     function_id: data.function_id,
-    //                     is_return: isReturn,
-    //                 }),
-    //             });
-    //             if (!response.ok) {
-    //                 throw new Error('Network response was not ok');
-    //             }
-    //             return await response.json();
-    //         } catch (error) {
-    //             console.error('Error fetching data:', error);
-    //             throw error;
-    //         }
-    //     };
-
-    //     const fetchParameters = async () => {
-    //         try {
-    //             const outputParams = await fetchData(true);
-    //             setOutputParameters(outputParams);
-    //             data.output_parameters = outputParams;
-    //         } catch (error) {
-    //             console.error('Error fetching data:', error);
-    //         }
-    //     };
-
-    //     fetchParameters();
-    // }, []);
-
     useEffect(() => {
         const getIncomingParameters = (parameterBlocks, incomingParameterBlocksIds) => {
             return parameterBlocks
@@ -165,11 +129,6 @@ def function(input):
         setParameters1(updatedParameters);
     };
 
-    const printToConsole = () => {
-        // console.log(blocks.find(block => block.selfId === data.id));
-        console.log(dataTypes);
-    };
-
     const saveNameToData = (id, value) => {
         let newData;
         blocks.forEach(block => {
@@ -256,7 +215,6 @@ def function(input):
 
     return (
         <>
-            <button onClick={printToConsole}> Выходные параметры в консоли </button>
             <div className='node' tabIndex="0">
                 <Handle
                     className='HandleComponent'
@@ -272,6 +230,10 @@ def function(input):
                     isConnectable={isConnectable}
                 />
 
+                <div>
+                    <div>{data.label}</div>
+                    <hr></hr>
+                </div>
                 <div className='outputs'>
                     <div className='result-block-content'>
                         <IntaractiveSection sectionName='Входные параметры' visible='true'

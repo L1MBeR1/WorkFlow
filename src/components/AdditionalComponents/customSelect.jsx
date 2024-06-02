@@ -130,7 +130,6 @@ const CustomSelect = (props) => {
                     type: item.condition,
                 });
             } else if (props.type === 'blocks') {
-                console.log(item);
                 setValue({
                     value: item.data.label,
                     id: item.selfId,

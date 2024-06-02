@@ -77,7 +77,6 @@ export default function App() {
 
     useEffect(() => {
         loadDataTypes();
-        console.log('Компонент создан');
     }, []);
 
 
@@ -135,13 +134,6 @@ export default function App() {
         event.preventDefault();
 
         const { id, type, function_name, function_id, component_id } = JSON.parse(event.dataTransfer.getData('application/reactflow'));
-        // if(checkIfBlockExists('type', 'endBlock')) {
-        //     console.log('Конечный блок уже существует');
-        // } else {
-        //     console.log('Конечный блок не существует');
-        // }
-
-
         const position = reactFlowInstance.screenToFlowPosition({
             x: event.clientX,
             y: event.clientY,
@@ -166,40 +158,40 @@ export default function App() {
                 };
                 break;
             case 'startBlock':
-                newData = { label: 'Начальный блок' };
+                newData = { label: `Начальный блок (${newid})` };
                 break;
             case 'endBlock':
 
 
                 newData = {
                     id: newid,
-                    label: 'Конечный блок'
+                    label: `Конечный блок (${newid})`
                 };
                 break;
             case 'parametrBlock':
                 newData = {
                     id: newid,
-                    label: 'Блок с параметрами ' + newid,
+                    label: `Блок с параметрами (${newid})`,
                     /*function_to_update_parameters: updateOptions,*/
                 };
                 break;
             case 'resultBlock':
                 newData = {
                     id: newid,
-                    label: 'Блок с результатами',
+                    label: `Блок с результатами (${newid})`,
                 };
                 break;
             case 'codeBlock':
                 newData = {
                     id: newid,
-                    label: 'Блок с кодом',
+                    label: `Блок с кодом (${newid})`,
                     // output_parameters: [],
                 };
                 break;
             case 'conditionBlock':
                 newData = {
                     id: newid,
-                    label: 'Условный блок ' + newid,
+                    label: `Условный блок (${newid})`,
                 };
                 break;
             default:
@@ -226,11 +218,6 @@ export default function App() {
 
     }, [reactFlowInstance],);
 
-
-    const printToConsole = () => {
-        console.log(datatypes);
-    }
-
     return (
         <div className="App">
             <HeaderPanel></HeaderPanel>
@@ -254,7 +241,6 @@ export default function App() {
                         <Background variant="dots" color="#1e31db" gap={15} size={1} />
                     </ReactFlow>
                 </div>
-                {/* <button onClick={printToConsole}> Выходные параметры в консоли </button> */}
                 <ResultPanel></ResultPanel>
             </div>
 
