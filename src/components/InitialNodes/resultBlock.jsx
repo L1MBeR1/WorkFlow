@@ -38,10 +38,10 @@ export default memo(({ data, isConnectable }) => {
     const changeName = (id, value) => {
         const block = blocks.find(block => block.selfId === data.id);
         if (!block) return;
-    
+
         const { parameters } = block.data;
         const inputParameters = parameters?.inputs ?? {};
-    
+
         const newOutputParameters = {
             ...block.data.output_parameters,
             [id]: {
@@ -52,15 +52,15 @@ export default memo(({ data, isConnectable }) => {
                 outputId: inputParameters[id]?.id ?? ''
             }
         };
-    
+
         const newData = {
             ...block.data,
             output_parameters: newOutputParameters
         };
-    
+
         updateBlock(data.id, newData);
     };
-    
+
 
     // TODO: Переписать
     useEffect(() => {
@@ -68,7 +68,7 @@ export default memo(({ data, isConnectable }) => {
         const get_left = (id) => {
             blocks.forEach(element => {
                 if (
-                    element.type === 'custom' &&
+                    (element.type === 'custom' || element.type === 'codeBlock') &&
                     element.outcomeConnections.includes(id)
                 ) {
                     left_ids.push(element.selfId);
@@ -82,13 +82,37 @@ export default memo(({ data, isConnectable }) => {
             if (block.selfId === data.id) {
                 setincomingParameterBlocksIds(block.incomeConnections);
             }
-            if (left_ids.includes(block.selfId)) {
-                outputParams[block.data.label] = block.data.output_parameters.map(param => ({
-                    id: param.id,
-                    type: param.type,
-                    value: '---',
-                    name: param.name,
-                }));
+            if (block.type === 'custom') {
+                if (left_ids.includes(block.selfId)) {
+                    outputParams[block.data.label] = block.data.output_parameters.map(param => ({
+                        // id: param.id,
+                        id: block.selfId,
+                        type: param.type,
+                        value: '---',
+                        name: param.name,
+                    }));
+                }
+            } else if (block.type === 'codeBlock') {
+                let tmp_params = [];
+                if (left_ids.includes(block.selfId)) {
+
+                    Object.keys(block.data.output_parameters).forEach(key => {
+                        const paramCollection = block.data.output_parameters[key];
+                        if (typeof paramCollection === 'object') {
+                            outputParams[block.data.label] = [];
+                        
+                            tmp_params.push({
+                                // id: paramCollection.id,
+                                id: block.selfId,
+                                type: paramCollection.type,
+                                value: paramCollection.value || '---',
+                                name: paramCollection.name,
+                            });
+                        }
+                    });
+                }
+                outputParams[block.data.label] = tmp_params;
+
             }
         });
 
@@ -98,10 +122,10 @@ export default memo(({ data, isConnectable }) => {
     const changeType = (id, value) => {
         const block = blocks.find(block => block.selfId === data.id);
         if (!block) return;
-    
+
         const { parameters } = block.data;
         const inputParameters = parameters?.inputs ?? {};
-    
+
         const newOutputParameters = {
             ...block.data.output_parameters,
             [id]: {
@@ -112,15 +136,15 @@ export default memo(({ data, isConnectable }) => {
                 outputId: inputParameters[id]?.id ?? ''
             }
         };
-    
+
         const newData = {
             ...block.data,
             output_parameters: newOutputParameters
         };
-    
+
         updateBlock(data.id, newData);
     };
-    
+
     return (
         <>
             {/* <button onClick={printOutputParamsToConsole}> Options в консоли </button> */}
