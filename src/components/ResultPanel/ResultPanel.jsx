@@ -41,10 +41,6 @@ const ResultPanel = () => {
             }
         });
 
-        // connectedBlocks = [...new Set(connectedBlocks)];
-        // connectedBlocks = connectedBlocks.map(block => block.data || []);
-        // connectedBlocks = connectedBlocks.output_parameters;
-
         if (connectedBlocks.length === 0) return;
         if (!connectedBlocks[0]) return;
         connectedBlocks = Object.values(connectedBlocks[0]);
@@ -89,9 +85,7 @@ const ResultPanel = () => {
             if (block.type === 'functionBlock' && block.data?.parameters) {
                 const serviceSample = fillService({
                     id: block.data.function_id,
-                    // serviceID: block.data.parameters[0].service_id,
                     serviceID: block.data.parameters.service_id,
-                    // entry_pointID: block.data.parameters[0].uri_id,
                     entry_pointID: block.data.parameters.uri_id,
                 });
                 specification_json.service_data.push(serviceSample);
@@ -169,7 +163,6 @@ const ResultPanel = () => {
                     },
                     inputs: block.data.parameters &&
                         block.data.parameters.inputs ?
-                        // Object.values(block.data.parameters.inputs) : [],
                         Object.entries(block.data.parameters.inputs) : [],
                         
                     outputs: block.data.output_parameters ? block.data.output_parameters : [],

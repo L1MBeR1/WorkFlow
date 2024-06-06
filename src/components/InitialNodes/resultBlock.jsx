@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useState } from 'react';
-import { Background, Handle, Position } from 'reactflow';
+import { Handle, Position } from 'reactflow';
 import CustomSelect from '../AdditionalComponents/customSelect.jsx';
 import '../../css/initialNodes.css';
 import { useBlocks, useDataTypes } from '../../stores/store.js';
@@ -23,22 +23,14 @@ const NodeComponent = ({ data, isConnectable }) => {
         const block = blocks.find(block => block.selfId === data.id);
         if (!block) {console.log('no block'); return};
 
-        const inputParams = block.data.parameters?.inputs || {};
-
-
         console.log('before', block.data.output_parameters);
         const newOutputParams = {
             ...block.data.output_parameters,
             [id]: {
                 ...block.data.output_parameters?.[id],
-                // blockId: block.incomeConnections[0],
-                // from_block_id: block.data.output_parameters?.from_block_id || '',
                 [key]: value,
-                value: inputParams[id]?.value || '---',
-                outputId: inputParams[id]?.id || '-p',
             },
         };
-
 
         const updatedParameters = parameters.map(param =>
             param.id === id ? { ...param, [key]: value } : param
@@ -146,7 +138,6 @@ const NodeComponent = ({ data, isConnectable }) => {
                                             blockId={data.id}
                                             funcParamType={parameter.type}
                                             funcParamName={parameter.id}
-                                            // fromBlock={}
                                             type='parameters_from_resultblock'
                                         />
                                     </div>

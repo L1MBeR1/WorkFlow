@@ -133,6 +133,7 @@ const CustomSelect = (props) => {
                 // currentBlock.data.output_parameters[props.funcParamName].from_block_id = selectedOption.from_block_id;
                 // currentBlock.data.output_parameters[props.funcParamName].from_block_id = Object.values(props.options)[0][0].from_block_id;
                 currentBlock.data.output_parameters[props.funcParamName].from_block_id = item.from_block_id;
+                currentBlock.data.output_parameters[props.funcParamName].output_id = item.id;
             } else {
                 currentBlock.data.parameters[variableKey] = propToSave;
             }
