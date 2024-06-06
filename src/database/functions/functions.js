@@ -70,7 +70,7 @@ async function select_data_types() {
 	}
 }
 
-async function select_component_functions_by_component_id() {
+async function select_component_functions_by_component_id(component_id) {
 	const query = `
 		SELECT cf.id, cf.name as "name"
 		FROM components.component_function cf
@@ -82,7 +82,7 @@ async function select_component_functions_by_component_id() {
 	let client;
 	try {
 		client = await pool.connect();
-		const result = await client.query(query);
+		const result = await client.query(query,[Number(component_id)]);
 		return result.rows;
 	} catch (error) {
 		console.error("Error executing query:", error);
@@ -94,7 +94,7 @@ async function select_component_functions_by_component_id() {
 	}
 }
 
-async function select_services_by_component_id() {
+async function select_services_by_component_id(component_id) {
 	const query = `
 		SELECT s.id, s.uri as "uri", s.token, s.name as "name"
 		FROM services.service s
@@ -108,7 +108,7 @@ async function select_services_by_component_id() {
 	let client;
 	try {
 		client = await pool.connect();
-		const result = await client.query(query);
+		const result = await client.query(query, [Number(component_id)]);
 		return result.rows;
 	} catch (error) {
 		console.error("Error executing query:", error);
@@ -120,7 +120,10 @@ async function select_services_by_component_id() {
 	}
 }
 
-async function select_component_function_parameters_by_function_id() {
+async function select_component_function_parameters_by_function_id(
+	function_id,
+	is_return
+) {
 	const query = `
 		SELECT cfp.id, cfp.name as "name", t.type
 		FROM components.component_function_parameter cfp
@@ -134,7 +137,10 @@ async function select_component_function_parameters_by_function_id() {
 	let client;
 	try {
 		client = await pool.connect();
-		const result = await client.query(query);
+		const result = await client.query(query, [
+			Number(function_id),
+			Boolean(is_return),
+		]);
 		return result.rows;
 	} catch (error) {
 		console.error("Error executing query:", error);
@@ -146,7 +152,7 @@ async function select_component_function_parameters_by_function_id() {
 	}
 }
 
-async function select_service_points_by_service_id() {
+async function select_service_points_by_service_id(service_id) {
 	const query = `
 		SELECT s.id,s.uri
 		FROM services.service_points s
@@ -156,7 +162,7 @@ async function select_service_points_by_service_id() {
 	let client;
 	try {
 		client = await pool.connect();
-		const result = await client.query(query);
+		const result = await client.query(query, [Number(service_id)]);
 		return result.rows;
 	} catch (error) {
 		console.error("Error executing query:", error);
