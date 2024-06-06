@@ -6,8 +6,8 @@ import { ReactComponent as Close } from '../../images/ResultPanel/close.svg';
 import CodeContainer from '../AdditionalComponents/codeContainer';
 
 const ResultPanel = () => {
-    const blocks = useBlocks((state) => state.blocks);
-    const parameterBlocks = useParameterBlocksData((state) => state.blocks);
+    const blocks = useBlocks(state => state.blocks);
+    const parameterBlocks = useParameterBlocksData(state => state.blocks);
     const { isOpen, setIsOpen } = ResultPanelStatus();
     const [specificationContent, setSpecificationContent] = useState('');
 
@@ -15,36 +15,20 @@ const ResultPanel = () => {
         navigator.clipboard.writeText(specificationContent);
     };
 
-    const getSingleParameterBlock = () => {
-        let connectedParameterBlocks = [];
+    const getConnectedParameterBlocks = () => {
+        const connectedParameterBlocks = blocks.flatMap(element =>
+            parameterBlocks.filter(block => element.incomeConnections.includes(block.selfId))
+        );
 
-        blocks.forEach(element => {
-            const matchingBlocks = parameterBlocks.filter(block =>
-                element.incomeConnections.includes(block.selfId)
-            );
-
-            connectedParameterBlocks.push(...matchingBlocks);
-        });
-
-        connectedParameterBlocks = [...new Set(connectedParameterBlocks)];
-        return connectedParameterBlocks.map(block => block.data || []);
+        return [...new Set(connectedParameterBlocks)].map(block => block.data || []);
     };
 
-    const getSingleResultBlock = (queue) => {
+    const getConnectedResultBlocks = () => {
+        const resultBlocks = blocks
+            .filter(block => block.type === 'resultBlock')
+            .map(block => block.data.output_parameters);
 
-        let connectedBlocks = [];
-
-        blocks.forEach(element => {
-            if (element.type === 'resultBlock') {
-                console.log('ww', element.data.output_parameters);
-                connectedBlocks.push(element.data.output_parameters);
-            }
-        });
-
-        if (connectedBlocks.length === 0) return;
-        if (!connectedBlocks[0]) return;
-        connectedBlocks = Object.values(connectedBlocks[0]);
-        return connectedBlocks;
+        return resultBlocks.length > 0 ? Object.values(resultBlocks[0]) : [];
     };
 
     const fillService = ({ id, serviceID, entry_pointID }) => ({
@@ -53,126 +37,98 @@ const ResultPanel = () => {
         ...(entry_pointID && { entry_pointID }),
     });
 
-    const fillBlock = ({ id, type, specification, inputs, outputs, transition, code, outputIfTrue, outputIfFalse, condition }) => ({
-        ...(id && { id }),
-        ...(type && { type_of_block: type }),
-        ...(specification && Object.keys(specification).length && { specification }),
-        ...(inputs && inputs.length && { inputs }),
-        ...(outputs && outputs.length && { outputs }),
-        ...(condition && condition.length && { condition }),
-        ...(outputIfTrue && Object.keys(outputIfTrue).length && { outputIfTrue }),
-        ...(outputIfFalse && Object.keys(outputIfFalse).length && { outputIfFalse }),
-        ...(transition && Object.keys(transition).length && { transition }),
-        ...(code && Object.keys(code).length && { code }),
-    });
+    const fillBlock = blockData => {
+        const {
+            id, type, specification, inputs, outputs,
+            transition, code, outputIfTrue, outputIfFalse, condition
+        } = blockData;
 
-    const makeSpecification = (queue) => {
+        return {
+            ...(id && { id }),
+            ...(type && { type_of_block: type }),
+            ...(specification && Object.keys(specification).length && { specification }),
+            ...(inputs && inputs.length && { inputs }),
+            ...(outputs && outputs.length && { outputs }),
+            ...(condition && condition.length && { condition }),
+            ...(outputIfTrue && Object.keys(outputIfTrue).length && { outputIfTrue }),
+            ...(outputIfFalse && Object.keys(outputIfFalse).length && { outputIfFalse }),
+            ...(transition && Object.keys(transition).length && { transition }),
+            ...(code && Object.keys(code).length && { code }),
+        };
+    };
+
+    const makeSpecification = queue => {
         if (!queue.length) return;
-        const singleParameterBlock = getSingleParameterBlock();
-        const singleResultBlock = getSingleResultBlock(queue);
 
-        const specification_json = {
+        const specificationJson = {
             service_data: [],
             blocks: [],
             result: []
         };
 
-        queue.forEach(blockId => {
-            let block = blocks.find((block) => block.selfId === blockId);
+        const singleParameterBlock = getConnectedParameterBlocks();
+        const singleResultBlock = getConnectedResultBlocks();
 
+        queue.forEach(blockId => {
+            const block = blocks.find(block => block.selfId === blockId);
             if (!block) return;
 
-            if (block.type === 'functionBlock' && block.data?.parameters) {
-                const serviceSample = fillService({
-                    id: block.data.function_id,
-                    serviceID: block.data.parameters.service_id,
-                    entry_pointID: block.data.parameters.uri_id,
-                });
-                specification_json.service_data.push(serviceSample);
+            const { type, data, outcomeConnections, selfId } = block;
+            const commonFields = { id: selfId, type };
+
+            if (type === 'functionBlock' && data?.parameters) {
+                specificationJson.service_data.push(fillService({
+                    id: data.function_id,
+                    serviceID: data.parameters.service_id,
+                    entry_pointID: data.parameters.uri_id,
+                }));
             }
 
-            const transition = block.type === 'conditionBlock'
-                ? { "type": "condition", "blockID_if_true": block.data.true, "blockID_if_false": block.data.false }
-                : { "type": "jump", "blockID": block.outcomeConnections };
+            const transition = type === 'conditionBlock' ?
+                { type: 'condition', blockID_if_true: data.true, blockID_if_false: data.false } :
+                { type: 'jump', blockID: outcomeConnections };
 
-
-
-            if (block.type === 'endBlock') {
-                const blockSpec = fillBlock({
-                    id: block.selfId,
-                    type: block.type,
+            let blockSpec;
+            if (type === 'endBlock') {
+                blockSpec = fillBlock({ ...commonFields });
+            } else if (type === 'codeBlock') {
+                blockSpec = fillBlock({
+                    ...commonFields,
+                    inputs: data.input_parameters ? Object.values(data.input_parameters) : [],
+                    outputs: Object.values(data.output_parameters),
+                    code: data.code,
                 });
-                specification_json.blocks.push(blockSpec);
-            } else if (block.type === 'codeBlock') {
-                const blockSpec = fillBlock({
-                    id: block.selfId,
-                    type: block.type,
-                    inputs: block.data.input_parameters ?
-                        Object.values(block.data.input_parameters) :
-                        [],
-                    outputs: Object.values(block.data.output_parameters),
-                    code: block.data.code,
-                });
-                specification_json.blocks.push(blockSpec);
-            } else if (block.type === 'conditionBlock') {
-                const blockSpec = fillBlock({
-                    id: block.selfId,
-                    type: block.type,
-                    inputs: Object.values(block.data.parameters &&
-                        block.data.parameters.inputs ?
-                        block.data.parameters.inputs : {}),
+            } else if (type === 'conditionBlock') {
+                blockSpec = fillBlock({
+                    ...commonFields,
+                    inputs: Object.values(data.parameters?.inputs || {}),
                     condition: [
-                        {
-                            parameterA: block.data.parameters &&
-                                block.data.parameters.inputs.parameterA ?
-                                block.data.parameters.inputs.parameterA : {}
-                        },
-                        {
-                            parameterB: block.data.parameters &&
-                                block.data.parameters.inputs.parameterB ?
-                                block.data.parameters.inputs.parameterB : {}
-                        },
-                        {
-                            operator: block.data.parameters &&
-                                block.data.parameters.condition.condition ?
-                                block.data.parameters.condition.condition : ''
-                        },
+                        { parameterA: data.parameters?.inputs?.parameterA || {} },
+                        { parameterB: data.parameters?.inputs?.parameterB || {} },
+                        { operator: data.parameters?.condition?.condition || '' }
                     ],
                     outputs: [
-                        {
-                            condition: true, blockID: block.data.parameters &&
-                                block.data.parameters.outputIfTrue ?
-                                block.data.parameters.outputIfTrue : ''
-                        },
-                        {
-                            condition: false, blockID: block.data.parameters &&
-                                block.data.parameters.outputIfFalse ?
-                                block.data.parameters.outputIfFalse : ''
-                        },
+                        { condition: true, blockID: data.parameters?.outputIfTrue || '' },
+                        { condition: false, blockID: data.parameters?.outputIfFalse || '' }
                     ],
-                    code: block.data.code,
+                    code: data.code,
                 });
-                specification_json.blocks.push(blockSpec);
             } else {
-                const blockSpec = fillBlock({
-                    id: block.selfId,
-                    type: block.type,
+                blockSpec = fillBlock({
+                    ...commonFields,
                     specification: {
-                        componentID: block.data.component_id,
-                        functionID: block.data.function_id,
+                        componentID: data.component_id,
+                        functionID: data.function_id,
                     },
-                    inputs: block.data.parameters &&
-                        block.data.parameters.inputs ?
-                        Object.entries(block.data.parameters.inputs) : [],
-                        
-                    outputs: block.data.output_parameters ? block.data.output_parameters : [],
+                    inputs: Object.entries(data.parameters?.inputs || {}),
+                    outputs: data.output_parameters || [],
                     transition,
                 });
-                specification_json.blocks.push(blockSpec);
             }
+            specificationJson.blocks.push(blockSpec);
         });
 
-        specification_json.blocks.push(
+        specificationJson.blocks.push(
             fillBlock({
                 id: Math.max(...queue.map(Number)) + 1,
                 type: 'parameters_block',
@@ -181,14 +137,10 @@ const ResultPanel = () => {
         );
 
         if (singleResultBlock) {
-            singleResultBlock.forEach(element => {
-                specification_json.result.push(
-                    element
-                );
-            });
+            specificationJson.result.push(...singleResultBlock);
         }
 
-        setSpecificationContent(JSON.stringify(specification_json, null, 2));
+        setSpecificationContent(JSON.stringify(specificationJson, null, 2));
     };
 
     useEffect(() => {
@@ -209,7 +161,7 @@ const ResultPanel = () => {
 
         const blocksQueue = [...new Set(traverseBlocks(endBlock))];
         makeSpecification(blocksQueue);
-    }, [blocks, isOpen]);
+    }, [isOpen]);
 
     const panelStyle = useMemo(() => ({
         transform: isOpen ? 'translateX(0)' : 'translateX(100%)',
