@@ -234,12 +234,14 @@ export default memo(({ data, isConnectable }) => {
                     <IntaractiveSection sectionName='Выходные параметры'>
                         <div className='parameter-Container'>
                             <div className='output-parameters'>
-                                {output_parameters.map((item, index) => (
+                                {output_parameters.length === 0 ?(
+                                <div>Нет выходных параметров</div>):(
+                                output_parameters.map((item, index) => (
                                     <div key={index} className='output-parameter'>
                                         <div className='output-parameter-name'>{item.name}</div>
                                         <div className='output-parameter-type'>{item.type}</div>
                                     </div>
-                                ))}
+                                )))}
                             </div>
                         </div>
                     </IntaractiveSection>

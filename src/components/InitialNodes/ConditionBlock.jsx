@@ -134,7 +134,7 @@ const ConditionBlock = ({ data, isConnectable }) => {
             <div className='condition-label-else'>
                 <label>Иначе</label>
             </div>
-            <div className='condition-content'>
+            <div className='condition-content-step'>
                 <header className='condition-content-header'>
                     <div className='condition-header-item'>Блок для перехода</div>
                 </header>
