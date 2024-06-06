@@ -72,7 +72,7 @@ export default memo(({ data, isConnectable }) => {
 
         const findLeftIds = (blocks, id) => {
             const directConnections = blocks
-                .filter(block => (block.type === 'custom' || block.type === 'codeBlock') &&
+                .filter(block => (block.type === 'functionBlock' || block.type === 'codeBlock') &&
                     block.outcomeConnections.includes(id))
                 .map(block => block.selfId);
         

@@ -3,7 +3,7 @@ import { dracula } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 const CodeContainer = ({ language, children }) => {
     return (
-        <div style={{ maxHeight: '700px', overflow: 'auto' }}>
+        <div style={{ maxHeight: '560px', overflow: 'auto' }}>
             <SyntaxHighlighter
                 language={language}
                 style={dracula}

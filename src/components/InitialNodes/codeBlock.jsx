@@ -90,7 +90,7 @@ def function(input):
 
         const findLeftIds = (blocks, id) => {
             return blocks
-                .filter(block => (block.type === 'custom' || block.type === 'codeBlock') && block.outcomeConnections.includes(id))
+                .filter(block => (block.type === 'functionBlock' || block.type === 'codeBlock') && block.outcomeConnections.includes(id))
                 .map(block => block.selfId);
         };
 

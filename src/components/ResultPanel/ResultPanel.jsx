@@ -36,6 +36,7 @@ const ResultPanel = () => {
 
         blocks.forEach(element => {
             if (element.type === 'resultBlock') {
+                console.log('ww', element.data.output_parameters);
                 connectedBlocks.push(element.data.output_parameters);
             }
         });
@@ -45,6 +46,7 @@ const ResultPanel = () => {
         // connectedBlocks = connectedBlocks.output_parameters;
 
         if (connectedBlocks.length === 0) return;
+        if (!connectedBlocks[0]) return;
         connectedBlocks = Object.values(connectedBlocks[0]);
         return connectedBlocks;
     };
@@ -84,7 +86,7 @@ const ResultPanel = () => {
 
             if (!block) return;
 
-            if (block.type === 'custom' && block.data?.parameters) {
+            if (block.type === 'functionBlock' && block.data?.parameters) {
                 const serviceSample = fillService({
                     id: block.data.function_id,
                     // serviceID: block.data.parameters[0].service_id,

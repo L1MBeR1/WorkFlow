@@ -1,217 +1,168 @@
-import React, { memo, useEffect, useState, useRef } from 'react';
-import { Handle, Position } from 'reactflow';
+import React, { memo, useEffect, useState } from 'react';
+import { Background, Handle, Position } from 'reactflow';
 import CustomSelect from '../AdditionalComponents/customSelect.jsx';
 import '../../css/initialNodes.css';
 import { useBlocks, useDataTypes } from '../../stores/store.js';
 import IntaractiveSection from '../AdditionalComponents/intaractiveSection.jsx';
 import { v4 as uuidv4 } from 'uuid';
 import { ReactComponent as Trash } from '../../images/InitialNodes/trash.svg';
-export default memo(({ data, isConnectable }) => {
+
+const NodeComponent = ({ data, isConnectable }) => {
     const blocks = useBlocks((state) => state.blocks);
     const dataTypes = useDataTypes((state) => state.types);
-    const [options, setOptions] = useState([]);
-    const [incomingParameterBlocksIds, setincomingParameterBlocksIds] = useState([]);
-    const [parameters, setParameters] = useState([{ id: uuidv4(), name: '', type: 'int', value: '' }]);
-    const [selectedTypes, setSelectedTypes] = useState();
-    const [selectedWhat, setSelectedWhat] = useState();
     const updateBlock = useBlocks((state) => state.updateBlock);
 
-    const addParameter = () => {
-        let newParameter = {
-            id: `${uuidv4()}`,
-            name: '',
-            type: 'string',
-            value: ''
+    const [parameters, setParameters] = useState([{ id: uuidv4(), name: '', type: 'string', value: '' }]);
+    const [dataFromConnectedNodes, setDataFromConnectedNodes] = useState([]);
+
+    const addParameter = () => setParameters([...parameters, { id: uuidv4(), name: '', type: 'string', value: '' }]);
+    const deleteParameter = (id) => setParameters(parameters.filter(param => param.id !== id));
+
+
+    const updateParameters = (id, key, value) => {
+        const block = blocks.find(block => block.selfId === data.id);
+        if (!block) {console.log('no block'); return};
+
+        const inputParams = block.data.parameters?.inputs || {};
+
+
+        console.log('before', block.data.output_parameters);
+        const newOutputParams = {
+            ...block.data.output_parameters,
+            [id]: {
+                ...block.data.output_parameters?.[id],
+                // blockId: block.incomeConnections[0],
+                // from_block_id: block.data.output_parameters?.from_block_id || '',
+                [key]: value,
+                value: inputParams[id]?.value || '---',
+                outputId: inputParams[id]?.id || '-p',
+            },
         };
-        setParameters([...parameters, newParameter]);
-    };
-    const handleDeleteParameter = (paramid) => {
-        const updatedParameters = parameters.filter(param => param.id !== paramid);
+
+
+        const updatedParameters = parameters.map(param =>
+            param.id === id ? { ...param, [key]: value } : param
+        );
+
         setParameters(updatedParameters);
+        updateBlock(data.id, { ...block.data, output_parameters: newOutputParams });
     };
 
     useEffect(() => {
-        parameters.forEach(parameter => {
-            changeName(parameter.id, '');
-            changeType(parameter.id, 'int');
-        });
-        console.log('');
-    }, [parameters]);
+        const leftIds = blocks
+            .filter(
+                block => (block.type === 'functionBlock' || block.type === 'codeBlock') &&
+                    block.outcomeConnections.includes(data.id)
+            )
+            .map(block => block.selfId);
 
-    const changeName = (id, value) => {
-        const block = blocks.find(block => block.selfId === data.id);
-        if (!block) return;
+        const outputParams = blocks.reduce((acc, block) => {
+            if (block.selfId === data.id) return acc;
 
-        const { parameters2 } = block.data;
-        const inputParameters = parameters2?.inputs ?? {};
-
-        const newOutputParameters = {
-            ...block.data.output_parameters,
-            [id]: {
-                ...block.data.output_parameters?.[id],
-                blockId: block.incomeConnections[0],
-                name: value,
-                value: inputParameters[id]?.value ?? '---',
-                outputId: inputParameters[id]?.id ?? '-p'
+            if (block.type === 'functionBlock' && leftIds.includes(block.selfId)) {
+                acc[block.data.label] = block.data.output_parameters.map(param => ({
+                    from_block_id: block.data.id,
+                    id: param.id,
+                    type: param.type,
+                    value: param.value || '---',
+                    name: param.name,
+                }));
+            } else if (block.type === 'codeBlock' && leftIds.includes(block.selfId)) {
+                acc[block.data.label] = Object.values(block.data.output_parameters).map(paramCollection => ({
+                    from_block_id: block.data.id,
+                    id: paramCollection.id,
+                    type: paramCollection.type,
+                    value: paramCollection.value || '---',
+                    name: paramCollection.name,
+                }));
             }
-        };
 
-        const newData = {
-            ...block.data,
-            output_parameters: newOutputParameters
-        };
+            return acc;
+        }, {});
 
-        updateBlock(data.id, newData);
-    };
+        console.log(`%c LoadedData`, 'background: #222; color: #bada55; font-size: larger');
+        console.log(outputParams);
+        setDataFromConnectedNodes(outputParams);
+    }, [blocks, data.id]);
 
-
-    // TODO: Переписать
-    useEffect(() => {
-        let left_ids = [];
-        const get_left = (id) => {
-            blocks.forEach(element => {
-                if (
-                    (element.type === 'custom' || element.type === 'codeBlock') &&
-                    element.outcomeConnections.includes(id)
-                ) {
-                    left_ids.push(element.selfId);
-                }
-            });
-        }
-        get_left(data.id);
-
-        let outputParams = {};
-        blocks.forEach(block => {
-            if (block.selfId === data.id) {
-                setincomingParameterBlocksIds(block.incomeConnections);
-            }
-            if (block.type === 'custom') {
-                if (left_ids.includes(block.selfId)) {
-                    outputParams[block.data.label] = block.data.output_parameters.map(param => ({
-                        // id: param.id,
-                        id: block.selfId,
-                        type: param.type,
-                        value: '---',
-                        name: param.name,
-                    }));
-                }
-            } else if (block.type === 'codeBlock') {
-                let tmp_params = [];
-                if (left_ids.includes(block.selfId)) {
-
-                    Object.keys(block.data.output_parameters).forEach(key => {
-                        const paramCollection = block.data.output_parameters[key];
-                        if (typeof paramCollection === 'object') {
-                            outputParams[block.data.label] = [];
-
-                            tmp_params.push({
-                                // id: paramCollection.id,
-                                id: block.selfId,
-                                type: paramCollection.type,
-                                value: paramCollection.value || '---',
-                                name: paramCollection.name,
-                            });
-                        }
-                    });
-                }
-                outputParams[block.data.label] = tmp_params;
-
-            }
-        });
-
-        setOptions(outputParams);
-    }, [incomingParameterBlocksIds, blocks]);
-
-    const changeType = (id, value) => {
-        const block = blocks.find(block => block.selfId === data.id);
-        if (!block) return;
-
-        const { parameters } = block.data;
-        const inputParameters = parameters?.inputs ?? {};
-
-        const newOutputParameters = {
-            ...block.data.output_parameters,
-            [id]: {
-                ...block.data.output_parameters?.[id],
-                blockId: block.incomeConnections[0],
-                type: value,
-                value: inputParameters[id]?.value ?? '---',
-                outputId: inputParameters[id]?.id ?? ''
-            }
-        };
-
-        const newData = {
-            ...block.data,
-            output_parameters: newOutputParameters
-        };
-
-        // console.log('EEE', newData);
-        // setSelectedTypes([
-        //     ...newData.output_parameters
-        // ]);
-        updateBlock(data.id, newData);
-    };
+    const cl1 = () => { console.log(parameters); };
+    const cl2 = () => { console.log(blocks.find(block => block.selfId === data.id)); };
 
     return (
-        <>
-            <div className='node' tabIndex="0">
-                <Handle
-                    className='HandleComponent'
-                    type="target"
-                    position={Position.Left}
-                    isConnectable={isConnectable}
-                />
-                <div >
-                    {data.label}
-                    <hr></hr>
-                    <div className='result-block-content'>
-                        <IntaractiveSection sectionName='Выходные параметры' visible='true'
-                            button={
-                                <div className='addButton' onClick={addParameter}>
-                                    +
-                                </div>}>
-                            <header >
-                                <div className='header-name'>Название</div>
-                                <div className='header-type'>Тип</div>
-                                <div className='header-value'>Значение</div>
-                            </header>
-                            <div className='parametrs'>
-                                {parameters.map(parameter => (
-                                    <div key={parameter.id} className='parameter' >
-                                        <div className='parameter_name'>
-                                            <input placeholder="Имя параметра" style={{ height: '100%' }}
-                                                onChange={(e) => changeName(parameter.id, e.target.value)}
-                                            ></input>
-                                        </div>
-                                        <div className='type_value'>
-                                            <select
-                                                onChange={(e) => changeType(parameter.id, e.target.value)}
-                                            >
-                                                {dataTypes.map((item, index) => (
-                                                    <option key={index} value={item.type}>{item.type}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                        <div className='value'>
-                                            <CustomSelect
-                                                options={options}
-                                                blockId={data.id}
-                                                funcParamType={parameter.type}
-                                                funcParamName={parameter.id}
-                                                type='parameters'
-                                            >
-                                            </CustomSelect>
-                                        </div>
-                                        <div className='delete_button' onClick={() => handleDeleteParameter(parameter.id)}>
-                                            <Trash className='delete_img' />
-                                        </div>
+        <div className='node' tabIndex="0">
+            <Handle
+                className='HandleComponent'
+                type="target"
+                position={Position.Left}
+                isConnectable={isConnectable}
+            />
+
+            <button onClick={() => cl1()} className='trash-button' style={{
+                color: 'red',
+            }}> Параметры в студию </button>
+            <button onClick={() => cl2()} className='trash-button' style={{
+                color: 'magenta',
+            }}> Блок из хранилища </button>
+
+            <div>
+                {data.label}
+                <hr />
+                <div className='result-block-content'>
+                    <IntaractiveSection
+                        sectionName='Выходные параметры'
+                        visible='true'
+                        button={<div className='addButton' onClick={addParameter}>+</div>}
+                    >
+                        <header>
+                            <div className='header-name'>Название</div>
+                            <div className='header-type'>Тип</div>
+                            <div className='header-value'>Значение</div>
+                        </header>
+                        <div className='parametrs'>
+                            {parameters.map(parameter => (
+                                <div key={parameter.id} className='parameter'>
+
+                                    <div className='parameter_name'>
+                                        <input
+                                            placeholder="Имя параметра"
+                                            onChange={(e) => updateParameters(parameter.id, 'name', e.target.value)}
+                                        />
                                     </div>
-                                ))}
-                            </div>
-                        </IntaractiveSection>
-                    </div>
+
+                                    <div className='type_value'>
+                                        <select
+                                            value={parameter.type}
+                                            onChange={(e) => updateParameters(parameter.id, 'type', e.target.value)}
+                                        >
+                                            {dataTypes.map((item, index) => (
+                                                <option key={index} value={item.type}>{item.type}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    <div className='value'>
+                                        <CustomSelect
+                                            options={dataFromConnectedNodes}
+                                            blockId={data.id}
+                                            funcParamType={parameter.type}
+                                            funcParamName={parameter.id}
+                                            // fromBlock={}
+                                            type='parameters_from_resultblock'
+                                        />
+                                    </div>
+
+                                    <div className='delete_button' onClick={() => deleteParameter(parameter.id)}>
+                                        <Trash className='delete_img' />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                    </IntaractiveSection>
                 </div>
             </div>
-        </>
+        </div>
     );
-});
+};
+
+export default memo(NodeComponent);

@@ -31,12 +31,12 @@ const ConditionBlock = ({ data, isConnectable }) => {
 
         const findLeftIds = (blocks, id) => {
             return blocks
-                .filter(block => (block.type === 'custom' || block.type === 'codeBlock') && block.outcomeConnections.includes(id))
+                .filter(block => (block.type === 'functionBlock' || block.type === 'codeBlock') && block.outcomeConnections.includes(id))
                 .map(block => block.selfId);
         };
         const findRightBlocks = (blocks, id) => {
             return blocks
-                .filter(block => (block.type === 'custom' || block.type === 'codeBlock') && block.incomeConnections.includes(id));
+                .filter(block => (block.type === 'functionBlock' || block.type === 'codeBlock') && block.incomeConnections.includes(id));
         };
         const getOutputParameters = (blocks, leftIds) => {
             return blocks.reduce((acc, block) => {

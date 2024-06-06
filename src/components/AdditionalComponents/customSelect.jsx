@@ -7,6 +7,7 @@ const CustomSelect = (props) => {
     const blocks = useBlocks((state) => state.blocks);
     const updateBlock = useBlocks((state) => state.updateBlock);
     const [selectedOption, setValue] = useState({
+        from_block_id: null,
         value: "Выберите",
         id: null,
         type: null,
@@ -19,6 +20,7 @@ const CustomSelect = (props) => {
         !(selectedOption.value === "Выберите")
     ) {
         setValue({
+            from_block_id: null,
             value: "Выберите",
             id: null,
             type: null,
@@ -38,7 +40,7 @@ const CustomSelect = (props) => {
 
     useEffect(() => {
         const selectedOptionId = selectedOption.id;
-        const isParameterType = props.type === 'parameters';
+        const isParameterType = props.type === 'parameters' || props.type === 'parameters_from_resultblock';
         const isSelectedOptionNotNull = selectedOptionId !== null;
 
         // Ищем выбранный объект в массиве options
@@ -54,7 +56,7 @@ const CustomSelect = (props) => {
             };
 
             const isDifferentType = selectedOptionFromProps.type !== selectedOption.type;
-            setValue(isDifferentType ? { value: "Выберите", id: null, type: null } : updatedValue);
+            setValue(isDifferentType ? { value: "Выберите", id: null, type: null, from_block_id: null, } : updatedValue);
         }
     }, [props.options]);
 
@@ -73,7 +75,7 @@ const CustomSelect = (props) => {
             } else if (props.type === 'services') {
                 variableKey = 'service_id';
                 propToSave = item.id;
-            } else if (props.type === 'parameters') {
+            } else if (props.type === 'parameters' || props.type === 'parameters_from_resultblock') {
                 variableKey = props.funcParamName;
                 propToSave = item;
             } else if (props.type === 'conditions') {
@@ -107,9 +109,34 @@ const CustomSelect = (props) => {
                 //     },
                 // });
                 currentBlock.data.parameters.inputs[variableKey] = propToSave;
+            } else if (props.type === 'parameters_from_resultblock') {
+                if (!currentBlock.data.parameters.inputs) {
+                    currentBlock.data.parameters.inputs = {};
+                }
+                currentBlock.data.parameters.inputs[variableKey] = propToSave;
+
+                // Ищем выбранный объект в массиве options
+                // const selectedOption = selectedOption;
+                // console.log('soi', selectedOptionId);
+                // const selectedOptionFromProps = Object.values(props.options)
+                //     .flatMap(options => options)
+                //     .find(option => option.id === selectedOptionId);
+
+                console.log('%c TTTTTTT', 'color: green; font-weight: bold');
+                console.log(props.options);
+
+                // console.log('111-', currentBlock.data.output_parameters.from_block_id);
+                console.log('1121-', currentBlock);
+                console.log('2221-', Object.values(props.options));
+                console.log('222-', Object.values(props.options)[0][0].from_block_id);
+                console.log('333-', selectedOption);
+                // currentBlock.data.output_parameters[props.funcParamName].from_block_id = selectedOption.from_block_id;
+                // currentBlock.data.output_parameters[props.funcParamName].from_block_id = Object.values(props.options)[0][0].from_block_id;
+                currentBlock.data.output_parameters[props.funcParamName].from_block_id = item.from_block_id;
             } else {
                 currentBlock.data.parameters[variableKey] = propToSave;
             }
+            console.log('vvv', item);
 
             if (props.type === 'parameters' || props.type === 'services') {
                 setValue({
@@ -120,6 +147,13 @@ const CustomSelect = (props) => {
             } else if (props.type === 'uri') {
                 setValue({
                     value: item.uri,
+                    id: item.id,
+                    type: item.type,
+                });
+            } else if (props.type === 'parameters_from_resultblock') {
+                setValue({
+                    from_block_id: item.from_block_id,
+                    value: item.name,
                     id: item.id,
                     type: item.type,
                 });
@@ -158,7 +192,7 @@ const CustomSelect = (props) => {
                 <div className='Arrow'><Arrow className='svg' style={{ transform: isOpen ? 'scaleY(-1)' : 'scaleY(1)' }}></Arrow></div>
             </div>
             <div className='custom-select-content' style={{ display: isOpen ? 'flex' : 'none', position: 'absolute', top: selectCoords.y, left: selectCoords.x }}>
-                {props.type === 'parameters' && (
+                {(props.type === 'parameters' || props.type === 'parameters_from_resultblock') && (
                     <>
                         {
                             Object.keys(props.options).length === 0 ? (

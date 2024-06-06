@@ -1,8 +1,7 @@
 import ComponentPanel from './components/ComponentPanel/componentPanel.jsx';
 import ResultPanel from './components/ResultPanel/resultPanel.jsx';
 import './css/app.css';
-import CustomNode from './components/Functions/functionNode.jsx';
-
+import FunctionNode from './components/InitialNodes/functionNode.jsx';
 import StartNode from './components/InitialNodes/startBlock.jsx';
 import EndNode from './components/InitialNodes/endBlock.jsx';
 import ParametrBlock from './components/InitialNodes/parametrBlock.jsx';
@@ -34,7 +33,7 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 
 const nodeTypes = {
-    custom: CustomNode,
+    functionBlock: FunctionNode,
     startBlock: StartNode,
     endBlock: EndNode,
     parametrBlock: ParametrBlock,
@@ -148,7 +147,7 @@ export default function App() {
         let newData;
         let newid = `${lastId++}`;
         switch (type) {
-            case 'custom':
+            case 'functionBlock':
                 newData = {
                     id: newid,
                     label: `${function_name} (${newid})`,

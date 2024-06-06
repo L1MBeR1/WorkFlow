@@ -10,7 +10,7 @@ const ComponentFunc = (props) => {
 
     return (
         <div className='function' onDragStart={(event) => onDragStart(event, {
-            type:'custom',
+            type:'functionBlock',
             function_name: props.name,
             function_id: props.function_id,
             component_id: props.component_id
