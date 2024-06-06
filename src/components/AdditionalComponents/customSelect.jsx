@@ -204,11 +204,14 @@ const CustomSelect = (props) => {
                     ))
                 )}
                 {props.type === 'blocks' && (
+                     Object.keys(props.options).length === 0 ? (
+                        <div className='not-clickable-text'>Нет данных</div>
+                    ) : (
                     Object.values(props.options).flatMap(options => options).map((item, index) => (
                         <div key={index} className='custom-select-item' onClick={() => handleSelect(item)}>
                             {item.data.label}
                         </div>
-                    ))
+                    )))
                 )}
             </div>
         </div>

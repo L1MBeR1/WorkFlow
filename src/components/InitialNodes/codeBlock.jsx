@@ -125,6 +125,7 @@ def function(input):
         const combinedObj = { ...outputParameters, ...incomingParameters };
 
         setOptions(combinedObj);
+        console.log(parameterBlocks,incomingParameterBlocksIds)
     }, [parameterBlocks, incomingParameterBlocksIds, blocks]);
 
 
@@ -148,6 +149,7 @@ def function(input):
     const handleDeleteParameter = (paramid) => {
         const updatedParameters = parameters.filter(param => param.id !== paramid);
         setParameters(updatedParameters);
+        console.log(updatedParameters)
     };
 
     const addParameter1 = () => {
@@ -166,7 +168,7 @@ def function(input):
     };
 
     const printToConsole = () => {
-        // console.log(blocks.find(block => block.selfId === data.id));
+        console.log(blocks.find(block => block.selfId === data.id));
         console.log(dataTypes);
     };
 
@@ -256,7 +258,7 @@ def function(input):
 
     return (
         <>
-            {/* <button onClick={printToConsole}> Выходные параметры в консоли </button> */}
+            <button onClick={printToConsole}> Выходные параметры в консоли </button>
             <div className='node' tabIndex="0">
                 <Handle
                     className='HandleComponent'
@@ -277,7 +279,7 @@ def function(input):
                     <hr></hr>
                 </div>
                 <div className='outputs'>
-                    <div className='result-block-content'>
+                    <div className='code-block-content'>
                         <IntaractiveSection sectionName='Входные параметры' visible='true'
                             button={
                                 <div className='addButton' onClick={addParameter1}>
@@ -299,7 +301,7 @@ def function(input):
                                         <div className='code_parameter_type'>
                                             {parameter.type}
                                         </div>
-                                        <div className='type_value'>
+                                        <div className='code-type_value'>
                                             <CustomSelect
                                                 options={options}
                                                 blockId={data.id}
@@ -320,7 +322,7 @@ def function(input):
                     </div>
                 </div>
 
-                <div style={{ height: '200px', width: '400px' }}>
+                <div className='code'>
                     <AceEditor
                         mode="python"
                         theme="dracula"

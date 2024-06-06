@@ -237,7 +237,7 @@ const ResultPanel = () => {
                     <div className="resultPanel-content-specification">
                         <CodeContainer language="json">{specificationContent}</CodeContainer>
                         <div className="resultPanel-content-buttons">
-                            <button onClick={copyToClipBoard} className="resultPanel-content-copy">Скопировать</button>
+                            <div onClick={copyToClipBoard} className="resultPanel-content-copy">Скопировать</div>
                         </div>
                     </div>
                 </div>

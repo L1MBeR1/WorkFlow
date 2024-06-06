@@ -114,6 +114,7 @@ header {
     height: 12px;
 }
 .type_value{
+    /* width: 105px; */
     height: 100%;
 }
 .type_value input{
@@ -225,4 +226,21 @@ stroke:gray;
 .code_parameter_type{
     font-size: 11px;
     width: 75px;
+}
+.code{
+    height: 200px;
+    margin-top: 10px;
+}
+.code-type_value{
+    width: 128px;
+    
+}
+.condition-selects .custom-select{
+    width: 82px;
+}
+.condition-content-step .custom-select{
+    max-width: 315px;
+}
+.code-type_value .custom-select{
+    padding: 3px 5px;
 }
