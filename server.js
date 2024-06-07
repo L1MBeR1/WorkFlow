@@ -1,5 +1,5 @@
 
-// const dotenv = require('dotenv');
+const dotenv = require('dotenv');
 const express = require("express");
 const cors = require("cors");
 const routes = require("./src/routes/routes");
