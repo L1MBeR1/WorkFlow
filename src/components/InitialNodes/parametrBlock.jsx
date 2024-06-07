@@ -10,14 +10,14 @@ export default memo(({ data, isConnectable }) => {
     const dataTypes = useDataTypes((state) => state.types);
     const updateParameterBlock = useParameterBlocksData((state) => state.update);
     const updateParameterBlockLabel = useParameterBlocksData((state) => state.updateLabel);
-    const [parameters, setParameters] = useState([{ id: uuidv4(), name: '', type: 'string', value: '' }]);
+    const [parameters, setParameters] = useState([{ id: uuidv4(), name: '', type: 'int', value: '' }]);
     const [header, setHeader] = useState(data.label);
 
     const addParameter = () => {
         let newParameter = {
             id: `${uuidv4()}`,
             name: '',
-            type: 'string',
+            type: 'int',
             value: ''
         };
         setParameters([...parameters, newParameter]);

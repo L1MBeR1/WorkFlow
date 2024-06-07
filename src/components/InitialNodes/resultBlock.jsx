@@ -12,12 +12,12 @@ const NodeComponent = ({ data, isConnectable }) => {
     const dataTypes = useDataTypes((state) => state.types);
     const updateBlock = useBlocks((state) => state.updateBlock);
 
-    const initialParameter = { id: uuidv4(), name: '', type: 'string', value: '' };
+    const initialParameter = { id: uuidv4(), name: '', type: 'int', value: '' };
     const [parameters, setParameters] = useState([initialParameter]);
     const [dataFromConnectedNodes, setDataFromConnectedNodes] = useState([]);
 
     const addParameter = () =>
-        setParameters([...parameters, { id: uuidv4(), name: '', type: 'string', value: '' }]);
+        setParameters([...parameters, { id: uuidv4(), name: '', type: 'int', value: '' }]);
     const deleteParameter = (id) =>
         setParameters(parameters.filter((param) => param.id !== id));
 
@@ -81,7 +81,7 @@ const NodeComponent = ({ data, isConnectable }) => {
 
     useEffect(() => {
         updateParameters(initialParameter.id, 'name', '-');
-        updateParameters(initialParameter.id, 'type', 'string');
+        updateParameters(initialParameter.id, 'type', 'int');
     }, []); 
 
     return (

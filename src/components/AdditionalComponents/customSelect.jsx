@@ -57,6 +57,7 @@ const CustomSelect = (props) => {
     const handleToggleSelect = (e) => {
         setSelectCoords({ x: e.target.offsetLeft, y: e.target.offsetTop + e.target.clientHeight + 5 });
         setIsOpen(!isOpen);
+        console.log(props.options, props.funcParamType)
     };
 
     const closeSelector = () => {

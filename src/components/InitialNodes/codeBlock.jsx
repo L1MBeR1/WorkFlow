@@ -19,6 +19,7 @@ const ParameterSection = ({
     deleteParameterFunc,
     handleSaveParameter,
     options,
+    types,
     blockId,
     type
 }) => (
@@ -43,18 +44,16 @@ const ParameterSection = ({
                                     onChange={(e) => handleSaveParameter(`${type}_parameters`, parameter.id, { ...parameter, name: e.target.value })}
                                 />
                             </div>
-                            <div className={type === 'input' ? 'code_parameter_type' : 'type_value'}>
-                                {type === 'input' ? (
-                                    parameter.type
-                                ) : (
+                            <div className='type_value'>
+
                                     <select
                                         onChange={(e) => handleSaveParameter(`${type}_parameters`, parameter.id, { ...parameter, type: e.target.value })}
                                     >
-                                        {options.map((item, index) => (
+                                        {types.map((item, index) => (
                                             <option key={index} value={item.type}>{item.type}</option>
                                         ))}
                                     </select>
-                                )}
+                                
                             </div>
                             {type === 'input' && (
                                 <div className='code-type_value'>
@@ -85,8 +84,8 @@ export default memo(({ data, isConnectable }) => {
     const updateBlock = useBlocks((state) => state.updateBlock);
     const dataTypes = useDataTypes((state) => state.types);
     const [options, setOptions] = useState([]);
-    const [parameters, setParameters] = useState([{ id: uuidv4(), name: '', type: 'string', value: '' }]);
-    const [parameters1, setParameters1] = useState([{ id: uuidv4(), name: '', type: 'string', value: '' }]);
+    const [parameters, setParameters] = useState([{ id: uuidv4(), name: '', type: 'int', value: '' }]);
+    const [parameters1, setParameters1] = useState([{ id: uuidv4(), name: '', type: 'int', value: '' }]);
     const [incomingParameterBlocksIds, setincomingParameterBlocksIds] = useState([]);
     const parameterBlocks = useParameterBlocksData((state) => state.blocks);
     const [code, setCode] = useState(defaultCode);
@@ -161,7 +160,7 @@ export default memo(({ data, isConnectable }) => {
         const newParameter = {
             id: `${uuidv4()}`,
             name: '',
-            type: 'string',
+            type: 'int',
             value: ''
         };
         setParametersFunc([...parameters, newParameter]);
@@ -182,6 +181,7 @@ export default memo(({ data, isConnectable }) => {
                 if (!block.data[paramType][id]) {
                     block.data[paramType][id] = {};
                 }
+                console.log(block.data)
                 newData = {
                     ...block.data,
                     [paramType]: {
@@ -194,11 +194,21 @@ export default memo(({ data, isConnectable }) => {
                 };
             }
         });
+        
+        // if (paramType==='input_parameters')
+        //     {
+        //         const updatedParameters = parameters1.map((param) =>
+        //             param.id === id ? { ...param, updates } : param
+        //         );
+        //         console.log(updatedParameters)
+        //         setParameters1(updatedParameters)
+        //     }
         return newData;
     };
 
     const handleSaveParameter = (paramType, id, updates) => {
         const newData = updateParameters(blocks, data.id, paramType, id, updates);
+
         updateBlock(data.id, newData);
     };
 
@@ -230,6 +240,7 @@ export default memo(({ data, isConnectable }) => {
                     deleteParameterFunc={(paramId) => handleDeleteParameter(setParameters1, parameters1, paramId)}
                     handleSaveParameter={handleSaveParameter}
                     options={options}
+                    types={dataTypes}
                     blockId={data.id}
                     type='input'
                 />
@@ -259,7 +270,7 @@ export default memo(({ data, isConnectable }) => {
                     addParameterFunc={() => addParameter(setParameters, parameters)}
                     deleteParameterFunc={(paramId) => handleDeleteParameter(setParameters, parameters, paramId)}
                     handleSaveParameter={handleSaveParameter}
-                    options={dataTypes}
+                    types={dataTypes}
                     blockId={data.id}
                     type='output'
                 />
