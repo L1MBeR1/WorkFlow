@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export const useBlocks = create(set => ({
+export const useBlocks = create((set, get) => ({
     blocks: [],
     loading: false,
     error: null,
@@ -16,9 +16,20 @@ export const useBlocks = create(set => ({
 
         return { blocks: [...state.blocks, newblock] };
     }),
+
     deleteBlock: (id) => set(state => ({
         blocks: state.blocks.filter(block => block.selfId !== id)
     })),
+
+    setBlockData: (id, newData) => {
+        const blocks = get().blocks;
+        const index = blocks.findIndex((block) => block.selfId === id);
+        if (index !== -1) {
+            blocks[index].data = newData;
+            set({ blocks });  // Прямое изменение состояния без инициирования события обновления
+        }
+    },
+
     updateBlock: (id, newData) => set((state) => {
         const updatedBlocks = state.blocks.map((block) => {
             if (block.selfId === id) {
@@ -29,7 +40,6 @@ export const useBlocks = create(set => ({
 
         return { blocks: updatedBlocks };
     }),
-
 
     updateBlockIncomers: (id, newIncomerId) => set((state) => {
         const updatedBlocks = state.blocks.map((block) => {
@@ -46,7 +56,6 @@ export const useBlocks = create(set => ({
         return { blocks: updatedBlocks };
     }),
 
-
     deleteBlockIncomer: (id, incomerToRemoveId) => set((state) => {
         const updatedBlocks = state.blocks.map((block) => {
             if (block.selfId === id) {
@@ -58,7 +67,6 @@ export const useBlocks = create(set => ({
 
         return { blocks: updatedBlocks };
     }),
-
 
     updateBlockOutcomers: (id, newOutcomerId) => set((state) => {
         const updatedBlocks = state.blocks.map((block) => {
@@ -75,8 +83,6 @@ export const useBlocks = create(set => ({
         return { blocks: updatedBlocks };
     }),
 
-
-
     deleteBlockOutcomer: (id, outcomerToRemoveId) => set((state) => {
         const updatedBlocks = state.blocks.map((block) => {
             if (block.selfId === id) {
@@ -89,10 +95,11 @@ export const useBlocks = create(set => ({
         return { blocks: updatedBlocks };
     }),
 
-    checkIfBlockExists: (attribute, value) => set(state => {
-        return state.blocks.some(block => block[attribute] === value);
-    }),    
+    checkIfBlockExists: (attribute, value) => {
+        return get().blocks.some(block => block[attribute] === value);
+    },    
 }));
+
 
 export const useParameterBlocksData = create(set => ({
     blocks: [],

@@ -58,12 +58,17 @@ const ResultPanel = () => {
     };
 
     const makeSpecification = queue => {
-        if (!queue.length) return;
 
         const specificationJson = {
             service_data: [],
             blocks: [],
             result: []
+        };
+
+        if (!queue.length || queue.length === 0) {
+            console.log('Empty specification');
+            setSpecificationContent(JSON.stringify(specificationJson, null, 2));
+            return;
         };
 
         const singleParameterBlock = getConnectedParameterBlocks();
@@ -147,7 +152,10 @@ const ResultPanel = () => {
         if (blocks.length === 0) return;
 
         const endBlock = blocks.find(block => block.type === 'endBlock');
-        if (!endBlock || endBlock.incomeConnections.length === 0) return;
+        if (!endBlock || endBlock.incomeConnections.length === 0) {
+            makeSpecification([]);
+            return;
+        };
 
         const traverseBlocks = (block, queue = []) => {
             if (!block) return queue;

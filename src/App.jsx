@@ -46,17 +46,16 @@ export default function App() {
     let lastId = 0;
     const blocks = useBlocks((state) => state.blocks);
     const addBlock = useBlocks((state) => state.addBlock);
+    const deleteBlock = useBlocks((state) => state.deleteBlock);
     const loadDataTypes = useDataTypes((state) => state.loadTypes);
     const datatypes = useDataTypes((state) => state.types);
     const addParameterBlock = useParameterBlocksData((state) => state.add);
-    // const parameterBlocks = useParameterBlocksData((state) => state.blocks);
     const updateBlockIncomers = useBlocks((state) => state.updateBlockIncomers);
     const updateBlockOutcomers = useBlocks((state) => state.updateBlockOutcomers);
     const deleteBlockIncomer = useBlocks((state) => state.deleteBlockIncomer);
     const deleteBlockOutcomer = useBlocks((state) => state.deleteBlockOutcomer);
     const checkIfBlockExists = useBlocks((state) => state.checkIfBlockExists);
 
-    // const [options_lists_data, setOptions] = useState([]);
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
     const [nodes, setNodes, onNodesChange] = useNodesState([]);
 
@@ -171,7 +170,6 @@ export default function App() {
                 newData = {
                     id: newid,
                     label: `Блок с параметрами (${newid})`,
-                    /*function_to_update_parameters: updateOptions,*/
                 };
                 break;
             case 'resultBlock':
@@ -184,7 +182,6 @@ export default function App() {
                 newData = {
                     id: newid,
                     label: `Блок с кодом (${newid})`,
-                    // output_parameters: [],
                 };
                 break;
             case 'conditionBlock':
@@ -217,8 +214,24 @@ export default function App() {
 
     }, [reactFlowInstance],);
 
+    const onNodesDelete = useCallback(
+        (deleted) => {
+            console.log('deleted', deleted);
+            deleteBlock(deleted[0].id);
+        },
+        [deleteBlock]
+    );
+
+    const cl = () => {
+        console.log('%c Nodes, Edges', 'color: red; background: yellow');
+        console.log(nodes, edges);
+        console.log('%c Blocks from Store', 'color: white; background: green');
+        console.log(blocks);
+    };
+
     return (
         <div className="App">
+            <button onClick={() => cl()}> CL </button>
             <HeaderPanel></HeaderPanel>
             <div className='reactFlowDiv'>
                 <ComponentPanel></ComponentPanel>
@@ -231,6 +244,7 @@ export default function App() {
                         onConnect={onConnect}
                         onInit={setReactFlowInstance}
                         onDrop={onDrop}
+                        onNodesDelete={onNodesDelete}
                         onDragOver={onDragOver}
                         fitView
                         nodeTypes={nodeTypes}

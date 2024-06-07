@@ -24,7 +24,6 @@ const NodeComponent = ({ data, isConnectable }) => {
     const updateParameters = (id, key, value) => {
         const block = blocks.find((block) => block.selfId === data.id);
         if (!block) {
-            console.log('no block');
             return;
         }
 
@@ -44,7 +43,29 @@ const NodeComponent = ({ data, isConnectable }) => {
         updateBlock(data.id, { ...block.data, output_parameters: newOutputParams });
     };
 
+    const cleanData = (deletedIds) => {
+        const blocks = useBlocks.getState().blocks;  // Получаем текущее состояние блоков
+        const currentBlock = blocks.find((block) => block.selfId === data.id);
+        console.log('%c n-1', 'color: red; background: black; font-weight: bold');
+        if (!currentBlock) return;
+
+        // Фильтруем output_parameters, удаляя те, у которых from_block_id находится в deletedIds
+        const newOutputParameters = Object.fromEntries(
+            Object.entries(currentBlock.data.output_parameters).filter(
+                ([key, param]) => !deletedIds.includes(param.from_block_id)
+            )
+        );
+        console.log('%c n-2', 'color: red; background: black; font-weight: bold');
+        console.log(newOutputParameters);
+        // Прямо обновляем данные блока без создания события
+        useBlocks.getState().setBlockData(data.id, { ...currentBlock.data, output_parameters: newOutputParameters });
+    };
+
+
+
     useEffect(() => {
+        console.log('%c Blocks or data.id changed', 'color: yellow; background: black; font-weight: bold');
+
         const leftIds = blocks
             .filter(
                 (block) =>
@@ -52,6 +73,40 @@ const NodeComponent = ({ data, isConnectable }) => {
                     block.outcomeConnections.includes(data.id)
             )
             .map((block) => block.selfId);
+
+        const getContainedIds = () => {
+            const block = blocks.find((b) => b.selfId === data.id);
+            if (!block || !block.data.output_parameters) {
+                return [];
+            }
+
+            return Object.values(block.data.output_parameters).map(
+                (param) => param.from_block_id
+            );
+        };
+
+        const arrayDifference = (arr1, arr2) => {
+            return arr1.filter(id => !arr2.includes(id));
+        };
+
+        const checkForDeletedBlocks = () => {
+            console.log('%c leftIds', 'color: yellow; background: black; font-weight: bold');
+            console.log(leftIds);
+            console.log('%c Containded ids', 'color: yellow; background: black; font-weight: bold');
+            console.log(getContainedIds());
+    
+            const containedIds = getContainedIds();
+            if (!containedIds[0]) {
+                return;
+            }
+            const diff = arrayDifference(containedIds, leftIds);
+    
+            if (diff.length > 0) {
+                cleanData(diff);
+            }
+        };
+    
+        checkForDeletedBlocks();
 
         const outputParams = blocks.reduce((acc, block) => {
             if (block.selfId === data.id) return acc;
@@ -79,10 +134,11 @@ const NodeComponent = ({ data, isConnectable }) => {
         setDataFromConnectedNodes(outputParams);
     }, [blocks, data.id]);
 
+
     useEffect(() => {
         updateParameters(initialParameter.id, 'name', '-');
         updateParameters(initialParameter.id, 'type', 'string');
-    }, []); 
+    }, []);
 
     return (
         <div className='node' tabIndex='0'>

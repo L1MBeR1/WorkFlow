@@ -10,74 +10,6 @@ import { ReactComponent as Trash } from '../../images/InitialNodes/trash.svg';
 
 import 'ace-builds/src-noconflict/mode-python';
 import 'ace-builds/src-noconflict/theme-dracula';
-import { defaultCode } from './defaultCode.jsx';
-
-const ParameterSection = ({
-    sectionName,
-    parameters,
-    addParameterFunc,
-    deleteParameterFunc,
-    handleSaveParameter,
-    options,
-    blockId,
-    type
-}) => (
-    <div className='outputs'>
-        <div className='code-block-content'>
-            <IntaractiveSection
-                sectionName={sectionName}
-                visible={true}
-                button={<div className='addButton' onClick={addParameterFunc}>+</div>}
-            >
-                <header>
-                    <div className='header-name'>Название</div>
-                    <div className='header-type'>Тип</div>
-                    {type === 'input' && <div className='header-value'>Значение</div>}
-                </header>
-                <div className='parameters'>
-                    {parameters.map(parameter => (
-                        <div key={parameter.id} className='parameter'>
-                            <div className='parameter_name'>
-                                <input
-                                    placeholder="Имя параметра"
-                                    onChange={(e) => handleSaveParameter(`${type}_parameters`, parameter.id, { ...parameter, name: e.target.value })}
-                                />
-                            </div>
-                            <div className={type === 'input' ? 'code_parameter_type' : 'type_value'}>
-                                {type === 'input' ? (
-                                    parameter.type
-                                ) : (
-                                    <select
-                                        onChange={(e) => handleSaveParameter(`${type}_parameters`, parameter.id, { ...parameter, type: e.target.value })}
-                                    >
-                                        {options.map((item, index) => (
-                                            <option key={index} value={item.type}>{item.type}</option>
-                                        ))}
-                                    </select>
-                                )}
-                            </div>
-                            {type === 'input' && (
-                                <div className='code-type_value'>
-                                    <CustomSelect
-                                        options={options}
-                                        blockId={blockId}
-                                        funcParamName={parameter.name}
-                                        funcParamType={parameter.type}
-                                        type='parameters'
-                                    />
-                                </div>
-                            )}
-                            {type === 'output' && <div className='value'>{parameter.value}</div>}
-                            <div className='delete_button' onClick={() => deleteParameterFunc(parameter.id)}>
-                                <Trash className='delete_img' />
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </IntaractiveSection>
-        </div>
-    </div>
-);
 
 
 export default memo(({ data, isConnectable }) => {
@@ -89,7 +21,16 @@ export default memo(({ data, isConnectable }) => {
     const [parameters1, setParameters1] = useState([{ id: uuidv4(), name: '', type: 'string', value: '' }]);
     const [incomingParameterBlocksIds, setincomingParameterBlocksIds] = useState([]);
     const parameterBlocks = useParameterBlocksData((state) => state.blocks);
-    const [code, setCode] = useState(defaultCode);
+    const [code, setCode] = useState(`
+def function(input):
+    """
+    use input.InputParameterName to 
+    do something with inputs
+    """
+
+    output = input
+    return output
+`);
 
     const updateCode = () => {
         updateBlock(data.id, {
@@ -148,91 +89,202 @@ export default memo(({ data, isConnectable }) => {
         const combinedObj = { ...outputParameters, ...incomingParameters };
 
         setOptions(combinedObj);
-        console.log(parameterBlocks, incomingParameterBlocksIds)
+        console.log(parameterBlocks,incomingParameterBlocksIds)
     }, [parameterBlocks, incomingParameterBlocksIds, blocks]);
+
 
     useEffect(() => {
         parameters.forEach(parameter => {
-            handleSaveParameter('output_parameters', parameter.id, { id: parameter.id, name: '', type: 'string', value: '---' });
+            saveNameToData(parameter.id, '');
+            saveTypeToData(parameter.id, 'string');
         });
     }, [parameters]);
 
-    const addParameter = (setParametersFunc, parameters) => {
-        const newParameter = {
+    const addParameter = () => {
+        let newParameter = {
             id: `${uuidv4()}`,
             name: '',
             type: 'string',
             value: ''
         };
-        setParametersFunc([...parameters, newParameter]);
+        setParameters([...parameters, newParameter]);
     };
 
-    const handleDeleteParameter = (setParametersFunc, parameters, paramid) => {
+    const handleDeleteParameter = (paramid) => {
         const updatedParameters = parameters.filter(param => param.id !== paramid);
-        setParametersFunc(updatedParameters);
+        setParameters(updatedParameters);
+        console.log(updatedParameters)
     };
 
-    const updateParameters = (blocks, blockId, paramType, id, updates) => {
+    const addParameter1 = () => {
+        let newParameter = {
+            id: `${uuidv4()}`,
+            name: '',
+            type: 'string',
+            value: ''
+        };
+        setParameters1([...parameters1, newParameter]);
+    };
+
+    const handleDeleteParameter1 = (paramid) => {
+        const updatedParameters = parameters1.filter(param => param.id !== paramid);
+        setParameters1(updatedParameters);
+    };
+
+    const printToConsole = () => {
+        console.log(blocks.find(block => block.selfId === data.id));
+        console.log(dataTypes);
+    };
+
+    const saveNameToData = (id, value) => {
         let newData;
         blocks.forEach(block => {
-            if (block.selfId === blockId) {
-                if (!block.data[paramType]) {
-                    block.data[paramType] = [];
+            if (block.selfId === data.id) {
+                if (!block.data.output_parameters) {
+                    block.data.output_parameters = [];
                 }
-                if (!block.data[paramType][id]) {
-                    block.data[paramType][id] = {};
+                if (!block.data.output_parameters[id]) {
+                    block.data.output_parameters[id] = {};
                 }
                 newData = {
                     ...block.data,
-                    [paramType]: {
-                        ...block.data[paramType],
+                    output_parameters: {
+                        ...block.data.output_parameters,
                         [id]: {
-                            ...block.data[paramType][id],
-                            ...updates,
+                            ...block.data.output_parameters[id],
+                            id: id,
+                            name: value,
+                            value: '---',
                         },
-                    },
+                    }
+
                 };
             }
-        });
-        return newData;
+        })
+        updateBlock(data.id, newData);
     };
 
-    const handleSaveParameter = (paramType, id, updates) => {
-        const newData = updateParameters(blocks, data.id, paramType, id, updates);
+    const saveTypeToData = (id, value) => {
+        let newData;
+        blocks.forEach(block => {
+            if (block.selfId === data.id) {
+                if (!block.data.output_parameters) {
+                    block.data.output_parameters = [];
+                }
+                if (!block.data.output_parameters[id]) {
+                    block.data.output_parameters[id] = {};
+                }
+                newData = {
+                    ...block.data,
+                    output_parameters: {
+                        ...block.data.output_parameters,
+                        [id]: {
+                            ...block.data.output_parameters[id],
+                            id: id,
+                            type: value,
+                            value: '---',
+                        },
+                    }
+
+                };
+            }
+        })
+        updateBlock(data.id, newData);
+    };
+
+    const saveNameToData2 = (id, value, type) => {
+        let newData;
+        blocks.forEach(block => {
+            if (block.selfId === data.id) {
+                if (!block.data.input_parameters) {
+                    block.data.input_parameters = [];
+                }
+                if (!block.data.input_parameters[id]) {
+                    block.data.input_parameters[id] = {};
+                }
+                newData = {
+                    ...block.data,
+                    input_parameters: {
+                        ...block.data.input_parameters,
+                        [id]: {
+                            ...block.data.input_parameters[id],
+                            id: id,
+                            name: value,
+                            type: type,
+                            value: '---',
+                        },
+                    }
+                };
+            }
+        })
         updateBlock(data.id, newData);
     };
 
     return (
         <>
+            <button onClick={printToConsole}> Выходные параметры в консоли </button>
             <div className='node' tabIndex="0">
                 <Handle
                     className='HandleComponent'
                     type="target"
                     position={Position.Left}
-                    isConnectable={data.isConnectable}
+                    isConnectable={isConnectable}
                 />
+
                 <Handle
                     className='HandleComponent'
                     type="source"
                     position={Position.Right}
-                    isConnectable={data.isConnectable}
+                    isConnectable={isConnectable}
                 />
 
                 <div>
                     <div>{data.label}</div>
-                    <hr />
+                    <hr></hr>
                 </div>
+                <div className='outputs'>
+                    <div className='code-block-content'>
+                        <IntaractiveSection sectionName='Входные параметры' visible='true'
+                            button={
+                                <div className='addButton' onClick={addParameter1}>
+                                    +
+                                </div>}>
+                            <header >
+                                <div className='header-name'>Название</div>
+                                <div className='header-type'>Тип</div>
+                                <div className='header-value'>Значение</div>
+                            </header>
+                            <div className='parametrs'>
+                                {parameters1.map(parameter => (
+                                    <div key={parameter.id} className='parameter' >
+                                        <div className='parameter_name'>
+                                            <input placeholder="Имя параметра"
+                                                onChange={(e) => saveNameToData2(parameter.id, e.target.value, parameter.type)}
+                                            ></input>
+                                        </div>
+                                        <div className='code_parameter_type'>
+                                            {parameter.type}
+                                        </div>
+                                        <div className='code-type_value'>
+                                            <CustomSelect
+                                                options={options}
+                                                blockId={data.id}
+                                                funcParamName={parameter.name}
+                                                funcParamType={parameter.type}
+                                                type='parameters'>
 
-                <ParameterSection
-                    sectionName='Входные параметры'
-                    parameters={parameters1}
-                    addParameterFunc={() => addParameter(setParameters1, parameters1)}
-                    deleteParameterFunc={(paramId) => handleDeleteParameter(setParameters1, parameters1, paramId)}
-                    handleSaveParameter={handleSaveParameter}
-                    options={options}
-                    blockId={data.id}
-                    type='input'
-                />
+                                            </CustomSelect>
+                                        </div>
+                                        <div className='delete_button' onClick={() => handleDeleteParameter1(parameter.id)}>
+                                            <Trash className='delete_img' />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                        </IntaractiveSection>
+                    </div>
+                </div>
 
                 <div className='code'>
                     <AceEditor
@@ -253,16 +305,46 @@ export default memo(({ data, isConnectable }) => {
                     />
                 </div>
 
-                <ParameterSection
-                    sectionName='Выходные параметры'
-                    parameters={parameters}
-                    addParameterFunc={() => addParameter(setParameters, parameters)}
-                    deleteParameterFunc={(paramId) => handleDeleteParameter(setParameters, parameters, paramId)}
-                    handleSaveParameter={handleSaveParameter}
-                    options={dataTypes}
-                    blockId={data.id}
-                    type='output'
-                />
+                <div className='outputs'>
+                    <div className='result-block-content'>
+                        <IntaractiveSection sectionName='Выходные параметры' visible='true'
+                            button={
+                                <div className='addButton' onClick={addParameter}>
+                                    +
+                                </div>}>
+                            <header >
+                                <div className='header-name'>Название</div>
+                                <div className='header-type'>Тип</div>
+                            </header>
+                            <div className='parametrs'>
+                                {parameters.map(parameter => (
+                                    <div key={parameter.id} className='parameter' >
+                                        <div className='parameter_name'>
+                                            <input placeholder="Имя параметра"
+                                                onChange={(e) => saveNameToData(parameter.id, e.target.value)}
+                                            ></input>
+                                        </div>
+                                        <div className='type_value'>
+                                            <select
+                                                onChange={(e) => saveTypeToData(parameter.id, e.target.value)}
+                                            >
+                                                {dataTypes.map((item, index) => (
+                                                    <option key={index} value={item.type}>{item.type}</option>
+                                                ))}
+                                            </select>
+
+                                        </div>
+                                        <div className='value'> {parameter.value}</div>
+                                        <div className='delete_button' onClick={() => handleDeleteParameter(parameter.id)}>
+                                            <Trash className='delete_img' />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                        </IntaractiveSection>
+                    </div>
+                </div>
             </div>
         </>
     );

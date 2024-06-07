@@ -5,7 +5,6 @@ import IntaractiveSection from './intaractiveSection';
 
 const CustomSelect = (props) => {
     const blocks = useBlocks((state) => state.blocks);
-    // const updateBlock = useBlocks((state) => state.updateBlock);
     const [selectedOption, setSelectedOption] = useState({
         from_block_id: null,
         value: "Выберите",
@@ -25,7 +24,10 @@ const CustomSelect = (props) => {
     };
 
     useEffect(() => {
-        if (Object.values(props.options).flatMap(options => options).length === 0 && selectedOption.value !== "Выберите") {
+        const allOptions = Object.values(props.options).flatMap(options => options);
+        if (allOptions.length === 0 && selectedOption.value !== "Выберите") {
+            resetSelectedOption();
+        } else if (!allOptions.some(option => option.id === selectedOption.id)) {
             resetSelectedOption();
         }
     }, [props.options]);
@@ -110,6 +112,9 @@ const CustomSelect = (props) => {
                 currentBlock.data.parameters.inputs = {};
             }
             currentBlock.data.parameters.inputs[variableKey] = propToSave;
+            if (!currentBlock.data.output_parameters.hasOwnProperty(props.funcParamName)) {
+                currentBlock.data.output_parameters[props.funcParamName] = {};
+            }
             currentBlock.data.output_parameters[props.funcParamName].from_block_id = item.from_block_id;
             currentBlock.data.output_parameters[props.funcParamName].output_id = item.id;
         } else {
