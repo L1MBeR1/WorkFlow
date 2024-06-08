@@ -23,10 +23,11 @@ export default memo(({ data, isConnectable }) => {
     const parameterBlocks = useParameterBlocksData((state) => state.blocks);
     const [code, setCode] = useState(defaultCode);
 
-    const updateCode = () => {
+    const updateCode = (newCode) => {
+        setCode(newCode);
         updateBlock(data.id, {
             ...blocks.find(block => block.selfId === data.id).data,
-            code: code
+            code: newCode
         });
     };
 
@@ -83,12 +84,11 @@ export default memo(({ data, isConnectable }) => {
 
     useEffect(() => {
         parameters.forEach(parameter => {
-            saveParameterToData(parameter.id, '', 'name', 'output_parameters');
-            saveParameterToData(parameter.id, 'string', 'type', 'output_parameters');
+            saveParameterToData(parameter.id, '', 'name', 'output_parameters', setParameters);
+            saveParameterToData(parameter.id, 'string', 'type', 'output_parameters', setParameters);
         });
         parameters1.forEach(parameter => {
-            saveParameterToData(parameter.id, '', 'name', 'input_parameters');
-            // saveParameterToData(parameter.id, 'string', 'type', 'input_parameters');
+            saveParameterToData(parameter.id, '', 'name', 'input_parameters', setParameters1);
         });
     }, [parameters, parameters1]);
 
@@ -118,12 +118,14 @@ export default memo(({ data, isConnectable }) => {
     };
 
     const printToConsole = () => {
-        console.log(blocks.find(block => block.selfId === data.id));
-        console.log(dataTypes);
+        console.log('aaa', parameters);
+        console.log('bbb', parameters1);
     };
 
-    const saveParameterToData = (id, parameter_value, parameter_name, parameter_variable) => {
+    const saveParameterToData = (id, parameter_value, parameter_name, parameter_variable, setParametersFunc) => {
         let newData;
+        let updatedParameters;
+
         blocks.forEach(block => {
             if (block.selfId === data.id) {
 
@@ -149,6 +151,15 @@ export default memo(({ data, isConnectable }) => {
                 };
             }
         });
+
+        if (parameter_variable === 'input_parameters') {
+            updatedParameters = parameters1.map(param => param.id === id ? { ...param, [parameter_name]: parameter_value } : param);
+            setParametersFunc(updatedParameters);
+        } else {
+            updatedParameters = parameters.map(param => param.id === id ? { ...param, [parameter_name]: parameter_value } : param);
+            setParametersFunc(updatedParameters);
+        }
+
         updateBlock(data.id, newData);
     };
 
@@ -193,16 +204,15 @@ export default memo(({ data, isConnectable }) => {
                                             <input
                                                 placeholder='Имя параметра'
                                                 onChange={(e) =>
-                                                    saveParameterToData(parameter.id, e.target.value, 'name', 'input_parameters')
+                                                    saveParameterToData(parameter.id, e.target.value, 'name', 'input_parameters', setParameters1)
                                                 }
                                             />
                                         </div>
 
                                         <div className='type_value'>
                                             <select
-                                                // value={parameter.type}
                                                 onChange={(e) => {
-                                                    saveParameterToData(parameter.id, e.target.value, 'type', 'input_parameters');
+                                                    saveParameterToData(parameter.id, e.target.value, 'type', 'input_parameters', setParameters1);
                                                     console.log(e.target.value);
                                                 }}
                                             >
@@ -270,12 +280,12 @@ export default memo(({ data, isConnectable }) => {
                                     <div key={parameter.id} className='parameter' >
                                         <div className='parameter_name'>
                                             <input placeholder="Имя параметра"
-                                                onChange={(e) => saveParameterToData(parameter.id, e.target.value, 'name', 'output_parameters')}
+                                                onChange={(e) => saveParameterToData(parameter.id, e.target.value, 'name', 'output_parameters', setParameters)}
                                             ></input>
                                         </div>
                                         <div className='type_value'>
                                             <select
-                                                onChange={(e) => saveParameterToData(parameter.id, e.target.value, 'type', 'output_parameters')}
+                                                onChange={(e) => saveParameterToData(parameter.id, e.target.value, 'type', 'output_parameters', setParameters)}
                                             >
                                                 {dataTypes.map((item, index) => (
                                                     <option key={index} value={item.type}>
