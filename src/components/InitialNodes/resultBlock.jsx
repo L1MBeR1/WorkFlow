@@ -108,6 +108,8 @@ const NodeComponent = ({ data, isConnectable }) => {
     
         checkForDeletedBlocks();
 
+
+        
         const outputParams = blocks.reduce((acc, block) => {
             if (block.selfId === data.id) return acc;
 

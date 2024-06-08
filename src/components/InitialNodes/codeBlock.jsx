@@ -32,11 +32,10 @@ export default memo(({ data, isConnectable }) => {
     };
 
     useEffect(() => {
-        saveParameterToData(parameters1[0].id, '', 'name', 'output_parameters', setParameters);
-        saveParameterToData(parameters1[0].id, 'int', 'type', 'output_parameters', setParameters);
-
-
+        saveParameterToData(parameters[0].id, '', 'name', 'output_parameters', setParameters);
+        saveParameterToData(parameters[0].id, 'int', 'type', 'output_parameters', setParameters);
     }, []);
+
 
     useEffect(() => {
         const getIncomingParameters = (parameterBlocks, incomingParameterBlocksIds) => {
@@ -102,22 +101,22 @@ export default memo(({ data, isConnectable }) => {
     const handleDeleteParameter = (paramid, parameters, setParameters, parameterType) => {
         const updatedParameters = parameters.filter(param => param.id !== paramid);
         setParameters(updatedParameters);
-    
+
         const block = blocks.find(b => b.selfId === data.id);
-        
+
         // Ensure block.data[parameterType] is defined before destructuring
         if (block && block.data[parameterType]) {
             const { [paramid]: removedParameter, ...restParameters } = block.data[parameterType];
-            
+
             const updatedBlock = {
                 ...block.data,
                 [parameterType]: restParameters
             };
-    
+
             updateBlock(data.id, updatedBlock);
         }
     };
-    
+
 
     const printToConsole = () => {
         console.log('aaa', parameters);
@@ -144,13 +143,28 @@ export default memo(({ data, isConnectable }) => {
                     [parameter_name]: parameter_value
                 };
 
-                newData = {
-                    ...block.data,
-                    [parameter_variable]: {
-                        ...block.data[parameter_variable],
-                        [id]: newParameter,
-                    },
-                };
+                if (!block.data.output_parameters) {
+                    console.log('fff');
+                    newData = {
+                        ...block.data,
+                        [parameter_variable]: {
+                            ...block.data[parameter_variable],
+                            [id]: newParameter,
+                            name: '',
+                            type: 'int',
+                        },
+                    };
+                } else {
+                    console.log('ggg');
+                    newData = {
+                        ...block.data,
+                        [parameter_variable]: {
+                            ...block.data[parameter_variable],
+                            [id]: newParameter,
+                            
+                        },
+                    };
+                }
             }
         });
 
@@ -167,7 +181,7 @@ export default memo(({ data, isConnectable }) => {
 
     return (
         <>
-            <button onClick={printToConsole}> Выходные параметры в консоли </button>
+            {/* <button onClick={printToConsole}> Выходные параметры в консоли </button> */}
             <div className='node' tabIndex="0">
                 <Handle
                     className='HandleComponent'

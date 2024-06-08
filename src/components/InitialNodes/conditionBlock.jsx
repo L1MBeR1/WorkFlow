@@ -11,6 +11,8 @@ const ConditionBlock = ({ data, isConnectable }) => {
     const parameterBlocks = useParameterBlocksData((state) => state.blocks);
     const [rightBlocks, setRightBlocks] = useState([]);
 
+    
+
     useEffect(() => {
         const currentBlock = blocks.find(block => block.selfId === data.id);
         if (currentBlock) {
