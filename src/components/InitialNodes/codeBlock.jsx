@@ -17,8 +17,8 @@ export default memo(({ data, isConnectable }) => {
     const updateBlock = useBlocks((state) => state.updateBlock);
     const dataTypes = useDataTypes((state) => state.types);
     const [options, setOptions] = useState([]);
-    const [parameters, setParameters] = useState([{ id: uuidv4(), name: '', type: 'string', value: '' }]);
-    const [parameters1, setParameters1] = useState([{ id: uuidv4(), name: '', type: 'string', value: '' }]);
+    const [parameters, setParameters] = useState([{ id: uuidv4(), name: '', type: 'int', value: '' }]);
+    const [parameters1, setParameters1] = useState([{ id: uuidv4(), name: '', type: 'int', value: '' }]);
     const [incomingParameterBlocksIds, setincomingParameterBlocksIds] = useState([]);
     const parameterBlocks = useParameterBlocksData((state) => state.blocks);
     const [code, setCode] = useState(defaultCode);
@@ -82,21 +82,11 @@ export default memo(({ data, isConnectable }) => {
         setOptions(combinedObj);
     }, [parameterBlocks, incomingParameterBlocksIds, blocks]);
 
-    useEffect(() => {
-        parameters.forEach(parameter => {
-            saveParameterToData(parameter.id, '', 'name', 'output_parameters', setParameters);
-            saveParameterToData(parameter.id, 'string', 'type', 'output_parameters', setParameters);
-        });
-        parameters1.forEach(parameter => {
-            saveParameterToData(parameter.id, '', 'name', 'input_parameters', setParameters1);
-        });
-    }, [parameters, parameters1]);
-
     const addParameter = (setParameters) => {
         let newParameter = {
             id: `${uuidv4()}`,
             name: '',
-            type: 'string',
+            type: 'int',
             value: ''
         };
         setParameters(prevParameters => [...prevParameters, newParameter]);
@@ -255,7 +245,6 @@ export default memo(({ data, isConnectable }) => {
                         value={code}
                         onChange={(newValue) => {
                             updateCode(newValue);
-                            setCode(newValue);
                         }}
                         setOptions={{
                             showLineNumbers: true,
