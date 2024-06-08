@@ -95,17 +95,22 @@ export default memo(({ data, isConnectable }) => {
     const handleDeleteParameter = (paramid, parameters, setParameters, parameterType) => {
         const updatedParameters = parameters.filter(param => param.id !== paramid);
         setParameters(updatedParameters);
-
+    
         const block = blocks.find(b => b.selfId === data.id);
-        const { [paramid]: removedParameter, ...restParameters } = block.data[parameterType];
-
-        const updatedBlock = {
-            ...block.data,
-            [parameterType]: restParameters
-        };
-
-        updateBlock(data.id, updatedBlock);
+        
+        // Ensure block.data[parameterType] is defined before destructuring
+        if (block && block.data[parameterType]) {
+            const { [paramid]: removedParameter, ...restParameters } = block.data[parameterType];
+            
+            const updatedBlock = {
+                ...block.data,
+                [parameterType]: restParameters
+            };
+    
+            updateBlock(data.id, updatedBlock);
+        }
     };
+    
 
     const printToConsole = () => {
         console.log('aaa', parameters);
