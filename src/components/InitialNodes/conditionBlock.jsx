@@ -6,15 +6,46 @@ import { useBlocks, useParameterBlocksData } from '../../stores/store.js';
 
 const ConditionBlock = ({ data, isConnectable }) => {
     const blocks = useBlocks((state) => state.blocks);
-
     const [options, setOptions] = useState([]);
-    const [incomingParameterBlocksIds, setincomingParameterBlocksIds] = useState([]);
+    const [incomingParameterBlocksIds, setIncomingParameterBlocksIds] = useState([]);
     const parameterBlocks = useParameterBlocksData((state) => state.blocks);
-    const [rightBlocks, setrightBlocks] = useState([]);
+    const [rightBlocks, setRightBlocks] = useState([]);
 
     useEffect(() => {
-        setOptions(blocks.find(block => block.selfId === data.id).outcomeConnections);
-    }, [blocks.find(block => block.selfId === data.id).outcomeConnections]);
+        const currentBlock = blocks.find(block => block.selfId === data.id);
+        if (currentBlock) {
+            setOptions(currentBlock.outcomeConnections);
+        }
+
+
+    }, [blocks, data.id]);
+
+    const cleanData = (deletedIds) => {
+        const blocks = useBlocks.getState().blocks;  // Получаем текущее состояние блоков
+        const currentBlock = blocks.find((block) => block.selfId === data.id);
+        if (!currentBlock) return;
+
+        // Функция для фильтрации параметров
+        const filterParameter = (param) => {
+            return deletedIds.includes(param?.from_block_id) ? null : param;
+        };
+
+        // Очищаем параметры A и B
+        const newParameterA = filterParameter(currentBlock.data.parameters.inputs.parameterA);
+        const newParameterB = filterParameter(currentBlock.data.parameters.inputs.parameterB);
+
+        // Обновляем данные блока без создания события
+        useBlocks.getState().setBlockData(data.id, {
+            ...currentBlock.data,
+            parameters: {
+                ...currentBlock.data.parameters,
+                inputs: {
+                    parameterA: newParameterA,
+                    parameterB: newParameterB,
+                },
+            }
+        });
+    };
 
     useEffect(() => {
         const getIncomingParameters = (parameterBlocks, incomingParameterBlocksIds) => {
@@ -34,16 +65,19 @@ const ConditionBlock = ({ data, isConnectable }) => {
                 .filter(block => (block.type === 'functionBlock' || block.type === 'codeBlock') && block.outcomeConnections.includes(id))
                 .map(block => block.selfId);
         };
+
         const findRightBlocks = (blocks, id) => {
             return blocks
                 .filter(block => (block.type === 'functionBlock' || block.type === 'codeBlock') && block.incomeConnections.includes(id));
         };
+
         const getOutputParameters = (blocks, leftIds) => {
             return blocks.reduce((acc, block) => {
                 if (leftIds.includes(block.selfId)) {
                     acc[block.data.label] = Object.keys(block.data.output_parameters).map(key => {
                         const param = block.data.output_parameters[key];
                         return {
+                            from_block_id: block.selfId,
                             id: param.id,
                             type: param.type,
                             value: '---',
@@ -54,22 +88,64 @@ const ConditionBlock = ({ data, isConnectable }) => {
                 return acc;
             }, {});
         };
-        setrightBlocks(findRightBlocks(blocks, data.id))
+
+        const currentBlock = blocks.find(block => block.selfId === data.id);
+        if (currentBlock) {
+            setIncomingParameterBlocksIds(currentBlock.incomeConnections);
+        }
+
+        setRightBlocks(findRightBlocks(blocks, data.id));
+
         const incomingParameters = getIncomingParameters(parameterBlocks, incomingParameterBlocksIds);
         const leftIds = findLeftIds(blocks, data.id);
-
-        blocks.forEach(block => {
-            if (block.selfId === data.id) {
-                setincomingParameterBlocksIds(block.incomeConnections);
-            }
-        });
-
         const outputParameters = getOutputParameters(blocks, leftIds);
         const combinedObj = { ...outputParameters, ...incomingParameters };
 
         setOptions(combinedObj);
-        // updateData(data.id, combinedObj);
-    }, [parameterBlocks, incomingParameterBlocksIds, blocks]);
+
+
+
+
+        const leftIds2 = blocks
+            .filter(
+                (block) =>
+                    (block.type === 'functionBlock' || block.type === 'codeBlock') &&
+                    block.outcomeConnections.includes(data.id)
+            )
+            .map((block) => block.selfId);
+
+        const getContainedIds = () => {
+            const block = blocks.find((b) => b.selfId === data.id);
+            if (!block || !block.data.parameters || !block.data.parameters.inputs) return [];
+
+            const parameterA = block.data.parameters.inputs.parameterA || {};
+            const parameterB = block.data.parameters.inputs.parameterB || {};
+            return [parameterA, parameterB].map(param => param.from_block_id).filter(id => id);
+        };
+
+        const arrayDifference = (arr1, arr2) => {
+            return arr1.filter(id => !arr2.includes(id));
+        };
+
+        const checkForDeletedBlocks = () => {
+            const block = blocks.find((b) => b.selfId === data.id);
+            console.log('%c cl-1', 'color: yellow; background: black; font-weight: bold');
+            if (!block.data.parameters) return;
+            console.log('%c cl-2', 'color: yellow; background: black; font-weight: bold');
+            if (!block.data.parameters.inputs) return;
+            console.log('%c cl-3', 'color: yellow; background: black; font-weight: bold');
+            
+            const containedIds = getContainedIds();
+            const diff = arrayDifference(containedIds, leftIds2);
+            if (!containedIds.length || diff.length > 0) {
+                cleanData(diff);
+            }
+        };
+
+        checkForDeletedBlocks();
+
+
+    }, [parameterBlocks, incomingParameterBlocksIds, blocks, data.id]);
 
     const conditions = [
         { id: 1, condition: "Equal", description: "Равно" },
@@ -101,22 +177,19 @@ const ConditionBlock = ({ data, isConnectable }) => {
                         blockId={data.id}
                         type='parameters'
                         funcParamName='parameterA'
-                    >
-                    </CustomSelect>
+                    />
                     <CustomSelect
                         options={conditions}
                         blockId={data.id}
                         type='conditions'
                         funcParamName='condition'
-                    >
-                    </CustomSelect>
+                    />
                     <CustomSelect
                         options={options}
                         blockId={data.id}
                         type='parameters'
                         funcParamName='parameterB'
-                    >
-                    </CustomSelect>
+                    />
                 </div>
                 <div className='condition-content-step'>
                     <header className='condition-content-header'>
@@ -127,8 +200,7 @@ const ConditionBlock = ({ data, isConnectable }) => {
                         blockId={data.id}
                         type='blocks'
                         funcParamName='outputIfTrue'
-                    >
-                    </CustomSelect>
+                    />
                 </div>
             </div>
             <div className='condition-label-else'>
@@ -143,8 +215,7 @@ const ConditionBlock = ({ data, isConnectable }) => {
                     blockId={data.id}
                     type='blocks'
                     funcParamName='outputIfFalse'
-                >
-                </CustomSelect>
+                />
             </div>
         </div>
     );
@@ -159,9 +230,7 @@ export default memo(({ data, isConnectable }) => {
                 position={Position.Left}
                 isConnectable={isConnectable}
             />
-            {/* <button onClick={printToConsole}> Выходные параметры в консоли </button> */}
-            <div className='node' tabIndex="0"
-            >
+            <div className='node' tabIndex="0">
                 <div>
                     <div>{data.label}</div>
                     <hr></hr>
