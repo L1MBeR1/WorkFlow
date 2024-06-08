@@ -85,9 +85,9 @@ export default memo(({ data, isConnectable }) => {
     const addParameter = (setParameters) => {
         let newParameter = {
             id: `${uuidv4()}`,
-            name: 'default',
+            name: '',
             type: dataTypes[0].type,
-            value: 'default'
+            value: ''
         };
         setParameters(prevParameters => [...prevParameters, newParameter]);
     };
