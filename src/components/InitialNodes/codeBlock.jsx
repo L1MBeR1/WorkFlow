@@ -7,10 +7,10 @@ import { v4 as uuidv4 } from 'uuid';
 import CustomSelect from '../AdditionalComponents/customSelect.jsx';
 import '../../css/initialNodes.css';
 import { ReactComponent as Trash } from '../../images/InitialNodes/trash.svg';
+import { defaultCode } from './defaultCode.jsx';
 
 import 'ace-builds/src-noconflict/mode-python';
 import 'ace-builds/src-noconflict/theme-dracula';
-
 
 export default memo(({ data, isConnectable }) => {
     const blocks = useBlocks((state) => state.blocks);
@@ -21,16 +21,7 @@ export default memo(({ data, isConnectable }) => {
     const [parameters1, setParameters1] = useState([{ id: uuidv4(), name: '', type: 'string', value: '' }]);
     const [incomingParameterBlocksIds, setincomingParameterBlocksIds] = useState([]);
     const parameterBlocks = useParameterBlocksData((state) => state.blocks);
-    const [code, setCode] = useState(`
-def function(input):
-    """
-    use input.InputParameterName to 
-    do something with inputs
-    """
-
-    output = input
-    return output
-`);
+    const [code, setCode] = useState(defaultCode);
 
     const updateCode = () => {
         updateBlock(data.id, {
@@ -75,7 +66,6 @@ def function(input):
             }, {});
         };
 
-
         const incomingParameters = getIncomingParameters(parameterBlocks, incomingParameterBlocksIds);
         const leftIds = findLeftIds(blocks, data.id);
 
@@ -89,46 +79,42 @@ def function(input):
         const combinedObj = { ...outputParameters, ...incomingParameters };
 
         setOptions(combinedObj);
-        console.log(parameterBlocks,incomingParameterBlocksIds)
     }, [parameterBlocks, incomingParameterBlocksIds, blocks]);
-
 
     useEffect(() => {
         parameters.forEach(parameter => {
-            saveNameToData(parameter.id, '');
-            saveTypeToData(parameter.id, 'string');
+            saveParameterToData(parameter.id, '', 'name', 'output_parameters');
+            saveParameterToData(parameter.id, 'string', 'type', 'output_parameters');
         });
-    }, [parameters]);
+        parameters1.forEach(parameter => {
+            saveParameterToData(parameter.id, '', 'name', 'input_parameters');
+            // saveParameterToData(parameter.id, 'string', 'type', 'input_parameters');
+        });
+    }, [parameters, parameters1]);
 
-    const addParameter = () => {
+    const addParameter = (setParameters) => {
         let newParameter = {
             id: `${uuidv4()}`,
             name: '',
             type: 'string',
             value: ''
         };
-        setParameters([...parameters, newParameter]);
+        setParameters(prevParameters => [...prevParameters, newParameter]);
     };
 
-    const handleDeleteParameter = (paramid) => {
+    const handleDeleteParameter = (paramid, parameters, setParameters, parameterType) => {
         const updatedParameters = parameters.filter(param => param.id !== paramid);
         setParameters(updatedParameters);
-        console.log(updatedParameters)
-    };
 
-    const addParameter1 = () => {
-        let newParameter = {
-            id: `${uuidv4()}`,
-            name: '',
-            type: 'string',
-            value: ''
+        const block = blocks.find(b => b.selfId === data.id);
+        const { [paramid]: removedParameter, ...restParameters } = block.data[parameterType];
+
+        const updatedBlock = {
+            ...block.data,
+            [parameterType]: restParameters
         };
-        setParameters1([...parameters1, newParameter]);
-    };
 
-    const handleDeleteParameter1 = (paramid) => {
-        const updatedParameters = parameters1.filter(param => param.id !== paramid);
-        setParameters1(updatedParameters);
+        updateBlock(data.id, updatedBlock);
     };
 
     const printToConsole = () => {
@@ -136,87 +122,33 @@ def function(input):
         console.log(dataTypes);
     };
 
-    const saveNameToData = (id, value) => {
+    const saveParameterToData = (id, parameter_value, parameter_name, parameter_variable) => {
         let newData;
         blocks.forEach(block => {
             if (block.selfId === data.id) {
-                if (!block.data.output_parameters) {
-                    block.data.output_parameters = [];
+
+                if (!block.data[parameter_variable]) {
+                    block.data[parameter_variable] = [];
                 }
-                if (!block.data.output_parameters[id]) {
-                    block.data.output_parameters[id] = {};
+                if (!block.data[parameter_variable][id]) {
+                    block.data[parameter_variable][id] = {};
                 }
+
+                const newParameter = {
+                    ...block.data[parameter_variable][id],
+                    id: id,
+                    [parameter_name]: parameter_value
+                };
+
                 newData = {
                     ...block.data,
-                    output_parameters: {
-                        ...block.data.output_parameters,
-                        [id]: {
-                            ...block.data.output_parameters[id],
-                            id: id,
-                            name: value,
-                            value: '---',
-                        },
-                    }
-
+                    [parameter_variable]: {
+                        ...block.data[parameter_variable],
+                        [id]: newParameter,
+                    },
                 };
             }
-        })
-        updateBlock(data.id, newData);
-    };
-
-    const saveTypeToData = (id, value) => {
-        let newData;
-        blocks.forEach(block => {
-            if (block.selfId === data.id) {
-                if (!block.data.output_parameters) {
-                    block.data.output_parameters = [];
-                }
-                if (!block.data.output_parameters[id]) {
-                    block.data.output_parameters[id] = {};
-                }
-                newData = {
-                    ...block.data,
-                    output_parameters: {
-                        ...block.data.output_parameters,
-                        [id]: {
-                            ...block.data.output_parameters[id],
-                            id: id,
-                            type: value,
-                            value: '---',
-                        },
-                    }
-
-                };
-            }
-        })
-        updateBlock(data.id, newData);
-    };
-
-    const saveNameToData2 = (id, value, type) => {
-        let newData;
-        blocks.forEach(block => {
-            if (block.selfId === data.id) {
-                if (!block.data.input_parameters) {
-                    block.data.input_parameters = [];
-                }
-                if (!block.data.input_parameters[id]) {
-                    block.data.input_parameters[id] = {};
-                }
-                newData = {
-                    ...block.data,
-                    input_parameters: {
-                        ...block.data.input_parameters,
-                        [id]: {
-                            ...block.data.input_parameters[id],
-                            id: id,
-                            name: value,
-                            type: type,
-                            value: '---',
-                        },
-                    }
-                };
-            }
-        })
+        });
         updateBlock(data.id, newData);
     };
 
@@ -246,7 +178,7 @@ def function(input):
                     <div className='code-block-content'>
                         <IntaractiveSection sectionName='Входные параметры' visible='true'
                             button={
-                                <div className='addButton' onClick={addParameter1}>
+                                <div className='addButton' onClick={() => addParameter(setParameters1)}>
                                     +
                                 </div>}>
                             <header >
@@ -254,28 +186,45 @@ def function(input):
                                 <div className='header-type'>Тип</div>
                                 <div className='header-value'>Значение</div>
                             </header>
-                            <div className='parametrs'>
-                                {parameters1.map(parameter => (
-                                    <div key={parameter.id} className='parameter' >
+                            <div className='parameters'>
+                                {parameters1.map((parameter) => (
+                                    <div key={parameter.id} className='parameter'>
                                         <div className='parameter_name'>
-                                            <input placeholder="Имя параметра"
-                                                onChange={(e) => saveNameToData2(parameter.id, e.target.value, parameter.type)}
-                                            ></input>
+                                            <input
+                                                placeholder='Имя параметра'
+                                                onChange={(e) =>
+                                                    saveParameterToData(parameter.id, e.target.value, 'name', 'input_parameters')
+                                                }
+                                            />
                                         </div>
-                                        <div className='code_parameter_type'>
-                                            {parameter.type}
+
+                                        <div className='type_value'>
+                                            <select
+                                                // value={parameter.type}
+                                                onChange={(e) => {
+                                                    saveParameterToData(parameter.id, e.target.value, 'type', 'input_parameters');
+                                                    console.log(e.target.value);
+                                                }}
+                                            >
+                                                {dataTypes.map((item, index) => (
+                                                    <option key={index} value={item.type}>
+                                                        {item.type}
+                                                    </option>
+                                                ))}
+                                            </select>
                                         </div>
-                                        <div className='code-type_value'>
+
+                                        <div className='value'>
                                             <CustomSelect
                                                 options={options}
                                                 blockId={data.id}
-                                                funcParamName={parameter.name}
+                                                funcParamName={parameter.id}
                                                 funcParamType={parameter.type}
-                                                type='parameters'>
-
-                                            </CustomSelect>
+                                                type='parameters'
+                                            />
                                         </div>
-                                        <div className='delete_button' onClick={() => handleDeleteParameter1(parameter.id)}>
+
+                                        <div className='delete_button' onClick={() => handleDeleteParameter(parameter.id, parameters1, setParameters1, 'input_parameters')}>
                                             <Trash className='delete_img' />
                                         </div>
                                     </div>
@@ -309,7 +258,7 @@ def function(input):
                     <div className='result-block-content'>
                         <IntaractiveSection sectionName='Выходные параметры' visible='true'
                             button={
-                                <div className='addButton' onClick={addParameter}>
+                                <div className='addButton' onClick={() => addParameter(setParameters)}>
                                     +
                                 </div>}>
                             <header >
@@ -321,21 +270,22 @@ def function(input):
                                     <div key={parameter.id} className='parameter' >
                                         <div className='parameter_name'>
                                             <input placeholder="Имя параметра"
-                                                onChange={(e) => saveNameToData(parameter.id, e.target.value)}
+                                                onChange={(e) => saveParameterToData(parameter.id, e.target.value, 'name', 'output_parameters')}
                                             ></input>
                                         </div>
                                         <div className='type_value'>
                                             <select
-                                                onChange={(e) => saveTypeToData(parameter.id, e.target.value)}
+                                                onChange={(e) => saveParameterToData(parameter.id, e.target.value, 'type', 'output_parameters')}
                                             >
                                                 {dataTypes.map((item, index) => (
-                                                    <option key={index} value={item.type}>{item.type}</option>
+                                                    <option key={index} value={item.type}>
+                                                        {item.type}
+                                                    </option>
                                                 ))}
                                             </select>
-
                                         </div>
                                         <div className='value'> {parameter.value}</div>
-                                        <div className='delete_button' onClick={() => handleDeleteParameter(parameter.id)}>
+                                        <div className='delete_button' onClick={() => handleDeleteParameter(parameter.id, parameters, setParameters, 'output_parameters')}>
                                             <Trash className='delete_img' />
                                         </div>
                                     </div>

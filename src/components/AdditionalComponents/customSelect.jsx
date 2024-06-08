@@ -107,6 +107,7 @@ const CustomSelect = (props) => {
             if (!currentBlock.data.parameters.inputs) {
                 currentBlock.data.parameters.inputs = {};
             }
+            console.log('key=', variableKey, 'value=', propToSave);
             currentBlock.data.parameters.inputs[variableKey] = propToSave;
         } else if (props.type === 'parameters_from_resultblock') {
             if (!currentBlock.data.parameters.inputs) {
