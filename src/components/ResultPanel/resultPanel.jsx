@@ -11,6 +11,19 @@ const ResultPanel = () => {
     const { isOpen, setIsOpen } = ResultPanelStatus();
     const [specificationContent, setSpecificationContent] = useState('');
 
+    function wrapNumbersInQuotes(obj) {
+        if (Array.isArray(obj)) {
+            return obj.map(wrapNumbersInQuotes);
+        } else if (obj !== null && typeof obj === 'object') {
+            return Object.fromEntries(
+                Object.entries(obj).map(([key, value]) => [key, wrapNumbersInQuotes(value)])
+            );
+        } else if (typeof obj === 'number') {
+            return obj.toString();
+        }
+        return obj;
+    }
+
     const copyToClipBoard = () => {
         navigator.clipboard.writeText(specificationContent);
     };
@@ -145,7 +158,10 @@ const ResultPanel = () => {
             specificationJson.result.push(...singleResultBlock);
         }
 
-        setSpecificationContent(JSON.stringify(specificationJson, null, 2));
+        const processedJson = wrapNumbersInQuotes(specificationJson);
+        setSpecificationContent(JSON.stringify(processedJson, null, 2));
+        
+        // setSpecificationContent(JSON.stringify(specificationJson, null, 2));
     };
 
     useEffect(() => {
