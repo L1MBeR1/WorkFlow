@@ -17,8 +17,8 @@ export default memo(({ data, isConnectable }) => {
     const updateBlock = useBlocks((state) => state.updateBlock);
     const dataTypes = useDataTypes((state) => state.types);
     const [options, setOptions] = useState([]);
-    const [parameters, setParameters] = useState([{ id: uuidv4(), name: '', type: 'int', value: '' }]);
-    const [parameters1, setParameters1] = useState([{ id: uuidv4(), name: '', type: 'int', value: '' }]);
+    const [parameters, setParameters] = useState([{ id: uuidv4(), name: '', type: dataTypes[0].type, value: '' }]);
+    const [parameters1, setParameters1] = useState([{ id: uuidv4(), name: '', type: dataTypes[0].type, value: 'default' }]);
     const [incomingParameterBlocksIds, setincomingParameterBlocksIds] = useState([]);
     const parameterBlocks = useParameterBlocksData((state) => state.blocks);
     const [code, setCode] = useState(defaultCode);
@@ -85,9 +85,9 @@ export default memo(({ data, isConnectable }) => {
     const addParameter = (setParameters) => {
         let newParameter = {
             id: `${uuidv4()}`,
-            name: '',
-            type: 'int',
-            value: ''
+            name: 'default',
+            type: dataTypes[0].type,
+            value: 'default'
         };
         setParameters(prevParameters => [...prevParameters, newParameter]);
     };
@@ -98,7 +98,6 @@ export default memo(({ data, isConnectable }) => {
     
         const block = blocks.find(b => b.selfId === data.id);
         
-        // Ensure block.data[parameterType] is defined before destructuring
         if (block && block.data[parameterType]) {
             const { [paramid]: removedParameter, ...restParameters } = block.data[parameterType];
             
@@ -134,7 +133,13 @@ export default memo(({ data, isConnectable }) => {
                 const newParameter = {
                     ...block.data[parameter_variable][id],
                     id: id,
-                    [parameter_name]: parameter_value
+                    [parameter_name]: parameter_value,
+    
+                    // Проверка и добавление type по умолчанию
+                    type: block.data[parameter_variable][id].type || dataTypes[0].type,
+                    
+                    // Проверка и добавление name по умолчанию
+                    name: block.data[parameter_variable][id].name || ''
                 };
 
                 newData = {
@@ -198,6 +203,7 @@ export default memo(({ data, isConnectable }) => {
                                         <div className='parameter_name'>
                                             <input
                                                 placeholder='Имя параметра'
+                                                defaultValue={parameter.name}
                                                 onChange={(e) =>
                                                     saveParameterToData(parameter.id, e.target.value, 'name', 'input_parameters', setParameters1)
                                                 }
@@ -206,6 +212,7 @@ export default memo(({ data, isConnectable }) => {
 
                                         <div className='type_value'>
                                             <select
+                                                defaultValue={parameter.type}
                                                 onChange={(e) => {
                                                     saveParameterToData(parameter.id, e.target.value, 'type', 'input_parameters', setParameters1);
                                                     console.log(e.target.value);
@@ -274,11 +281,13 @@ export default memo(({ data, isConnectable }) => {
                                     <div key={parameter.id} className='parameter' >
                                         <div className='parameter_name'>
                                             <input placeholder="Имя параметра"
+                                                defaultValue={parameter.name}
                                                 onChange={(e) => saveParameterToData(parameter.id, e.target.value, 'name', 'output_parameters', setParameters)}
                                             ></input>
                                         </div>
                                         <div className='type_value'>
                                             <select
+                                                defaultValue={parameter.type}
                                                 onChange={(e) => saveParameterToData(parameter.id, e.target.value, 'type', 'output_parameters', setParameters)}
                                             >
                                                 {dataTypes.map((item, index) => (

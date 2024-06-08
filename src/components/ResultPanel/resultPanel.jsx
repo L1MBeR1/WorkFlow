@@ -36,13 +36,33 @@ const ResultPanel = () => {
         return [...new Set(connectedParameterBlocks)].map(block => block.data || []);
     };
 
-    const getConnectedResultBlocks = () => {
+    /*const getConnectedResultBlocks = () => {
         const resultBlocks = blocks
             .filter(block => block.type === 'resultBlock')
             .map(block => block.data.output_parameters);
 
+        console.log('resultBlocks ', resultBlocks);
         return resultBlocks.length > 0 ? Object.values(resultBlocks[0]) : [];
+    };*/
+
+    const getConnectedResultBlocks = () => {
+        const resultBlocks = blocks
+            .filter(block => block.type === 'resultBlock')
+            .map(block => block.data.output_parameters);
+    
+        const outputArray = [];
+        resultBlocks.forEach(output => {
+            for (const key in output) {
+                if (Object.hasOwnProperty.call(output, key)) {
+                    outputArray.push(output[key]);
+                }
+            }
+        });
+    
+        console.log('resultBlocks ', outputArray);
+        return outputArray;
     };
+    
 
     const fillService = ({ id, serviceID, entry_pointID }) => ({
         ...(id && { id }),
@@ -86,6 +106,8 @@ const ResultPanel = () => {
 
         const singleParameterBlock = getConnectedParameterBlocks();
         const singleResultBlock = getConnectedResultBlocks();
+
+        console.log('RES- ', singleResultBlock);
 
         queue.forEach(blockId => {
             const block = blocks.find(block => block.selfId === blockId);
