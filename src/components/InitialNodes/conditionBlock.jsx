@@ -129,11 +129,10 @@ const ConditionBlock = ({ data, isConnectable }) => {
 
         const checkForDeletedBlocks = () => {
             const block = blocks.find((b) => b.selfId === data.id);
-            console.log('%c cl-1', 'color: yellow; background: black; font-weight: bold');
+            if (!block) return;
+            if (!block.data) return;
             if (!block.data.parameters) return;
-            console.log('%c cl-2', 'color: yellow; background: black; font-weight: bold');
             if (!block.data.parameters.inputs) return;
-            console.log('%c cl-3', 'color: yellow; background: black; font-weight: bold');
             
             const containedIds = getContainedIds();
             const diff = arrayDifference(containedIds, leftIds2);
