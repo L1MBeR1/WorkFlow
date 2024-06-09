@@ -221,16 +221,8 @@ export default function App() {
         [deleteBlock]
     );
 
-    const cl = () => {
-        console.log('%c Nodes, Edges', 'color: red; background: yellow');
-        console.log(nodes, edges);
-        console.log('%c Blocks from Store', 'color: white; background: green');
-        console.log(blocks);
-    };
-
     return (
         <div className="App">
-            <button onClick={() => cl()}> CL </button>
             <HeaderPanel></HeaderPanel>
             <div className='reactFlowDiv'>
                 <ComponentPanel></ComponentPanel>
