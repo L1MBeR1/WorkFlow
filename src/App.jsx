@@ -216,7 +216,6 @@ export default function App() {
 
     const onNodesDelete = useCallback(
         (deleted) => {
-            console.log('deleted', deleted);
             deleteBlock(deleted[0].id);
         },
         [deleteBlock]
